@@ -8,8 +8,8 @@ from sklearn.model_selection import cross_val_score, TimeSeriesSplit, KFold
 from sklearn.naive_bayes import GaussianNB
 from typing import Any
 
-from GLOBAL_PARAMS import WINDOW
-from gsp import estimators_params
+from ..constants.GLOBAL_PARAMS import WINDOW
+from ..constants.gsp import estimators_params
 from datetime import datetime
 from sklearn.model_selection import GridSearchCV
 

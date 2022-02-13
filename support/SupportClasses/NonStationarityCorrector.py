@@ -1,10 +1,10 @@
-import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import StandardScaler
 from statsmodels.tsa.stattools import adfuller
 from typing import Any
-from GLOBAL_PARAMS import WINDOW
+from ..constants.GLOBAL_PARAMS import WINDOW
+
 
 class NonStationarityCorrector(BaseEstimator, TransformerMixin):
     # Correct columns that don't seem stationary according to Augmented Dicker Fuller statistical stationarity test
@@ -35,12 +35,13 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
         X = X.copy()
         print("Correcting non-stationarity on the dataset...")
         for col in self.cols_to_correct:
-            X[col] = (X[col] - X[col].rolling(window=WINDOW-2).mean()) / X[col].rolling(window=WINDOW-2).std(skipna=True).replace(to_replace=0., method = 'ffill')
+            X[col] = (X[col] - X[col].rolling(window=WINDOW - 2).mean()) / X[col].rolling(window=WINDOW - 2).std(
+                skipna=True).replace(to_replace=0., method='ffill')
 
         sc = StandardScaler()
-        X[self.cols_to_pass] = sc.fit_transform(X[self.cols_to_pass])
+        if self.cols_to_pass: X[self.cols_to_pass] = sc.fit_transform(X[self.cols_to_pass])
 
         print("Done.")
-        assert type(X)==pd.DataFrame,'type error'
+        assert type(X) == pd.DataFrame, 'type error'
 
         return X[WINDOW:]

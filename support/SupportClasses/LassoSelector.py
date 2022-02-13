@@ -5,7 +5,7 @@ from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.feature_selection import SelectKBest
 from sklearn.linear_model import LogisticRegression
 from tqdm import tqdm
-from GLOBAL_PARAMS import WINDOW
+from ..constants.GLOBAL_PARAMS import WINDOW
 
 
 def lasso_thread(X: pd.DataFrame, y: pd.Series, i: int, tab_coeff: list, l_s: np.ndarray)->None:

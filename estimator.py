@@ -5,10 +5,10 @@ from sklearn.metrics import classification_report
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, FunctionTransformer
 
-from estimator.src.constants.GLOBAL_PARAMS import WINDOW
-from estimator.src.SupportClasses.LassoSelector import LassoSelector
-from estimator.src.SupportClasses.MetaModel import MetaModel
-from estimator.src.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
+from support.constants.GLOBAL_PARAMS import WINDOW
+from support.SupportClasses.LassoSelector import LassoSelector
+from support.SupportClasses.MetaModel import MetaModel
+from support.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
 
 
 
