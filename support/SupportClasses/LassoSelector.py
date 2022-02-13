@@ -15,6 +15,9 @@ def lasso_thread(X: pd.DataFrame, y: pd.Series, i: int, tab_coeff: list, l_s: np
 
 
 class LassoSelector(BaseEstimator, TransformerMixin):
+    """
+    Selects features according to their order of apparition when varying the shrinkage coefficient of LASSO regression
+    """
 
     def __init__(self):
         self.selected_cols = [str]

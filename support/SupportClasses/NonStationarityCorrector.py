@@ -7,7 +7,10 @@ from ..constants.GLOBAL_PARAMS import WINDOW
 
 
 class NonStationarityCorrector(BaseEstimator, TransformerMixin):
-    # Correct columns that don't seem stationary according to Augmented Dicker Fuller statistical stationarity test
+    """
+    Correct columns that don't seem stationary according to Augmented Dicker Fuller statistical stationarity test
+
+    """
 
     def __init__(self, cols_to_pass=None):
         if cols_to_pass is None:

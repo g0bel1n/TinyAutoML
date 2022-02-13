@@ -9,18 +9,20 @@ Only Work for binary classification for now.
 
 ``` python
 import pandas as pd
-
-from MetaPipeline import MetaPipeline
-
+import TinyAutoML as tam
 from sklearn.datasets import load_breast_cancer
 
 iris = load_breast_cancer()
 X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
-y=iris.target
+y = iris.target
 
-mp = MetaPipeline()
-mp.fit(X,y)
+cut = int(len(y) * 0.8)
 
-print(mp.classification_report)
+X_train, X_test = X[:cut], X[cut:]
+y_train, y_test = y[:cut], y[cut:]
+
+mp = tam.Estimator.MetaPipeline()
+mp.fit(X_train, y_train, grid_search=False)
+print(mp.classification_report(X_test, y_test))
 
 ```

@@ -1,6 +1,5 @@
 import pandas as pd
-
-from estimator import MetaPipeline
+from Estimator.Estimator import MetaPipeline
 from sklearn.datasets import load_breast_cancer
 
 iris = load_breast_cancer()
@@ -14,6 +13,6 @@ y_train, y_test = y[:cut], y[cut:]
 
 mp = MetaPipeline()
 mp.fit(X_train, y_train, grid_search=False)
-print(mp.classification_report(X_test,y_test))
+print(mp.classification_report(X_test, y_test))
 
 

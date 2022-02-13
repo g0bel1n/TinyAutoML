@@ -16,6 +16,9 @@ from sklearn.model_selection import GridSearchCV
 
 
 class MetaModel(BaseEstimator):
+    """
+    Meta estimator that trains other estimator to find the best
+    """
 
     def __init__(self, grid_search: bool, n_splits=10):
         self.best_estimator = None
