@@ -5,10 +5,10 @@ from sklearn.metrics import classification_report
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, FunctionTransformer
 
-from support.constants.GLOBAL_PARAMS import WINDOW
-from support.SupportClasses.LassoSelector import LassoSelector
-from support.SupportClasses.MetaModel import MetaModel
-from support.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
+from ..support.constants.GLOBAL_PARAMS import WINDOW
+from ..support.SupportClasses.LassoSelector import LassoSelector
+from ..support.SupportClasses.MetaModel import MetaModel
+from ..support.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
 
 
 
@@ -59,3 +59,7 @@ class MetaPipeline(BaseEstimator):
     def classification_report(self, X: pd.DataFrame, y: pd.Series):
         y_pred = self.pipe.predict(X)
         print(classification_report(y[WINDOW:], y_pred))
+
+
+if __name__ == '__main__':
+    Pipeline()
