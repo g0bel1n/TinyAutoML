@@ -1,5 +1,5 @@
 # MetaPipeline
-[![Unit tests](https://github.com/g0bel1n/MetaPipeline/actions/workflows/python-app.yml/badge.svg)](https://github.com/g0bel1n/MetaPipeline/actions/workflows/python-app.yml)
+[![Unit tests](https://github.com/g0bel1n/TinyAutoML/actions/workflows/python-app.yml/badge.svg)](https://github.com/g0bel1n/TinyAutoML/actions/workflows/python-app.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Meta - Pipeline for Stat'App project.
