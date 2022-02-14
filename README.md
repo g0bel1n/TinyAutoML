@@ -12,9 +12,9 @@ import pandas as pd
 import TinyAutoML as tam
 from sklearn.datasets import load_breast_cancer
 
-iris = load_breast_cancer()
-X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
-y = iris.target
+ds = load_breast_cancer()
+X = pd.DataFrame(data=ds.data, columns=ds.feature_names)
+y = ds.target
 
 cut = int(len(y) * 0.8)
 
