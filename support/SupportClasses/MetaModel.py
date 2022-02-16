@@ -21,7 +21,7 @@ class MetaModel(BaseEstimator):
     """
 
     def __init__(self, grid_search: bool, n_splits=10):
-        self.best_estimator = None
+        self.best_estimator_ = None
         self.best_estimator_index = None
         self.estimators = [("rcf", RandomForestClassifier()),
                            ("Logistic Regression", LogisticRegression(fit_intercept=True)),
@@ -76,9 +76,15 @@ class MetaModel(BaseEstimator):
         print("The best estimator is {0} with a cross-validation accuracy (in Sample) of {1}".format(
             self.estimators[self.best_estimator_index][0], self.scores['mean'].iloc[self.best_estimator_index]))
 
-        self.best_estimator = self.estimators[self.best_estimator_index][1].fit(X, y_train)
+        self.best_estimator_ = self.estimators[self.best_estimator_index][1].fit(X, y_train)
 
         return self
 
     def predict(self, X: pd.Series) -> pd.Series:
-        return self.best_estimator.predict(X)
+        return self.best_estimator_.predict(X)
+
+    def predict_proba(self, X: pd.Series) -> pd.Series:
+        return self.best_estimator_.predict_proba(X)
+
+    def transform(self,X: pd.Series):
+        return X

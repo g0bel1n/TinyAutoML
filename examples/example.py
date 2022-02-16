@@ -14,5 +14,5 @@ y_train, y_test = y[:cut], y[cut:]
 mp = MetaPipeline()
 mp.fit(X_train, y_train, grid_search=False)
 print(mp.classification_report(X_test, y_test))
-
+mp.roc_curve(X_test, y_test)
 

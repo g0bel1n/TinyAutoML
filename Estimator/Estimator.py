@@ -1,15 +1,15 @@
 import pandas as pd
+from matplotlib import pyplot as plt
 from sklearn.base import BaseEstimator
 from sklearn.compose import ColumnTransformer
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, roc_auc_score, roc_curve
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, FunctionTransformer
+from sklearn.preprocessing import OneHotEncoder, FunctionTransformer, MinMaxScaler
 
 from ..support.constants.GLOBAL_PARAMS import WINDOW
 from ..support.SupportClasses.LassoSelector import LassoSelector
 from ..support.SupportClasses.MetaModel import MetaModel
 from ..support.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
-
 
 
 class MetaPipeline(BaseEstimator):
@@ -23,8 +23,11 @@ class MetaPipeline(BaseEstimator):
         numerical_ix = X.select_dtypes(include=['int64', 'float64']).columns
         categorical_ix = X.select_dtypes(include=['object', 'bool']).columns
 
+        numerical_process = Pipeline([('NonStationarityCorrector', NonStationarityCorrector()),
+                                      ('MinMaxScaler', MinMaxScaler(feature_range=[-1, 1]))])
+
         transformer = [('Categorical', OneHotEncoder(), categorical_ix),
-                       ("Numerical", NonStationarityCorrector(), numerical_ix)]
+                       ("Numerical", numerical_process, numerical_ix)]
 
         col_transformer = ColumnTransformer(transformers=transformer)
 
@@ -48,7 +51,7 @@ class MetaPipeline(BaseEstimator):
         return self.pipe.predict(X)
 
     def transform(self, X: pd.DataFrame, y=None):
-        return X
+        return self.pipe.transform(X)
 
     def fit_transform(self, X: pd.DataFrame, y: pd.Series):
         return self.pipe.fit(X, y).transform(X)
@@ -59,6 +62,28 @@ class MetaPipeline(BaseEstimator):
     def classification_report(self, X: pd.DataFrame, y: pd.Series):
         y_pred = self.pipe.predict(X)
         print(classification_report(y[WINDOW:], y_pred))
+
+    def roc_curve(self,X: pd.DataFrame, y:pd.Series):
+        y = y[WINDOW:]
+        ns_probs = [0 for _ in range(len(y))]
+
+        # predict probabilities
+        lr_probs = self.pipe.predict_proba(X)
+        # keep probabilities for the positive outcome only
+        lr_probs = lr_probs[:, 1]
+        # calculate roc curves
+        ns_fpr, ns_tpr, _ = roc_curve(y, ns_probs)
+        lr_fpr, lr_tpr, _ = roc_curve(y, lr_probs)
+        # plot the roc curve for the model
+        plt.plot(ns_fpr, ns_tpr, linestyle='--', label='No Skill')
+        plt.plot(lr_fpr, lr_tpr, marker='.', label='Logistic')
+        # axis labels
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        # show the legend
+        plt.legend()
+        # show the plot
+        plt.show()
 
 
 if __name__ == '__main__':
