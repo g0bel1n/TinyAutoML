@@ -17,15 +17,19 @@ class MetaPipeline(BaseEstimator):
 
     def __init__(self, model='orfa', grid_search=True):
         assert model in ['metamodel', 'orfa'], 'model not available'
-        if model == 'metamodel':
-            self.bottle_neck_estimator = ("Meta Model", MetaModel(grid_search=grid_search))
-            self.bottleneck = 'Meta Model'
-        else :
-            self.bottle_neck_estimator = ("ORFA", orfa(grid_search=grid_search))
-            self.bottleneck = 'ORFA'
+
+        self.model = model
+        self.grid_search =grid_search
         self.pipe = None
 
     def fit(self, X: pd.DataFrame, y: pd.Series):
+
+        if self.model == 'metamodel':
+            self.bottle_neck_estimator = ("Meta Model", MetaModel(grid_search=self.grid_search))
+            self.bottleneck = 'Meta Model'
+        else :
+            self.bottle_neck_estimator = ("ORFA", orfa(grid_search=self.grid_search))
+            self.bottleneck = 'ORFA'
 
         cols = X.columns
         numerical_ix = X.select_dtypes(include=['int64', 'float64']).columns
