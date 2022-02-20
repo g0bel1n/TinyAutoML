@@ -35,7 +35,7 @@ class MetaModel(BaseEstimator):
                                                             algorithm= "SAMME.R",
                                                             learning_rate=0.5)),
                            ('xgb', xgb.XGBClassifier(learning_rate=0.02, n_estimators=600, objective='binary:logistic',
-                                                    silent=True))]
+                                                    silent=True,use_label_encoder=False))]
         self.scores = pd.DataFrame()
         self.n_splits = n_splits
         self.grid_search = grid_search
@@ -59,7 +59,7 @@ class MetaModel(BaseEstimator):
             for estimator in self.estimators:
                 print("---->", estimator[0])
                 if estimator[0] in estimators_params:
-                    clf = RandomizedSearchCV(estimator[1], param_grid=estimators_params[estimator[0]], scoring='accuracy',
+                    clf = RandomizedSearchCV(estimator=estimator[1], param_distributions=estimators_params[estimator[0]], scoring='accuracy',
                                        n_jobs=-1, cv=cv,refit=True)
                     clf.fit(X, y_train)
                     b_ix = np.argmax(clf.cv_results_['mean_test_score'])
