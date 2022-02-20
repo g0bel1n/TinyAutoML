@@ -7,6 +7,13 @@ from sklearn.compose import ColumnTransformer
 from sklearn.metrics import classification_report, roc_curve
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, FunctionTransformer, MinMaxScaler
+import os
+from pathlib import Path
+
+if not "root" in locals():
+    current_path = Path(os.getcwd())
+    root = current_path.parent.absolute()
+os.chdir(root)
 
 from support.SupportClasses.LassoSelector import LassoSelector
 from support.SupportClasses.MetaModel import MetaModel
@@ -17,13 +24,7 @@ from support.constants.GLOBAL_PARAMS import WINDOW
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-import os
-from pathlib import Path
 
-if not "root" in locals():
-    current_path = Path(os.getcwd())
-    root = current_path.parent.absolute()
-os.chdir(root)
 
 class MetaPipeline(BaseEstimator):
 
