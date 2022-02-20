@@ -50,7 +50,7 @@ class OneRulerForAll(BaseEstimator):
                     clf = RandomizedSearchCV(estimator=estimator[1],
                                              param_distributions=estimators_params[estimator[0]], scoring='accuracy',
                                              n_jobs=-1, cv=cv, refit=True)
-                    clf.fit(X, y_train)
+                    estimator[1]=clf.fit(X, y_train)
                 else:
                     estimator[1].fit(X, y_train)
 
