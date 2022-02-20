@@ -19,7 +19,6 @@ setup(
     download_url = 'https://github.com/g0bel1n/TinyAutoML/archive/refs/tags/v0.1.1.tar.gz',
     classifiers=[
         'Development Status :: 4 - Beta',
-        'Intended Audience :: Students',
         'License :: OSI Approved :: MIT License',
 
     ],
