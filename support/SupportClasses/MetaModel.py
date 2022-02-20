@@ -30,7 +30,7 @@ class MetaModel(BaseEstimator):
                            ("Logistic Regression", LogisticRegression(fit_intercept=True)),
                            ('Gaussian Naive Bayes', GaussianNB()),
                            ('LDA', LinearDiscriminantAnalysis()),
-                           ('AdaBoost', AdaBoostClassifier(DecisionTreeClassifier(max_depth=3),
+                           ('AdaBoost', AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
                                                             n_estimators= 200,
                                                             algorithm= "SAMME.R",
                                                             learning_rate=0.5)),
