@@ -7,6 +7,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.metrics import classification_report, roc_curve
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, FunctionTransformer, MinMaxScaler
+
 import os
 from pathlib import Path
 
@@ -25,14 +26,13 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-
 class MetaPipeline(BaseEstimator):
 
     def __init__(self, model='orfa', grid_search=True, ruler=None):
         assert model in ['metamodel', 'orfa'], 'model not available'
         self.ruler = ruler
         self.model = model
-        self.grid_search =grid_search
+        self.grid_search = grid_search
         self.pipe = None
 
     def fit(self, X: pd.DataFrame, y: pd.Series):
@@ -40,7 +40,7 @@ class MetaPipeline(BaseEstimator):
         if self.model == 'metamodel':
             self.bottle_neck_estimator = ("Meta Model", MetaModel(grid_search=self.grid_search))
             self.bottleneck = 'Meta Model'
-        else :
+        else:
             self.bottle_neck_estimator = ("ORFA", orfa(grid_search=self.grid_search, ruler=self.ruler))
             self.bottleneck = 'ORFA'
 
@@ -82,14 +82,16 @@ class MetaPipeline(BaseEstimator):
         return self.pipe.fit(X, y).transform(X)
 
     def get_scores(self):
-        if self.bottleneck=='ORFA' : return 'scores are not available for ORFA model'
-        else : return self.pipe.named_steps[self.bottleneck].scores
+        if self.bottleneck == 'ORFA':
+            return 'scores are not available for ORFA model'
+        else:
+            return self.pipe.named_steps[self.bottleneck].scores
 
     def classification_report(self, X: pd.DataFrame, y: pd.Series):
         y_pred = self.pipe.predict(X)
         print(classification_report(y[WINDOW:], y_pred))
 
-    def roc_curve(self,X: pd.DataFrame, y:pd.Series):
+    def roc_curve(self, X: pd.DataFrame, y: pd.Series):
         y = y[WINDOW:]
         ns_probs = [0 for _ in range(len(y))]
 
