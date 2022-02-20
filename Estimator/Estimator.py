@@ -6,10 +6,10 @@ from sklearn.metrics import classification_report, roc_auc_score, roc_curve
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, FunctionTransformer, MinMaxScaler
 
-from support.constants.GLOBAL_PARAMS import WINDOW
-from support.SupportClasses.LassoSelector import LassoSelector
-from support.SupportClasses.MetaModel import MetaModel
-from support.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
+from ..support.constants.GLOBAL_PARAMS import WINDOW
+from ..support.SupportClasses.LassoSelector import LassoSelector
+from ..support.SupportClasses.MetaModel import MetaModel
+from ..support.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
 
 
 class MetaPipeline(BaseEstimator):
