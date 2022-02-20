@@ -18,4 +18,12 @@ random_forest_grid = {'n_estimators': n_estimators,
 
 LDA_grid = {'solver': ['svd', 'lsqr']}
 
-estimators_params = {'LDA': LDA_grid, 'rcf': random_forest_grid}
+xgb_params = {
+        'min_child_weight': [1, 5, 10],
+        'gamma': [0.5, 1, 1.5, 2, 5],
+        'subsample': [0.6, 0.8, 1.0],
+        'colsample_bytree': [0.6, 0.8, 1.0],
+        'max_depth': [3, 4, 5]
+        }
+
+estimators_params = {'LDA': LDA_grid, 'rcf': random_forest_grid, "xgb": xgb_params}

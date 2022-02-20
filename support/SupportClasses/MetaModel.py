@@ -1,12 +1,15 @@
 import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator
+import xgboost as xgb
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_val_score, TimeSeriesSplit, KFold
+from sklearn.model_selection import cross_val_score, TimeSeriesSplit, KFold, StratifiedKFold, RandomizedSearchCV
 from sklearn.naive_bayes import GaussianNB
 from typing import Any
+
+from sklearn.tree import DecisionTreeClassifier
 
 from ..constants.GLOBAL_PARAMS import WINDOW
 from ..constants.gsp import estimators_params
@@ -26,7 +29,13 @@ class MetaModel(BaseEstimator):
         self.estimators = [("rcf", RandomForestClassifier()),
                            ("Logistic Regression", LogisticRegression(fit_intercept=True)),
                            ('Gaussian Naive Bayes', GaussianNB()),
-                           ('LDA', LinearDiscriminantAnalysis())]
+                           ('LDA', LinearDiscriminantAnalysis()),
+                           ('AdaBoost', AdaBoostClassifier(DecisionTreeClassifier(max_depth=3),
+                                                            n_estimators= 200,
+                                                            algorithm= "SAMME.R",
+                                                            learning_rate=0.5)),
+                           ('xgb', xgb.XGBClassifier(learning_rate=0.02, n_estimators=600, objective='binary:logistic',
+                                                    silent=True))]
         self.scores = pd.DataFrame()
         self.n_splits = n_splits
         self.grid_search = grid_search
@@ -37,10 +46,10 @@ class MetaModel(BaseEstimator):
 
         y_train = y[WINDOW:]
 
-        assert len(y[y == 1]) / len(y) <= 0.8, "The target is unbalanced"
+        assert len(y[y == 1]) / len(y) <= 0.7, "The target is unbalanced"
 
         if (X.index.dtype != datetime):
-            cv = KFold(n_splits=self.n_splits)
+            cv = StratifiedKFold(n_splits=self.n_splits)
         else:
             cv = TimeSeriesSplit(n_splits=self.n_splits)
 
@@ -50,7 +59,7 @@ class MetaModel(BaseEstimator):
             for estimator in self.estimators:
                 print("---->", estimator[0])
                 if estimator[0] in estimators_params:
-                    clf = GridSearchCV(estimator[1], param_grid=estimators_params[estimator[0]], scoring='accuracy',
+                    clf = RandomizedSearchCV(estimator[1], param_grid=estimators_params[estimator[0]], scoring='accuracy',
                                        n_jobs=-1, cv=cv,refit=True)
                     clf.fit(X, y_train)
                     b_ix = np.argmax(clf.cv_results_['mean_test_score'])
