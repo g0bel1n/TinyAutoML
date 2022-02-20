@@ -8,11 +8,11 @@ from sklearn.metrics import classification_report, roc_curve
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, FunctionTransformer, MinMaxScaler
 
-from ..support.SupportClasses.LassoSelector import LassoSelector
-from ..support.SupportClasses.MetaModel import MetaModel
-from ..support.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
-from ..support.SupportClasses.OneRulerForAll import OneRulerForAll as orfa
-from ..support.constants.GLOBAL_PARAMS import WINDOW
+from support.SupportClasses.LassoSelector import LassoSelector
+from support.SupportClasses.MetaModel import MetaModel
+from support.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
+from support.SupportClasses.OneRulerForAll import OneRulerForAll as orfa
+from support.constants.GLOBAL_PARAMS import WINDOW
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
