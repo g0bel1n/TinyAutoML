@@ -69,7 +69,7 @@ class OneRulerForAll(BaseEstimator):
         self.final_estimator=RandomForestClassifier()
         self.final_estimator.fit(interm_ds, y_train)
 
-        print('\tDone.')
+        print('\t gamvDone.')
 
         return self
 
