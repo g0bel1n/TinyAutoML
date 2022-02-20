@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='TinyAutoML',
     version='0.1.2',
-    packages=['tests', 'support', 'support.constants', 'support.SupportClasses', 'examples', 'TinyAutoML'],
+    packages=['test_', 'support', 'support.constants', 'support.SupportClasses', 'examples', 'TinyAutoML'],
     url='https://github.com/g0bel1n/TinyAutoML',
     license='MIT',
     author='g0bel1n',
