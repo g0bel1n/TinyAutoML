@@ -1,8 +1,6 @@
 from datetime import datetime
 
 import pandas as pd
-import xgboost as xgb
-from matplotlib import pyplot as plt
 from sklearn.base import BaseEstimator
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
@@ -59,9 +57,6 @@ class OneRulerForAll(BaseEstimator):
 
             interm_ds = pd.DataFrame({estimator[0]: estimator[1].predict(X) for estimator in self.estimators})
 
-
-
-
         else:
             interm_ds = pd.DataFrame(
                 {estimator[0]: estimator[1].fit(X, y_train).predict(X) for estimator in self.estimators})
@@ -71,7 +66,7 @@ class OneRulerForAll(BaseEstimator):
         #                                           scoring='accuracy',
         #                                           n_jobs=-1, cv=cv, refit=True, verbose=0)
 
-        self.final_estimator=LogisticRegression()
+        self.final_estimator=RandomForestClassifier()
         self.final_estimator.fit(interm_ds, y_train)
 
         print('\tDone.')
