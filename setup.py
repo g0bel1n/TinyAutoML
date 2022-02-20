@@ -16,7 +16,7 @@ setup(
                         'matplotlib',
                         'xgboost'],
     description='Combinaison of ML models for binary classification. Academic Project.',
-    download_url = 'https://github.com/g0bel1n/TinyAutoML/archive/refs/tags/v0.1.1.tar.gz',
+    download_url = 'https://github.com/g0bel1n/TinyAutoML/archive/refs/tags/v0.1.tar.gz',
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
