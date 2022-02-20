@@ -1,21 +1,19 @@
-import pandas as pd
+from datetime import datetime
+from typing import Any
+
 import numpy as np
-from sklearn.base import BaseEstimator
+import pandas as pd
 import xgboost as xgb
+from sklearn.base import BaseEstimator
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_val_score, TimeSeriesSplit, KFold, StratifiedKFold, RandomizedSearchCV
+from sklearn.model_selection import cross_val_score, TimeSeriesSplit, StratifiedKFold, RandomizedSearchCV
 from sklearn.naive_bayes import GaussianNB
-from typing import Any
-
 from sklearn.tree import DecisionTreeClassifier
 
 from ..constants.GLOBAL_PARAMS import WINDOW
 from ..constants.gsp import estimators_params
-from datetime import datetime
-from sklearn.model_selection import GridSearchCV
-
 
 
 class MetaModel(BaseEstimator):
@@ -26,7 +24,7 @@ class MetaModel(BaseEstimator):
     def __init__(self, grid_search: bool, n_splits=10):
         self.best_estimator_ = None
         self.best_estimator_index = None
-        self.estimators = [("rcf", RandomForestClassifier()),
+        self.estimators = [("rfc", RandomForestClassifier()),
                            ("Logistic Regression", LogisticRegression(fit_intercept=True)),
                            ('Gaussian Naive Bayes', GaussianNB()),
                            ('LDA', LinearDiscriminantAnalysis()),

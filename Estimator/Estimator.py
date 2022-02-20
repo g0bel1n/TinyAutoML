@@ -2,22 +2,22 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.base import BaseEstimator
 from sklearn.compose import ColumnTransformer
-from sklearn.metrics import classification_report, roc_auc_score, roc_curve
+from sklearn.metrics import classification_report, roc_curve
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, FunctionTransformer, MinMaxScaler
 
-from ..support.constants.GLOBAL_PARAMS import WINDOW
 from ..support.SupportClasses.LassoSelector import LassoSelector
 from ..support.SupportClasses.MetaModel import MetaModel
-from ..support.SupportClasses.OneRulerForAll import OneRulerForAll as orfa
 from ..support.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
+from ..support.SupportClasses.OneRulerForAll import OneRulerForAll as orfa
+from ..support.constants.GLOBAL_PARAMS import WINDOW
 
 
 class MetaPipeline(BaseEstimator):
 
-    def __init__(self, model='orfa', grid_search=True):
+    def __init__(self, model='orfa', grid_search=True, ruler=None):
         assert model in ['metamodel', 'orfa'], 'model not available'
-
+        self.ruler = ruler
         self.model = model
         self.grid_search =grid_search
         self.pipe = None
@@ -28,7 +28,7 @@ class MetaPipeline(BaseEstimator):
             self.bottle_neck_estimator = ("Meta Model", MetaModel(grid_search=self.grid_search))
             self.bottleneck = 'Meta Model'
         else :
-            self.bottle_neck_estimator = ("ORFA", orfa(grid_search=self.grid_search))
+            self.bottle_neck_estimator = ("ORFA", orfa(grid_search=self.grid_search, ruler=self.ruler))
             self.bottleneck = 'ORFA'
 
         cols = X.columns
@@ -69,7 +69,8 @@ class MetaPipeline(BaseEstimator):
         return self.pipe.fit(X, y).transform(X)
 
     def get_scores(self):
-        return self.pipe.named_steps['Meta Model'].scores
+        if self.bottleneck=='ORFA' : return 'scores are not available for ORFA model'
+        else : return self.pipe.named_steps[self.bottleneck].scores
 
     def classification_report(self, X: pd.DataFrame, y: pd.Series):
         y_pred = self.pipe.predict(X)

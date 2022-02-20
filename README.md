@@ -26,3 +26,28 @@ mp.fit(X_train, y_train, grid_search=False)
 print(mp.classification_report(X_test, y_test))
 
 ```
+
+
+## Methods available :
+
+``` python
+
+metapipe = tam.Estimator.Metapipeline(model, grid_search)
+
+model = 'orfa' or 'metamodel'
+grid_search: bool
+
+    .predict(self, X: pd.DataFrame)
+    
+    .transform(self, X: pd.DataFrame, y=None)
+    
+    .fit_transform(self, X: pd.DataFrame, y: pd.Series)
+    
+    .get_scores(self)
+    
+    .classification_report(self, X: pd.DataFrame, y: pd.Series)
+    
+    .roc_curve(self,X: pd.DataFrame, y:pd.Series)
+
+```
+

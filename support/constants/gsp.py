@@ -14,10 +14,6 @@ random_forest_grid = {'n_estimators': n_estimators,
                       'max_depth': max_depth,
                       'bootstrap': bootstrap}
 
-# LINEAR DISCRIMINANT ANALYSIS
-
-LDA_grid = {'solver': ['svd', 'lsqr']}
-
 xgb_params = {'objective':['binary:logistic'],
         'min_child_weight': [1, 5, 10],
         'gamma': [0.5, 1, 1.5, 2, 5],
@@ -26,4 +22,4 @@ xgb_params = {'objective':['binary:logistic'],
         'max_depth': [3, 4, 5]
         }
 
-estimators_params = {'LDA': LDA_grid, 'rcf': random_forest_grid, "xgb": xgb_params}
+estimators_params = {'rfc': random_forest_grid, "xgb": xgb_params}
