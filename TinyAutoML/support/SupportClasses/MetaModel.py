@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Any
 
@@ -40,7 +41,7 @@ class MetaModel(BaseEstimator):
 
     def fit(self, X: pd.DataFrame, y: pd.Series, ) -> Any:
 
-        print("Training models")
+        logging.info("Training models")
 
         y_train = y[WINDOW:]
 
@@ -53,9 +54,8 @@ class MetaModel(BaseEstimator):
 
         dict_scores = {'mean': []}
         if self.grid_search:
-            print('Training : ')
             for estimator in self.estimators:
-                print("---->", estimator[0])
+                logging.info("\t----> {0}".format(estimator[0]))
                 if estimator[0] in estimators_params:
                     clf = RandomizedSearchCV(estimator=estimator[1], param_distributions=estimators_params[estimator[0]], scoring='accuracy',
                                        n_jobs=-1, cv=cv,refit=True)
@@ -78,9 +78,7 @@ class MetaModel(BaseEstimator):
 
         self.best_estimator_index = self.scores['mean'].argmax()
 
-        print('\tDone.')
-        print('Results : ')
-        print("The best estimator is {0} with a cross-validation accuracy (in Sample) of {1}".format(
+        logging.info("The best estimator is {0} with a cross-validation accuracy (in Sample) of {1}".format(
             self.estimators[self.best_estimator_index][0], self.scores['mean'].iloc[self.best_estimator_index]))
 
         self.best_estimator_ = self.estimators[self.best_estimator_index][1].fit(X, y_train)

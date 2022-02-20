@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import StandardScaler
@@ -36,7 +38,7 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
 
     def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
         X = X.copy()
-        print("Correcting non-stationarity on the dataset...")
+        logging.info("Correcting non-stationarity on the dataset...")
         for col in self.cols_to_correct:
             X[col] = (X[col] - X[col].rolling(window=WINDOW - 2).mean()) / X[col].rolling(window=WINDOW - 2).std(
                 skipna=True).replace(to_replace=0., method='ffill')
@@ -44,7 +46,6 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
         sc = StandardScaler()
         if self.cols_to_pass: X[self.cols_to_pass] = sc.fit_transform(X[self.cols_to_pass])
 
-        print("Done.")
         assert type(X) == pd.DataFrame, 'type error'
 
         return X[WINDOW:]

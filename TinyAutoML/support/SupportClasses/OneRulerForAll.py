@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pandas as pd
+import logging
 from sklearn.base import BaseEstimator
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
@@ -33,7 +34,7 @@ class OneRulerForAll(BaseEstimator):
 
     def fit(self, X: pd.DataFrame, y: pd.Series):
 
-        print("Training models")
+        logging.info("Training models...")
 
         y_train = y[WINDOW:]
 
@@ -45,9 +46,8 @@ class OneRulerForAll(BaseEstimator):
             cv = TimeSeriesSplit(n_splits=self.n_splits)
 
         if self.grid_search:
-            print('Training : ')
             for estimator in self.estimators:
-                print("---->", estimator[0])
+                logging.info("\t----> {0}".format(estimator[0]))
                 if estimator[0] in estimators_params:
                     clf = RandomizedSearchCV(estimator=estimator[1],
                                              param_distributions=estimators_params[estimator[0]], scoring='accuracy',
@@ -71,8 +71,6 @@ class OneRulerForAll(BaseEstimator):
         #                                           n_jobs=-1, cv=cv, refit=True, verbose=0)
 
         self.ruler.fit(interm_ds, y_train)
-
-        print('\tDone.')
 
         return self
 

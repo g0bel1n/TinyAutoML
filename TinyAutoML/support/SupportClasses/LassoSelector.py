@@ -1,3 +1,4 @@
+import logging
 import threading
 import numpy as np
 import pandas as pd
@@ -45,7 +46,7 @@ class LassoSelector(BaseEstimator, TransformerMixin):
 
         NB_THREADS = 10
 
-        print("Calculating columns to keep according to LASSO features selection")
+        logging.info("Selecting features according to LASSO logit regression")
         for i in tqdm(range(0, len(l_s), NB_THREADS)):
             threads = [None] * NB_THREADS
             for j in range(NB_THREADS):
@@ -58,7 +59,6 @@ class LassoSelector(BaseEstimator, TransformerMixin):
 
         coeff_df = pd.DataFrame(data=tab_coeff[::-1], index=l_s[::-1], columns=X.columns)
         self.selected_cols = coeff_df[coeff_df[coeff_df != 0].count(axis=1) == 15][coeff_df != 0].dropna(axis=1).columns
-        print("\tDone.")
         return self
 
     def transform(self, X: pd.DataFrame, y=None):
