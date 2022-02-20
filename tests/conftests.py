@@ -1,6 +1,6 @@
 import pandas as pd
 
-from ..Estimator.Estimator import MetaPipeline
+from ..TinyAutoML.Estimator import MetaPipeline
 
 from sklearn.datasets import load_breast_cancer
 
