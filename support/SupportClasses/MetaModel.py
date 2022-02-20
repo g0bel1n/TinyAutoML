@@ -40,7 +40,7 @@ class MetaModel(BaseEstimator):
         self.n_splits = n_splits
         self.grid_search = grid_search
 
-    def fit(self, X: pd.DataFrame, y: pd.Series) -> Any:
+    def fit(self, X: pd.DataFrame, y: pd.Series, ) -> Any:
 
         print("Training models")
 

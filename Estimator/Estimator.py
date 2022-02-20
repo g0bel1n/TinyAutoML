@@ -9,15 +9,21 @@ from sklearn.preprocessing import OneHotEncoder, FunctionTransformer, MinMaxScal
 from ..support.constants.GLOBAL_PARAMS import WINDOW
 from ..support.SupportClasses.LassoSelector import LassoSelector
 from ..support.SupportClasses.MetaModel import MetaModel
+from ..support.SupportClasses.OneRulerForAll import OneRulerForAll as orfa
 from ..support.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
 
 
 class MetaPipeline(BaseEstimator):
 
-    def __init__(self):
+    def __init__(self,Model:str, grid_search=True):
+        assert Model in ['metamodel', 'orfa'], 'model not available'
+        if Model == 'metamodel':
+            self.bottle_neck_estimator = ("Meta Model", MetaModel(grid_search=grid_search))
+        else : self.bottle_neck_estimator = ("ORFA", orfa(grid_search=grid_search))
+
         self.pipe = None
 
-    def fit(self, X: pd.DataFrame, y: pd.Series, grid_search=True):
+    def fit(self, X: pd.DataFrame, y: pd.Series):
 
         cols = X.columns
         numerical_ix = X.select_dtypes(include=['int64', 'float64']).columns
@@ -36,12 +42,12 @@ class MetaPipeline(BaseEstimator):
                 [('Preprocessing', col_transformer),
                  ('fc_tf', FunctionTransformer(lambda x: pd.DataFrame(x, columns=cols))),
                  ("Lasso Selector", LassoSelector()),
-                 ("Meta Model", MetaModel(grid_search=grid_search))])
+                 self.bottle_neck_estimator])
         else:
             self.pipe = Pipeline(
                 [('Preprocessing', col_transformer),
                  ('fc_tf', FunctionTransformer(lambda x: pd.DataFrame(x, columns=cols))),
-                 ("Meta Model", MetaModel(grid_search=grid_search))])
+                 self.bottle_neck_estimator])
 
         self.pipe.fit(X, y)
 
