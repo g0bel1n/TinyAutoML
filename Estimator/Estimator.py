@@ -15,7 +15,7 @@ from ..support.SupportClasses.NonStationarityCorrector import NonStationarityCor
 
 class MetaPipeline(BaseEstimator):
 
-    def __init__(self,Model:str, grid_search=True):
+    def __init__(self, Model='orfa', grid_search=True):
         assert Model in ['metamodel', 'orfa'], 'model not available'
         if Model == 'metamodel':
             self.bottle_neck_estimator = ("Meta Model", MetaModel(grid_search=grid_search))

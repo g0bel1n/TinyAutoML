@@ -54,9 +54,8 @@ class OneRulerForAll(BaseEstimator):
                     clf.fit(X, y_train)
 
                     estimator[1].set_params(**clf.best_params_)
-                    estimator[1].fit(X, y_train)
-                else:
-                    estimator[1].fit(X, y_train)
+
+                estimator[1].fit(X, y_train)
 
             interm_ds = pd.DataFrame({estimator[0]: estimator[1].predict(X) for estimator in self.estimators})
 
