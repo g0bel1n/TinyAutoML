@@ -15,12 +15,14 @@ from ..support.SupportClasses.NonStationarityCorrector import NonStationarityCor
 
 class MetaPipeline(BaseEstimator):
 
-    def __init__(self, Model='orfa', grid_search=True):
-        assert Model in ['metamodel', 'orfa'], 'model not available'
-        if Model == 'metamodel':
+    def __init__(self, model='orfa', grid_search=True):
+        assert model in ['metamodel', 'orfa'], 'model not available'
+        if model == 'metamodel':
             self.bottle_neck_estimator = ("Meta Model", MetaModel(grid_search=grid_search))
-        else : self.bottle_neck_estimator = ("ORFA", orfa(grid_search=grid_search))
-
+            self.bottleneck = 'Meta Model'
+        else :
+            self.bottle_neck_estimator = ("ORFA", orfa(grid_search=grid_search))
+            self.bottleneck = 'ORFA'
         self.pipe = None
 
     def fit(self, X: pd.DataFrame, y: pd.Series):
