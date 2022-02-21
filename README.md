@@ -51,3 +51,6 @@ grid_search: bool
 
 ```
 
+orfa stands for One Ruler For All and is equivalent to the ensemble learning technic called Stacking. The user can pass his own top model. Default is RandomForestClassifier()
+metamodel selects the best model amongst a pool of classifiers.
+
