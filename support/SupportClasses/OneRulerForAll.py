@@ -22,6 +22,7 @@ class OneRulerForAll(BaseEstimator):
 
         if ruler is None:
             self.ruler = RandomForestClassifier()
+            self.ruler_name = 'rfc'
         else:
             self.ruler = ruler
         self.estimators = [("rfc", RandomForestClassifier()),
@@ -52,7 +53,6 @@ class OneRulerForAll(BaseEstimator):
                     clf = RandomizedSearchCV(estimator=estimator[1],
                                              param_distributions=estimators_params[estimator[0]], scoring='accuracy',
                                              n_jobs=-1, cv=cv)
-
                     clf.fit(X, y_train)
 
                     estimator[1].set_params(**clf.best_params_)
@@ -70,7 +70,11 @@ class OneRulerForAll(BaseEstimator):
         #                                           scoring='accuracy',
         #                                           n_jobs=-1, cv=cv, refit=True, verbose=0)
 
-        self.ruler.fit(interm_ds, y_train)
+        if self.ruler_name in estimators_params:
+            clf = RandomizedSearchCV(estimator=RandomForestClassifier(),
+                                     param_distributions=estimators_params[self.ruler_name], scoring='accuracy',
+                                     n_jobs=-1, cv=cv, refit=True)
+        self.ruler = clf.fit(interm_ds, y_train)
 
         return self
 

@@ -1,5 +1,4 @@
 import logging
-
 import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.base import BaseEstimator
@@ -16,7 +15,6 @@ from support.constants.GLOBAL_PARAMS import WINDOW
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
-
 
 class MetaPipeline(BaseEstimator):
 
