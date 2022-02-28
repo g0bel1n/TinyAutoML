@@ -74,7 +74,13 @@ class OneRulerForAll(BaseEstimator):
             clf = RandomizedSearchCV(estimator=RandomForestClassifier(),
                                      param_distributions=estimators_params[self.ruler_name], scoring='accuracy',
                                      n_jobs=-1, cv=cv, refit=True)
-        self.ruler = clf.fit(interm_ds, y_train)
+            clf.fit(interm_ds, y_train)
+
+        try : self.ruler.set_params(**clf.best_params_)
+        except : pass
+
+        self.ruler.fit(interm_ds, y_train)
+
 
         return self
 
