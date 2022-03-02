@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='TinyAutoML',
-    version='0.1.6',
+    version='0.1.7',
     packages=['test_', 'support', 'support.constants', 'support.SupportClasses', 'examples', 'TinyAutoML'],
     url='https://github.com/g0bel1n/TinyAutoML',
     license='MIT',
@@ -16,7 +16,7 @@ setup(
                         'matplotlib',
                         'xgboost'],
     description='Combinaison of ML models for binary classification. Academic Project.',
-    download_url = 'https://github.com/g0bel1n/TinyAutoML/archive/refs/tags/v0.1.6.tar.gz',
+    download_url = 'https://github.com/g0bel1n/TinyAutoML/archive/refs/tags/v0.1.7.tar.gz',
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',

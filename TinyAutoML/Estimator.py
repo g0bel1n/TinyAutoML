@@ -19,12 +19,13 @@ logging.basicConfig(level=logging.INFO)
 
 class MetaPipeline(BaseEstimator):
 
-    def __init__(self, model='orfa', grid_search=True, ruler=None, verbose=1):
+    def __init__(self, model='orfa', grid_search=True, ruler=None, verbose=True):
         assert model in ['metamodel', 'orfa'], 'model not available'
         self.ruler = ruler
         self.model = model
         self.grid_search = grid_search
         self.pipe = None
+        self.verbose = verbose
 
         if not verbose: logging.basicConfig(level=logging.CRITICAL)
 
