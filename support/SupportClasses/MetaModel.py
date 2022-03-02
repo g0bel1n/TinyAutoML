@@ -17,7 +17,7 @@ from ..constants.gsp import estimators_params
 
 class MetaModel(BaseEstimator):
 
-    def __init__(self, grid_search: bool, n_splits=10):
+    def __init__(self, grid_search: bool, metrics: str, n_splits=10):
         self.best_estimator_ = None
         self.best_estimator_index = None
 
@@ -35,6 +35,8 @@ class MetaModel(BaseEstimator):
         self.scores = pd.DataFrame()
         self.n_splits = n_splits
         self.grid_search = grid_search
+        self.metrics = metrics
+
 
     def fit(self, X: pd.DataFrame, y: pd.Series, ) -> BaseEstimator:
 
@@ -65,13 +67,13 @@ class MetaModel(BaseEstimator):
 
                 if estimator[0] in estimators_params:
                     clf = RandomizedSearchCV(estimator=estimator[1],
-                                             param_distributions=estimators_params[estimator[0]], scoring='accuracy',
+                                             param_distributions=estimators_params[estimator[0]], scoring=self.metrics,
                                              n_jobs=-1, cv=cv, refit=True)
                     clf.fit(X, y_train)
                     results[estimator[0]] = extract_score_params(clf.cv_results_, n_splits=self.n_splits,
                                                                  k_last_splits=5)
                 else:
-                    cvs = cross_val_score(estimator[1], X, y_train, cv=cv, scoring='accuracy', n_jobs=-1)
+                    cvs = cross_val_score(estimator[1], X, y_train, cv=cv, scoring=self.metrics, n_jobs=-1)
                     results[estimator[0]] = (cvs.mean(), None)
                 logging.basicConfig(level=logging.INFO)
 
@@ -81,7 +83,7 @@ class MetaModel(BaseEstimator):
 
         else:
             self.scores = pd.DataFrame(
-                data=[cross_val_score(estimator[1], X, y_train, cv=cv, scoring='accuracy', n_jobs=-1) for estimator in
+                data=[cross_val_score(estimator[1], X, y_train, cv=cv, scoring=self.metrics, n_jobs=-1) for estimator in
                       self.estimators], index=[estimator[0] for estimator in self.estimators],
                 columns=['Split {0}'.format(i) for i in range(self.n_splits)])
             self.scores['mean'] = self.scores.mean(axis=1)
