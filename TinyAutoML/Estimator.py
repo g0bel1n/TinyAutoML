@@ -16,6 +16,7 @@ from support.constants.GLOBAL_PARAMS import WINDOW
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+
 class MetaPipeline(BaseEstimator):
 
     def __init__(self, model='orfa', grid_search=True, ruler=None, verbose=1):
@@ -25,9 +26,9 @@ class MetaPipeline(BaseEstimator):
         self.grid_search = grid_search
         self.pipe = None
 
-        if not verbose : logging.basicConfig(level=logging.CRITICAL)
+        if not verbose: logging.basicConfig(level=logging.CRITICAL)
 
-    def fit(self, X: pd.DataFrame, y: pd.Series)->BaseEstimator:
+    def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
 
         if self.model == 'metamodel':
             self.bottle_neck_estimator = ("Meta Model", MetaModel(grid_search=self.grid_search))
