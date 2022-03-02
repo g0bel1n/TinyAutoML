@@ -18,18 +18,21 @@ logging.basicConfig(level=logging.INFO)
 
 class MetaPipeline(BaseEstimator):
 
-    def __init__(self, model='orfa', grid_search=True, ruler=None):
+    def __init__(self, model='orfa', grid_search=True, ruler=None, verbose=1):
         assert model in ['metamodel', 'orfa'], 'model not available'
         self.ruler = ruler
         self.model = model
         self.grid_search = grid_search
         self.pipe = None
 
-    def fit(self, X: pd.DataFrame, y: pd.Series):
+        if not verbose : logging.basicConfig(level=logging.CRITICAL)
+
+    def fit(self, X: pd.DataFrame, y: pd.Series)->BaseEstimator:
 
         if self.model == 'metamodel':
             self.bottle_neck_estimator = ("Meta Model", MetaModel(grid_search=self.grid_search))
             self.bottleneck = 'Meta Model'
+
         else:
             self.bottle_neck_estimator = ("ORFA", orfa(grid_search=self.grid_search, ruler=self.ruler))
             self.bottleneck = 'ORFA'

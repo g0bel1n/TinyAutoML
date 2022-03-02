@@ -23,12 +23,12 @@ class LassoSelector(BaseEstimator, TransformerMixin):
     def __init__(self):
         self.selected_cols = [str]
 
-    def fit(self, X: pd.DataFrame, y: pd.Series):
+    def fit(self, X: pd.DataFrame, y: pd.Series)->TransformerMixin:
 
         y=y[WINDOW:]
 
         if(X.shape[1])>50:
-
+            # pre- feature selection
             selector = SelectKBest(k=50).fit(X, y)
             cols = selector.get_support(indices=True)
             X = X.copy()

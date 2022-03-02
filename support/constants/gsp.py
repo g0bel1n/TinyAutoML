@@ -19,7 +19,9 @@ xgb_params = {'objective':['binary:logistic'],
         'gamma': [0.5, 1, 1.5, 2, 5],
         'subsample': [0.6, 0.8, 1.0],
         'colsample_bytree': [0.6, 0.8, 1.0],
-        'max_depth': [3, 4, 5]
+        'max_depth': [3, 4, 5],
+        'silent' : [True],
+        'verbosity' : [0]
         }
 
-estimators_params = {'rfc': random_forest_grid, "xgb": xgb_params}
+estimators_params = {'random forest classifier': random_forest_grid, "xgb": xgb_params}

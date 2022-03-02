@@ -14,18 +14,15 @@ from ..constants.gsp import estimators_params
 
 
 class OneRulerForAll(BaseEstimator):
-    """
-    Meta estimator that trains other estimator to find the best
-    """
 
     def __init__(self, grid_search: bool, n_splits=10, ruler=None):
 
         if ruler is None:
             self.ruler = RandomForestClassifier()
-            self.ruler_name = 'rfc'
+            self.ruler_name = 'random forest classifier'
         else:
             self.ruler = ruler
-        self.estimators = [("rfc", RandomForestClassifier()),
+        self.estimators = [("random forest classifier", RandomForestClassifier()),
                            ("Logistic Regression", LogisticRegression(fit_intercept=True)),
                            ('Gaussian Naive Bayes', GaussianNB()),
                            ('LDA', LinearDiscriminantAnalysis()),
@@ -33,7 +30,7 @@ class OneRulerForAll(BaseEstimator):
         self.n_splits = n_splits
         self.grid_search = grid_search
 
-    def fit(self, X: pd.DataFrame, y: pd.Series):
+    def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
 
         logging.info("Training models...")
 
@@ -65,22 +62,18 @@ class OneRulerForAll(BaseEstimator):
             interm_ds = pd.DataFrame(
                 {estimator[0]: estimator[1].fit(X, y_train).predict(X) for estimator in self.estimators})
 
-        # self.final_estimator = GridSearchCV(estimator=xgb.XGBClassifier(use_label_encoder=False),
-        #                                           param_grid=estimators_params['xgb'],
-        #                                           scoring='accuracy',
-        #                                           n_jobs=-1, cv=cv, refit=True, verbose=0)
-
         if self.ruler_name in estimators_params:
             clf = RandomizedSearchCV(estimator=RandomForestClassifier(),
                                      param_distributions=estimators_params[self.ruler_name], scoring='accuracy',
                                      n_jobs=-1, cv=cv, refit=True)
             clf.fit(interm_ds, y_train)
 
-        try : self.ruler.set_params(**clf.best_params_)
-        except : pass
+        try:
+            self.ruler.set_params(**clf.best_params_)
+        except:
+            pass
 
         self.ruler.fit(interm_ds, y_train)
-
 
         return self
 
