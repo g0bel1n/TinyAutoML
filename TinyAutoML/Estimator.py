@@ -7,7 +7,7 @@ from sklearn.metrics import classification_report, roc_curve
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, FunctionTransformer, MinMaxScaler
 
-from support.SupportClasses.LassoSelector import LassoSelector
+from support.SupportClasses.LassoSelectorTransformer import LassoSelectorTransformer
 from support.SupportClasses.MetaModel import MetaModel
 from support.SupportClasses.NonStationarityCorrector import NonStationarityCorrector
 from support.SupportClasses.OneRulerForAll import OneRulerForAll as orfa
@@ -56,7 +56,7 @@ class MetaPipeline(BaseEstimator):
             self.pipe = Pipeline(
                 [('Preprocessing', col_transformer),
                  ('fc_tf', FunctionTransformer(lambda x: pd.DataFrame(x, columns=cols))),
-                 ("Lasso Selector", LassoSelector()),
+                 ("Lasso Selector", LassoSelectorTransformer()),
                  self.bottle_neck_estimator])
         else:
             self.pipe = Pipeline(

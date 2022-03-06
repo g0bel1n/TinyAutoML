@@ -14,7 +14,6 @@ from ..MyTools import extract_score_params
 from ..constants.GLOBAL_PARAMS import WINDOW
 from ..constants.gsp import estimators_params
 
-
 class MetaModel(BaseEstimator):
 
     def __init__(self, grid_search: bool, metrics: str, n_splits=10):

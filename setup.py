@@ -1,5 +1,5 @@
 from setuptools import setup
-
+ 
 setup(
     name='TinyAutoML',
     version='0.1.7',
