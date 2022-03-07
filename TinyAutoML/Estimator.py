@@ -23,7 +23,7 @@ class MetaPipeline(BaseEstimator):
 
     def __init__(self, model='orfa', gridSearch=True, ruler=None, verbose=True, metrics='accuracy'):
         assert model in ['metamodel', 'orfa'], 'model not available'
-        self.ruler = ruler #By default, it see a RandomForestClassifier, see class OneRulerForAll
+        self.ruler = ruler #By default, it is a RandomForestClassifier, see class OneRulerForAll
         self.model = model
         self.gridSearch = gridSearch
         self.pipe = None
