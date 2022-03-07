@@ -33,18 +33,19 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
     def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
         X = X.copy()
         logging.info("Correcting non-stationarity on the dataset...")
-
+        print(X)
         if X.shape[0]>WINDOW:
             for col in self.colsToCorrect:
                 # Depending on the window size, std can be null.
-                # In that situation it can be replaced by the last non null value
-                # TODO get rid of nans
-                X[col] = (X[col] - X[col].rolling(window=WINDOW - 2).mean()) / X[col].rolling(window=WINDOW - 2).std(
-                    skipna=True).replace(to_replace=0., method='ffill')
+                # In that situation the actual value can be replaced by the last non null value
+                start = X.index[0]
+                # We also use loc[start+WINDOW:] in order to leave the WINDOW first rows intact. Otherwise, it would be nans
+                X[col].loc[start+WINDOW:] = (X[col] - X[col].rolling(window=WINDOW).mean()) / X[col].rolling(window=WINDOW).std(
+                    skipna=True).replace(to_replace=0., method='ffill').loc[start+WINDOW:]
 
             if self.colsToKeepIntact: X[self.colsToKeepIntact] = StandardScaler().fit_transform(X[self.colsToKeepIntact])
-
-            return X[WINDOW:]
+            print(X)
+            return X
 
         else:
             X[X.columns] = StandardScaler().fit_transform(X[X.columns])

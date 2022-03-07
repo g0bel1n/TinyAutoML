@@ -1,11 +1,9 @@
-import numpy as np
 import pandas as pd
 from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.feature_selection import SelectKBest
-from sklearn.linear_model import LogisticRegression
 
 from .FeatureSelection import FeatureSelection
-from ..constants.GLOBAL_PARAMS import WINDOW
+
 
 class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
     """
@@ -25,7 +23,7 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> TransformerMixin:
 
-        y = y[WINDOW:]  # ToDO correct that
+        # Preselection for datasets with many features (>50)
         X = self.__preselect(X, y) if (X.shape[1]) > 50 else X
 
         featureSelection = FeatureSelection(X, y)

@@ -8,7 +8,6 @@ from sklearn.metrics import classification_report, roc_curve
 from support.MyTools import buildMetaPipeline
 from support.SupportClasses.MetaModel import MetaModel
 from support.SupportClasses.OneRulerForAll import OneRulerForAll
-from support.constants.GLOBAL_PARAMS import WINDOW
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -33,16 +32,19 @@ class MetaPipeline(BaseEstimator):
 
         self.bottleNeckModel = self.__getModel(model)
 
+        # To shut the logs
         if not verbose: logging.basicConfig(level=logging.CRITICAL)
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
 
+        # some of the MetaPipeline steps requires information on the data, therefore we have to initialize it here
         self.pipe = buildMetaPipeline(X, self.bottleNeckModel)
 
         self.pipe.fit(X, y)
 
         return self
 
+    #Overloading BaseEstimator methods
     def predict(self, X: pd.DataFrame):
         return self.pipe.predict(X)
 
@@ -60,10 +62,10 @@ class MetaPipeline(BaseEstimator):
 
     def classification_report(self, X: pd.DataFrame, y: pd.Series):
         y_pred = self.pipe.predict(X)
-        print(classification_report(y[WINDOW:], y_pred))
+        print(classification_report(y, y_pred))
 
     def roc_curve(self, X: pd.DataFrame, y: pd.Series):
-        y = y[WINDOW:]
+
         ns_probs = [0 for _ in range(len(y))]
 
         # predict probabilities

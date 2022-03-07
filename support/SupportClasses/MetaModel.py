@@ -12,7 +12,6 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 
 from ..MyTools import extract_score_params, getAdaptedCrossVal
-from ..constants.GLOBAL_PARAMS import WINDOW
 from ..constants.gsp import estimators_params
 
 
@@ -48,6 +47,8 @@ class MetaModel(BaseEstimator):
             columns=['Split {0}'.format(i) for i in range(self.n_splits)])
         self.scores['mean'] = self.scores.mean(axis=1)
 
+        return self.estimatorsList
+
     def __fitPoolGridSeach(self, X: pd.DataFrame, y: pd.Series, cv: Union[TimeSeriesSplit, StratifiedKFold]) -> tuple[
         dict, list[tuple[str, BaseEstimator]]]:
         results = {}
@@ -79,14 +80,10 @@ class MetaModel(BaseEstimator):
 
         logging.info("Training models")
 
-        # Si on peut découper les WINDOW - premiers features dans la pipeline, qui sont des NaN suite
-        # aux fenêtres glissantes de StationarityCorrector, on ne peut pas le faire pour la target.
-        # On slice donc ici
-        y = y[WINDOW:]
-
         # Pour détecter une distribution déséquilibrée...
         assert len(y[y == 1]) / len(y) <= 0.7, "The target is unbalanced"
 
+        # Récupération d'un split de CV adapté selon l'indexage du set
         cv = getAdaptedCrossVal(X, self.n_splits)
 
         if self.grid_search:

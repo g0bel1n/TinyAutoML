@@ -1,4 +1,5 @@
 import logging
+
 import pandas as pd
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import RandomForestClassifier
@@ -6,7 +7,6 @@ from sklearn.model_selection import RandomizedSearchCV
 
 from .EstimatorsPool import EstimatorPool
 from ..MyTools import getAdaptedCrossVal, checkClassBalance
-from ..constants.GLOBAL_PARAMS import WINDOW
 from ..constants.gsp import estimators_params
 
 
@@ -30,8 +30,6 @@ class OneRulerForAll(BaseEstimator):
         checkClassBalance(y)
 
         logging.info("Training models...")
-
-        y = y[WINDOW:]  #TODO beurk
 
         cv = getAdaptedCrossVal(X, self.nSplits)
 
