@@ -57,6 +57,9 @@ def checkClassBalance(y: pd.Series):
 
 
 def buildColumnTransformer(X: pd.DataFrame) -> ColumnTransformer:
+
+    # Select numerical and categorical feature to be able to apply different transformers
+
     numerical_ix = X.select_dtypes(include=['int64', 'float64']).columns
     categorical_ix = X.select_dtypes(include=['object', 'bool']).columns
 

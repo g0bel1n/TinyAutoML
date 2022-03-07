@@ -15,6 +15,7 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
         self.__preSelectionSize = preSelectionSize
 
     def __preselect(self, X: pd.DataFrame, y: pd.Series) -> pd.DataFrame:
+        # Preselection for datasets with many features
         preselector = SelectKBest(k=self.__preSelectionSize)
         preselector.fit(X, y)
         cols = preselector.get_support(indices=True)
@@ -23,8 +24,8 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> TransformerMixin:
 
-        # Preselection for datasets with many features (>50)
-        X = self.__preselect(X, y) if (X.shape[1]) > 50 else X
+
+        X = self.__preselect(X, y) if (X.shape[1]) > self.__preSelectionSize else X
 
         featureSelection = FeatureSelection(X, y)
         featureSelection.doFeatureSelection()

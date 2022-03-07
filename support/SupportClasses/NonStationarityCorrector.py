@@ -18,6 +18,9 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
         self.colsToCorrect = []
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> TransformerMixin:
+        '''
+        split the cols according to Augmented Dicker Fuller statistical stationarity test
+        '''
         for col in X.columns:
             if col not in self.colsToKeepIntact:
                 test_results = adfuller(X[col].values)[0]
@@ -31,6 +34,7 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
+        # Apply the transformations
         X = X.copy()
         logging.info("Correcting non-stationarity on the dataset...")
         print(X)

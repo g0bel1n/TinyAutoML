@@ -11,6 +11,11 @@ from ..constants.gsp import estimators_params
 
 
 class OneRulerForAll(BaseEstimator):
+    """
+    The OneRulerForAll bottleneck estimator uses stacking technics to leverage the strengths estimators in the pool.
+    In a few work, we train a pool of estimator. Another 'ruler' estimator is trained to decide which estimator in
+    the pool might be right,given the pool outputs
+    """
 
     def __init__(self, gridSearch: bool, metrics: str, nSplits=10, ruler=None):
 
@@ -33,28 +38,30 @@ class OneRulerForAll(BaseEstimator):
 
         cv = getAdaptedCrossVal(X, self.nSplits)
 
+        #Training the pool
         if self.gridSearch :
             self.estimatorPool.fitWithGridSearch(X,y,cv,self.metrics)
         else : self.estimatorPool.fit(X,y)
 
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
 
+        # Training the ruler, with gridSearch if possible
         if self.rulerName in estimators_params:
             clf = RandomizedSearchCV(estimator=RandomForestClassifier(),
                                      param_distributions=estimators_params[self.rulerName], scoring=self.metrics,
                                      n_jobs=-1, cv=cv)
             clf.fit(estimatorsPoolOutputs, y)
             self.ruler.set_params(**clf.best_params_)
-
         self.ruler.fit(estimatorsPoolOutputs, y)
 
         return self
 
-    def predict(self, X: pd.Series) -> pd.Series:
+    # Overriding sklearn BaseEstimator methods
+    def predict(self, X: pd.DataFrame) -> pd.Series:
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
         return self.ruler.predict(estimatorsPoolOutputs)
 
-    def predict_proba(self, X: pd.Series) -> pd.Series:
+    def predict_proba(self, X: pd.DataFrame) -> pd.Series:
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
         return self.ruler.predict_proba(estimatorsPoolOutputs)
 

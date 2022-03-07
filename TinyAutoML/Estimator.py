@@ -61,6 +61,7 @@ class MetaPipeline(BaseEstimator):
             return self.pipe.named_steps[self.bottleNeckModel[0]].scores
 
     def classification_report(self, X: pd.DataFrame, y: pd.Series):
+        #Return sklearn classification report
         y_pred = self.pipe.predict(X)
         print(classification_report(y, y_pred))
 
