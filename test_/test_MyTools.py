@@ -32,7 +32,7 @@ def test_is_indexed_by_time(input, expected):
 def test_get_adapted_cross_val(input, expected):
     assert type(getAdaptedCrossVal(input, 5)) == expected
 
-
+# For now, the following tests do not test output values but rather if it can run without issues
 def test_check_class_balance():
     with pytest.raises(ValueError):
         assert checkClassBalance(target_unbalanced)

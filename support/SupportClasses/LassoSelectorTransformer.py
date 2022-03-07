@@ -23,8 +23,6 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
         return X.iloc[:, cols]
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> TransformerMixin:
-
-
         X = self.__preselect(X, y) if (X.shape[1]) > self.__preSelectionSize else X
 
         featureSelection = FeatureSelection(X, y)

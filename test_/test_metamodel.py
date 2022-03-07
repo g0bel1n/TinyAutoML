@@ -11,7 +11,7 @@ y = iris.target
 global mp
 mp = MetaPipeline(model='metamodel', gridSearch=False)
 
-
+# For now, the following tests do not test output values but rather if it can run without issues
 def test_fit():
     mp.fit(X, y)
     assert True
