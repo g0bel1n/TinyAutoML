@@ -11,7 +11,7 @@ cut = int(len(y) * 0.8)
 X_train, X_test = X[:cut], X[cut:]
 y_train, y_test = y[:cut], y[cut:]
 
-mp = MetaPipeline(model='orfa', grid_search=False)
+mp = MetaPipeline(model='orfa', gridSearch=False)
 mp.fit(X_train, y_train)
 
 print(mp.transform(X_test.iloc[:2,:],y_test[:2]))

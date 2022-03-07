@@ -9,7 +9,7 @@ X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
 y = iris.target
 
 global mp
-mp = MetaPipeline(model='metamodel', grid_search=False)
+mp = MetaPipeline(model='metamodel', gridSearch=False)
 
 
 def test_fit():

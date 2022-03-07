@@ -9,7 +9,7 @@ X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
 y = iris.target
 
 global mp
-mp = MetaPipeline(model='orfa', grid_search=True)
+mp = MetaPipeline(model='orfa', gridSearch=True)
 
 
 def test_fit():
