@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Meta - Pipeline for Stat'App project.
-Only Work for binary classification for now.
+Only works for binary classification for now.
 
 ## Example:
 
@@ -21,8 +21,8 @@ cut = int(len(y) * 0.8)
 X_train, X_test = X[:cut], X[cut:]
 y_train, y_test = y[:cut], y[cut:]
 
-mp = tam.Estimator.MetaPipeline()
-mp.fit(X_train, y_train, grid_search=False)
+mp = tam.Estimator.MetaPipeline("orfa")
+mp.fit(X_train, y_train)
 print(mp.classification_report(X_test, y_test))
 
 ```
@@ -34,7 +34,7 @@ print(mp.classification_report(X_test, y_test))
 
 metapipe = tam.Estimator.Metapipeline(model, grid_search)
 
-model = 'orfa' or 'metamodel'
+model = 'orfa', 'metamodel' or 'democraticmodel'
 grid_search: bool
 
     .predict(self, X: pd.DataFrame)

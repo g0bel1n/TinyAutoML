@@ -45,3 +45,6 @@ class EstimatorPool(BaseEstimator):
     def predict(self, X: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(
             {estimator[0]: estimator[1].predict(X) for estimator in self.estimatorsList})
+        
+    def __len__(self):
+        return len(self.estimatorsList)
