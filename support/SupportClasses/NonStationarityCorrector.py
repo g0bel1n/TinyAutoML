@@ -43,10 +43,9 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
             for col in self.colsToCorrect:
                 # Depending on the window size, std can be null.
                 # In that situation the actual value can be replaced by the last non null value
-                start = X.index[0]
                 # We also use loc[start+WINDOW:] in order to leave the WINDOW first rows intact. Otherwise, it would be nans
-                X[col].loc[start+pd.Timedelta(WINDOW, unit='D'):] = (X[col] - X[col].rolling(window=WINDOW).mean()) / X[col].rolling(window=WINDOW).std(
-                    skipna=True).replace(to_replace=0., method='ffill').loc[start+pd.Timedelta(WINDOW, unit='D'):]
+                X[col].iloc[WINDOW:] = (X[col] - X[col].rolling(window=WINDOW).mean()) / X[col].rolling(window=WINDOW).std(
+                    skipna=True).replace(to_replace=0., method='ffill').iloc[WINDOW:]
 
             if self.colsToKeepIntact: X[self.colsToKeepIntact] = StandardScaler().fit_transform(X[self.colsToKeepIntact])
             return X
