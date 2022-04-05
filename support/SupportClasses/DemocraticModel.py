@@ -17,11 +17,12 @@ class DemocraticModel(BaseEstimator):
     Classes are assumed to be in alphabetical order
     """
 
-    def __init__(self, gridSearch: bool, metrics: str, nSplits=10):
+    def __init__(self, gridSearch: bool, metrics: str, nSplits=10, proportionAsProbas=True):
         self.estimatorPool = EstimatorPool()
         self.nSplits = nSplits
         self.gridSearch = gridSearch
         self.metrics = metrics
+        self.proportionAsProbas = proportionAsProbas
         self.nEstimators = len(self.estimatorPool)
         
 
@@ -40,9 +41,9 @@ class DemocraticModel(BaseEstimator):
 
     # Overriding sklearn BaseEstimator methods
     def predict(self, X: pd.DataFrame) -> pd.Series:
-        return np.argmax(self.predict_proba(X), axis=1)
+        return np.argmax(self.predict_proportion(X), axis=1)
 
-    def predict_proba(self, X: pd.DataFrame) -> pd.Series:
+    def predict_proportion(self, X: pd.DataFrame) -> pd.Series:
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
         estimator_names = estimatorsPoolOutputs.columns
         classes = np.sort(np.unique(estimatorsPoolOutputs.values))
@@ -51,6 +52,16 @@ class DemocraticModel(BaseEstimator):
             estimatorsPoolOutputs[f"{c}_proportion"] = (estimatorsPoolOutputs[estimator_names] == c).sum(axis=1) / self.nEstimators
         
         return estimatorsPoolOutputs[[f"{c}_proportion" for c in classes]].values
+    
+    def predict_mean(self, X: pd.DataFrame) -> pd.Series:
+        estimatorsPoolProbas = self.estimatorPool.predict_proba(X)
+        return np.mean(estimatorsPoolProbas, axis=0)
+        
+    def predict_proba(self, X: pd.DataFrame) -> pd.Series:
+        if self.proportionAsProbas:
+            return self.predict_proportion(X)
+        else:
+            return self.predict_mean(X)
 
     def transform(self, X: pd.Series):
         return X

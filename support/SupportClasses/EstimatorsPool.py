@@ -1,6 +1,7 @@
 from typing import Union
 
 import pandas as pd
+import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
@@ -45,6 +46,9 @@ class EstimatorPool(BaseEstimator):
     def predict(self, X: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(
             {estimator[0]: estimator[1].predict(X) for estimator in self.estimatorsList})
+        
+    def predict_proba(self, X: pd.DataFrame) -> pd.DataFrame:
+        return np.array([estimator[1].predict_proba(X) for estimator in self.estimatorsList])
         
     def __len__(self):
         return len(self.estimatorsList)
