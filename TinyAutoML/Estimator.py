@@ -7,28 +7,35 @@ from sklearn.metrics import classification_report, roc_curve
 
 from support.MyTools import buildMetaPipeline
 from support.SupportClasses.MetaModel import MetaModel
+from support.SupportClasses.DemocraticModel import DemocraticModel
 from support.SupportClasses.OneRulerForAll import OneRulerForAll
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+MetaModel_names = ["metamodel", "MetaModel", "Metamodel"]
+ORFA_names = ["ORFA", "orfa", "OneRulerForAll", "onerulerforall"]
+DemocraticModel_names = ["democraticmodel", "democratic", "Democratic", "DemocraticModel", "voting", "hardvoting", "Voting", "HardVoting"]
 
 class MetaPipeline(BaseEstimator):
 
     def __getModel(self, modelName: str) -> tuple[str:BaseEstimator]:
-        if modelName == 'metamodel':
+        if modelName in MetaModel_names:
             return "Meta Model", MetaModel(grid_search=self.gridSearch, metrics=self.metrics)
-        else:
+        elif modelName in ORFA_names:
             return "ORFA", OneRulerForAll(gridSearch=self.gridSearch, ruler=self.ruler, metrics=self.metrics)
+        elif modelName in DemocraticModel_names:
+            return "Democratic Model", DemocraticModel(gridSearch=self.gridSearch, metrics=self.metrics, proportionAsProbas = self.proportionAsProbas)
 
-    def __init__(self, model='orfa', gridSearch=True, ruler=None, verbose=True, metrics='accuracy'):
-        assert model in ['metamodel', 'orfa'], 'model not available'
+    def __init__(self, model='orfa', gridSearch=True, ruler=None, verbose=True, metrics='accuracy', proportionAsProbas=True):
+        assert model in MetaModel_names + ORFA_names + DemocraticModel_names, 'model not available'
         self.ruler = ruler #By default, it is a RandomForestClassifier, see class OneRulerForAll
         self.model = model
         self.gridSearch = gridSearch
         self.pipe = None
         self.verbose = verbose
         self.metrics = metrics
+        self.proportionAsProbas = proportionAsProbas
 
         self.bottleNeckModel = self.__getModel(model)
 
@@ -47,6 +54,9 @@ class MetaPipeline(BaseEstimator):
     #Overloading BaseEstimator methods
     def predict(self, X: pd.DataFrame):
         return self.pipe.predict(X)
+
+    def predict_proba(self, X: pd.DataFrame):
+        return self.pipe.predict_proba(X)
 
     def transform(self, X: pd.DataFrame, y=None):
         return self.pipe.transform(X)

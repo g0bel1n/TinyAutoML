@@ -12,9 +12,9 @@ from ..constants.gsp import estimators_params
 
 class OneRulerForAll(BaseEstimator):
     """
-    The OneRulerForAll bottleneck estimator uses stacking technics to leverage the strengths estimators in the pool.
-    In a few work, we train a pool of estimator. Another 'ruler' estimator is trained to decide which estimator in
-    the pool might be right,given the pool outputs
+    The OneRulerForAll bottleneck estimator uses stacking techniques to leverage the strengths of estimators in the pool.
+    We first train a pool of estimator, then another 'ruler' estimator is trained to decide which estimator in
+    the pool might be right, given the pool outputs
     """
 
     def __init__(self, gridSearch: bool, metrics: str, nSplits=10, ruler=None):

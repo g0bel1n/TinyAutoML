@@ -37,7 +37,6 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
         # Apply the transformations
         X = X.copy()
         logging.info("Correcting non-stationarity on the dataset...")
-        print(X)
         if X.shape[0]>WINDOW:
             for col in self.colsToCorrect:
                 # Depending on the window size, std can be null.
@@ -48,7 +47,6 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
                     skipna=True).replace(to_replace=0., method='ffill').loc[start+WINDOW:]
 
             if self.colsToKeepIntact: X[self.colsToKeepIntact] = StandardScaler().fit_transform(X[self.colsToKeepIntact])
-            print(X)
             return X
 
         else:
