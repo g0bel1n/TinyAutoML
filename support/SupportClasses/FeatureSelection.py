@@ -12,7 +12,7 @@ class FeatureSelection:
     def __init__(self, X: pd.DataFrame, y: pd.Series, batchSize=10, nbFeatureToSelect=15):
 
         self.penalizationGrid = PenalizationGrid()
-        self.regressorsCoeffsValues = list()
+        self.regressorsCoeffsValues = []
         assert self.penalizationGrid.size() % batchSize == 0, 'The batch size must divide the size of the ' \
                                                               'penalization coefficients grid. '
         self.batchSize = batchSize

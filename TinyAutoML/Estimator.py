@@ -25,9 +25,9 @@ class MetaPipeline(BaseEstimator):
         elif modelName in ORFA_names:
             return "ORFA", OneRulerForAll(gridSearch=self.gridSearch, ruler=self.ruler, metrics=self.metrics)
         elif modelName in DemocraticModel_names:
-            return "Democratic Model", DemocraticModel(gridSearch=self.gridSearch, metrics=self.metrics, proportionAsProbas = self.proportionAsProbas)
+            return "Democratic Model", DemocraticModel(gridSearch=self.gridSearch, metrics=self.metrics, voting = self.voting)
 
-    def __init__(self, model='orfa', gridSearch=True, ruler=None, verbose=True, metrics='accuracy', proportionAsProbas=True):
+    def __init__(self, model='orfa', gridSearch=True, ruler=None, verbose=True, metrics='accuracy', voting='soft'):
         assert model in MetaModel_names + ORFA_names + DemocraticModel_names, 'model not available'
         self.ruler = ruler #By default, it is a RandomForestClassifier, see class OneRulerForAll
         self.model = model
@@ -35,7 +35,7 @@ class MetaPipeline(BaseEstimator):
         self.pipe = None
         self.verbose = verbose
         self.metrics = metrics
-        self.proportionAsProbas = proportionAsProbas
+        self.voting = voting
 
         self.bottleNeckModel = self.__getModel(model)
 
