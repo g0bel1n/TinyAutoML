@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 
 MetaModel_names = ["metamodel", "MetaModel", "Metamodel"]
 ORFA_names = ["ORFA", "orfa", "OneRulerForAll", "onerulerforall"]
-DemocraticModel_names = ["democraticmodel", "democratic", "Democratic", "DemocraticModel"]
+DemocraticModel_names = ["democraticmodel", "democratic", "Democratic", "DemocraticModel", "voting", "hardvoting", "Voting", "HardVoting"]
 
 class MetaPipeline(BaseEstimator):
 

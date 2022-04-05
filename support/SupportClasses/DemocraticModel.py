@@ -13,7 +13,9 @@ from ..constants.gsp import estimators_params
 
 class DemocraticModel(BaseEstimator):
     """
-    The Democratic bottleneck estimator makes the trained models vote to decide the output.
+    Hard Voting Classifier
+    
+    The Democratic bottleneck estimator makes the trained models vote to decide the output. 
     Classes are assumed to be in alphabetical order
     """
 
@@ -44,6 +46,9 @@ class DemocraticModel(BaseEstimator):
         return np.argmax(self.predict_proportion(X), axis=1)
 
     def predict_proportion(self, X: pd.DataFrame) -> pd.Series:
+        """
+        Returns the proportion of model votes for each class
+        """
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
         estimator_names = estimatorsPoolOutputs.columns
         classes = np.sort(np.unique(estimatorsPoolOutputs.values))
@@ -54,10 +59,16 @@ class DemocraticModel(BaseEstimator):
         return estimatorsPoolOutputs[[f"{c}_proportion" for c in classes]].values
     
     def predict_mean(self, X: pd.DataFrame) -> pd.Series:
+        """
+        Returns the average model probability per class
+        """
         estimatorsPoolProbas = self.estimatorPool.predict_proba(X)
         return np.mean(estimatorsPoolProbas, axis=0)
         
     def predict_proba(self, X: pd.DataFrame) -> pd.Series:
+        """
+        Returns either predict_mean(X) or predict_proportion(X) based on self.proportionAsProbas
+        """
         if self.proportionAsProbas:
             return self.predict_proportion(X)
         else:
