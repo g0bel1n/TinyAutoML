@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 
-from support.SupportClasses.PenalizationGrid import PenalizationGrid
+from TinyAutoML.Preprocessing.PenalizationGrid import PenalizationGrid
 
 
 class FeatureSelection:
@@ -43,7 +43,9 @@ class FeatureSelection:
             self.__featureSelectionBatchStep(penalizationPartialGrid)
 
     def getSelectedFeaturesNames(self):
+
         indexForObjNbOfFeatures = min(range(len(self.regressorsCoeffsValues)), key=lambda index: np.abs(
             sum(self.regressorsCoeffsValues[index] != 0) - self.nbFeatureToSelect))
+
         self.selectedFeaturesNames = self.X.columns[self.regressorsCoeffsValues[indexForObjNbOfFeatures] != 0]
         return self.selectedFeaturesNames

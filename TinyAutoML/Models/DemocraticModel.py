@@ -3,11 +3,9 @@ import logging
 import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import RandomizedSearchCV
 
 from .EstimatorsPool import EstimatorPool
-from ..MyTools import getAdaptedCrossVal, checkClassBalance
+from ..support.MyTools import getAdaptedCrossVal, checkClassBalance
 from ..constants.gsp import estimators_params
 
 
@@ -49,7 +47,6 @@ class _AvailableIfDescriptor:
             # This makes it possible to use the decorated method as an unbound method,
             # for instance when monkeypatching.
             out = lambda *args, **kwargs: fn(*args, **kwargs)  # noqa
-        # update the docstring of the returned function
         return out
 
 
@@ -102,7 +99,7 @@ class DemocraticModel(BaseEstimator):
         return self
 
     # Overriding sklearn BaseEstimator methods
-    def predict(self, X: pd.DataFrame) -> pd.Series:
+    def predict(self, X: pd.DataFrame) -> np.ndarray:
 
         return np.argmax(self.predict_proportion(X), axis=1) if self.voting == 'hard' else np.argmax(
             self.predict_proba(X),axis=1)
@@ -123,7 +120,7 @@ class DemocraticModel(BaseEstimator):
         return estimatorsPoolOutputs[[f"{c}_proportion" for c in classes]].values
 
     @available_if(_check_soft_voting)
-    def predict_proba(self, X: pd.DataFrame) -> pd.Series:
+    def predict_proba(self, X: pd.DataFrame) -> np.ndarray:
         """
         Returns the average model probability per class
         """
@@ -132,3 +129,6 @@ class DemocraticModel(BaseEstimator):
 
     def transform(self, X: pd.Series):
         return X
+
+    def __repr__(self, **kwargs):
+        return 'Democratic Model'

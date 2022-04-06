@@ -5,47 +5,25 @@ from matplotlib import pyplot as plt
 from sklearn.base import BaseEstimator
 from sklearn.metrics import classification_report, roc_curve
 
-from support.MyTools import buildMetaPipeline
-from support.SupportClasses.MetaModel import MetaModel
-from support.SupportClasses.DemocraticModel import DemocraticModel
-from support.SupportClasses.OneRulerForAll import OneRulerForAll
+from .builders import buildMetaPipeline
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-MetaModel_names = ["metamodel", "MetaModel", "Metamodel"]
-ORFA_names = ["ORFA", "orfa", "OneRulerForAll", "onerulerforall"]
-DemocraticModel_names = ["democraticmodel", "democratic", "Democratic", "DemocraticModel", "voting", "hardvoting", "Voting", "HardVoting"]
-
 class MetaPipeline(BaseEstimator):
 
-    def __getModel(self, modelName: str) -> tuple[str:BaseEstimator]:
-        if modelName in MetaModel_names:
-            return "Meta Model", MetaModel(grid_search=self.gridSearch, metrics=self.metrics)
-        elif modelName in ORFA_names:
-            return "ORFA", OneRulerForAll(gridSearch=self.gridSearch, ruler=self.ruler, metrics=self.metrics)
-        elif modelName in DemocraticModel_names:
-            return "Democratic Model", DemocraticModel(gridSearch=self.gridSearch, metrics=self.metrics, voting = self.voting)
-
-    def __init__(self, model='orfa', gridSearch=True, ruler=None, verbose=True, metrics='accuracy', voting='soft'):
-        assert model in MetaModel_names + ORFA_names + DemocraticModel_names, 'model not available'
-        self.ruler = ruler #By default, it is a RandomForestClassifier, see class OneRulerForAll
+    def __init__(self, model: BaseEstimator, verbose=True):
         self.model = model
-        self.gridSearch = gridSearch
         self.pipe = None
         self.verbose = verbose
-        self.metrics = metrics
-        self.voting = voting
-
-        self.bottleNeckModel = self.__getModel(model)
-
         # To shut the logs
         if not verbose: logging.basicConfig(level=logging.CRITICAL)
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
 
         # some of the MetaPipeline steps requires information on the data, therefore we have to initialize it here
-        self.pipe = buildMetaPipeline(X, self.bottleNeckModel)
+        self.pipe = buildMetaPipeline(X, self.model)
 
         self.pipe.fit(X, y)
 
@@ -65,10 +43,10 @@ class MetaPipeline(BaseEstimator):
         return self.pipe.fit(X, y).transform(X)
 
     def get_scores(self):
-        if self.bottleNeckModel[0] == 'ORFA':
+        if self.model.__repr__() == 'ORFA':
             return 'scores are not available for ORFA model'
         else:
-            return self.pipe.named_steps[self.bottleNeckModel[0]].scores
+            return self.pipe.named_steps[self.model.__repr__()].scores
 
     def classification_report(self, X: pd.DataFrame, y: pd.Series):
         #Return sklearn classification report

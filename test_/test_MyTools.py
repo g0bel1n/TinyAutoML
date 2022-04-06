@@ -5,7 +5,7 @@ from sklearn.dummy import DummyClassifier
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import TimeSeriesSplit, StratifiedKFold
 
-from support.MyTools import isIndexedByTime, getAdaptedCrossVal, checkClassBalance, buildColumnTransformer, \
+from TinyAutoML.support.MyTools import isIndexedByTime, getAdaptedCrossVal, checkClassBalance, buildColumnTransformer, \
     buildMetaPipeline
 
 iris = load_breast_cancer()

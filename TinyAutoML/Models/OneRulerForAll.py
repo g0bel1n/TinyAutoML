@@ -6,8 +6,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import RandomizedSearchCV
 
 from .EstimatorsPool import EstimatorPool
-from ..MyTools import getAdaptedCrossVal, checkClassBalance
-from ..constants.gsp import estimators_params
+from TinyAutoML.support.MyTools import getAdaptedCrossVal, checkClassBalance
+from TinyAutoML.constants.gsp import estimators_params
 
 
 class OneRulerForAll(BaseEstimator):
@@ -38,10 +38,11 @@ class OneRulerForAll(BaseEstimator):
 
         cv = getAdaptedCrossVal(X, self.nSplits)
 
-        #Training the pool
-        if self.gridSearch :
-            self.estimatorPool.fitWithGridSearch(X,y,cv,self.metrics)
-        else : self.estimatorPool.fit(X,y)
+        # Training the pool
+        if self.gridSearch:
+            self.estimatorPool.fitWithGridSearch(X, y, cv, self.metrics)
+        else:
+            self.estimatorPool.fit(X, y)
 
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
 
@@ -67,3 +68,6 @@ class OneRulerForAll(BaseEstimator):
 
     def transform(self, X: pd.Series):
         return X
+
+    def __repr__(self, **kwargs):
+        return 'ORFA'

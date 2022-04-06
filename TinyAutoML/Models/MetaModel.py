@@ -117,3 +117,6 @@ class MetaModel(BaseEstimator):
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
         return X
+
+    def __repr__(self):
+        return 'Meta Model'
