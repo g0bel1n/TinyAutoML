@@ -3,13 +3,15 @@ import pandas as pd
 from sklearn.datasets import load_breast_cancer
 
 from TinyAutoML.Estimator import MetaPipeline
+from TinyAutoML.Models import MetaModel
 
 iris = load_breast_cancer()
 X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
 y = iris.target
 
 global mp
-mp = MetaPipeline(model='metamodel', gridSearch=False)
+mp: MetaPipeline = MetaPipeline(model=MetaModel.MetaModel())
+
 
 # For now, the following tests do not test output values but rather if it can run without issues
 def test_fit():

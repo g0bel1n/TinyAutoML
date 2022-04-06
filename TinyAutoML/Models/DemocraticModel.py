@@ -6,8 +6,6 @@ from sklearn.base import BaseEstimator
 
 from .EstimatorsPool import EstimatorPool
 from ..support.MyTools import getAdaptedCrossVal, checkClassBalance
-from ..constants.gsp import estimators_params
-
 
 class _AvailableIfDescriptor:
     """Implements a conditional property using the descriptor protocol.
@@ -62,7 +60,7 @@ class DemocraticModel(BaseEstimator):
     Classes are assumed to be in alphabetical order
     """
 
-    def __init__(self, gridSearch: bool, metrics: str, nSplits=10, voting='soft'):
+    def __init__(self, gridSearch = True, metrics = 'accuracy', nSplits=10, voting='soft'):
         self.estimatorPool = EstimatorPool()
         self.nSplits = nSplits
         self.gridSearch = gridSearch

@@ -19,7 +19,6 @@ def extract_score_params(cv_results: dict, n_splits: int, k_last_splits=5) -> tu
             'There is more k_last_splits to include than the number of total splits.'
             ' k_last_splits will be set to {0}'.format(
                 n_splits))
-        k_last_splits = n_splits
 
     idx_best_config = np.argmin(cv_results['rank_test_score'])
     score = np.mean([cv_results['split{0}_test_score'.format(k)][idx_best_config] for k in

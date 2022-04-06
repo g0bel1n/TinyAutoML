@@ -5,8 +5,8 @@ from sklearn.dummy import DummyClassifier
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import TimeSeriesSplit, StratifiedKFold
 
-from TinyAutoML.support.MyTools import isIndexedByTime, getAdaptedCrossVal, checkClassBalance, buildColumnTransformer, \
-    buildMetaPipeline
+from TinyAutoML.support.MyTools import isIndexedByTime, getAdaptedCrossVal, checkClassBalance
+from TinyAutoML.builders import buildColumnTransformer, buildMetaPipeline
 
 iris = load_breast_cancer()
 X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
@@ -44,5 +44,5 @@ def test_build_column_transformer():
 
 
 def test_build_meta_pipeline():
-    buildMetaPipeline(df, ('dummy', DummyClassifier))
+    buildMetaPipeline(df, DummyClassifier())
     assert True

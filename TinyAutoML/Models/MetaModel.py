@@ -11,28 +11,20 @@ from sklearn.model_selection import cross_val_score, RandomizedSearchCV, TimeSer
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 
-from ..MyTools import extract_score_params, getAdaptedCrossVal
-from ..constants.gsp import estimators_params
+from TinyAutoML.Models.EstimatorsPool import EstimatorPool
+from TinyAutoML.support.MyTools import extract_score_params, getAdaptedCrossVal, checkClassBalance
+from TinyAutoML.constants.gsp import estimators_params
 
 
 class MetaModel(BaseEstimator):
 
-    def __init__(self, grid_search: bool, metrics: str, n_splits=10):
+    def __init__(self, grid_search=True, metrics='accuracy', n_splits=10):
+        self.best_estimator_name = None
         self.best_estimator_ = None
         self.best_estimator_index = None
 
         # Pool of estimators
-        self.estimatorsList = [("random forest classifier", RandomForestClassifier()),
-                               ("Logistic Regression", LogisticRegression(fit_intercept=True)),
-                               ('Gaussian Naive Bayes', GaussianNB()),
-                               ('LDA', LinearDiscriminantAnalysis()),
-                               ('AdaBoost', AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),
-                                                               n_estimators=200,
-                                                               algorithm="SAMME.R",
-                                                               learning_rate=0.5)),
-                               ('xgb',
-                                xgb.XGBClassifier(learning_rate=0.02, n_estimators=600, objective='binary:logistic',
-                                                  silent=True, use_label_encoder=False, verbosity=0))]
+        self.estimatorPool = EstimatorPool()
         self.scores = pd.DataFrame()
         self.n_splits = n_splits
         self.grid_search = grid_search
@@ -78,45 +70,36 @@ class MetaModel(BaseEstimator):
 
     def fit(self, X: pd.DataFrame, y: pd.Series, ) -> BaseEstimator:
 
+
         logging.info("Training models")
 
         # Pour détecter une distribution déséquilibrée...
-        assert len(y[y == 1]) / len(y) <= 0.7, "The target is unbalanced"
-
+        checkClassBalance(y)
         # Récupération d'un split de CV adapté selon l'indexage du set
         cv = getAdaptedCrossVal(X, self.n_splits)
 
         if self.grid_search:
-            results, = self.__fitPoolGridSeach(X, y, cv)
+            self.estimatorPool.fitWithGridSearch(X,y,cv,'accuracy')
         else:
-            self.__fitPool(X, y, cv)
+            self.estimatorPool.fit(X, y)
 
         # Getting the best estimator according to the metric mean
-        self.best_estimator_index = self.scores['mean'].argmax()
-        self.best_estimator_ = self.estimatorsList[self.best_estimator_index][1]
+        best_score , self.best_estimator_name, self.best_estimator = self.estimatorPool.get_best(X,y)
 
         logging.info("The best estimator is {0} with a cross-validation accuracy (in Sample) of {1}".format(
-            self.estimatorsList[self.best_estimator_index][0], self.scores['mean'].iloc[self.best_estimator_index]))
-
-        try:
-            params = results[self.estimatorsList[self.best_estimator_index][0]][1]
-            self.best_estimator_.set_params(**params)
-        except (NameError, KeyError):  # if the chosen estimator was not grid searched, the results dict does not exist
-            pass
-
-        self.best_estimator_.fit(X, y)
+            self.best_estimator_name, best_score))
 
         return self
 
     # Overloading sklearn BaseEstimator methods to use the best estimator
     def predict(self, X: pd.Series) -> pd.Series:
-        return self.best_estimator_.predict(X)
+        return self.best_estimator.predict(X)
 
     def predict_proba(self, X: pd.Series) -> pd.Series:
-        return self.best_estimator_.predict_proba(X)
+        return self.best_estimator.predict_proba(X)
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
         return X
 
-    def __repr__(self):
+    def __repr__(self, **kwargs):
         return 'Meta Model'

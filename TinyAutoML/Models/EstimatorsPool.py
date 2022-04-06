@@ -1,11 +1,13 @@
-from typing import Union
+from typing import Union, Tuple, Any
 
 import numpy as np
 import pandas as pd
+from numpy import ndarray
 from sklearn.base import BaseEstimator
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import (RandomizedSearchCV, StratifiedKFold,
                                      TimeSeriesSplit)
 from sklearn.naive_bayes import GaussianNB
@@ -47,8 +49,13 @@ class EstimatorPool(BaseEstimator):
         return pd.DataFrame(
             {estimator[0]: estimator[1].predict(X) for estimator in self.estimatorsList})
         
-    def predict_proba(self, X: pd.DataFrame) -> pd.DataFrame:
+    def predict_proba(self, X: pd.DataFrame) -> ndarray:
         return np.array([estimator[1].predict_proba(X) for estimator in self.estimatorsList])
+
+    def get_best(self, X: pd.DataFrame, y: pd.Series) -> tuple[float, Any]:
+
+        scores = [accuracy_score(estimator[1].predict(X), y) for estimator in self.estimatorsList]
+        return float(np.max(scores)), *self.estimatorsList[np.argmax(scores)]
         
     def __len__(self):
         return len(self.estimatorsList)

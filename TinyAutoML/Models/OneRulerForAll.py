@@ -17,7 +17,7 @@ class OneRulerForAll(BaseEstimator):
     the pool might be right, given the pool outputs
     """
 
-    def __init__(self, gridSearch: bool, metrics: str, nSplits=10, ruler=None):
+    def __init__(self, gridSearch = True, metrics = 'accuracy', nSplits=10, ruler=None):
 
         if ruler is None:
             self.ruler = RandomForestClassifier()
