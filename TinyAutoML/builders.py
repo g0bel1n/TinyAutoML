@@ -4,9 +4,9 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, OneHotEncoder, FunctionTransformer
 
-from TinyAutoML.Preprocessing.LassoSelectorTransformer import LassoSelectorTransformer
-from TinyAutoML.Preprocessing.NonStationarityCorrector import NonStationarityCorrector
-from TinyAutoML.support.MyTools import isIndexedByTime
+from .Preprocessing.LassoSelectorTransformer import LassoSelectorTransformer
+from .Preprocessing.NonStationarityCorrector import NonStationarityCorrector
+from .support.MyTools import isIndexedByTime
 
 
 def buildColumnTransformer(X: pd.DataFrame) -> ColumnTransformer:
