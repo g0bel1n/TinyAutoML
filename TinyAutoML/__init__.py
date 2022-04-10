@@ -1,5 +1,5 @@
-from TinyAutoML.Estimator import MetaPipeline
-from TinyAutoML.EstimatorCV import MetaPipelineCV
+from .Estimator import MetaPipeline
+from .EstimatorCV import MetaPipelineCV
 
 
 __all__ = ['MetaPipeline', 'MetaPipelineCV']
