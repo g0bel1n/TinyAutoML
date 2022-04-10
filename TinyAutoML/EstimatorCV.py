@@ -6,9 +6,9 @@ from matplotlib import pyplot as plt
 from sklearn.base import BaseEstimator
 from sklearn.metrics import classification_report, roc_curve
 
-from TinyAutoML.Models import BestModelCV
-from TinyAutoML.Models import DemocraticModelCV
-from TinyAutoML.Models import OneRulerForAllCV
+from .Models import BestModelCV
+from .Models import DemocraticModelCV
+from .Models import OneRulerForAllCV
 
 
 logger = logging.getLogger(__name__)

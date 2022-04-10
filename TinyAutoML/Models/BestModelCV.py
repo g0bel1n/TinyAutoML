@@ -5,9 +5,9 @@ import pandas as pd
 from sklearn.base import BaseEstimator
 from sklearn.pipeline import Pipeline
 
-from TinyAutoML.Models.EstimatorsPoolCV import EstimatorPoolCV
+from .EstimatorsPoolCV import EstimatorPoolCV
 
-from TinyAutoML.support.MyTools import  getAdaptedCrossVal, checkClassBalance
+from ..support.MyTools import  getAdaptedCrossVal, checkClassBalance
 
 
 class BestModelCV(BaseEstimator):
