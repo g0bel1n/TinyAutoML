@@ -26,7 +26,7 @@ class FeatureSelection:
         self.regressorsCoeffsValues.append(lasso.coef_[0])
 
     def __featureSelectionBatchStep(self, penalizationPartialGrid: list, X, y):
-        threads = list[threading.Thread] * self.batchSize
+        threads = [None] * self.batchSize
 
         for threadIndex, penalizationCoeff in enumerate(penalizationPartialGrid):
             threads[threadIndex] = threading.Thread(target=self.__featureSelectionStep, args=[penalizationCoeff, X, y])
@@ -44,7 +44,7 @@ class FeatureSelection:
         indexForObjNbOfFeatures = min(range(len(self.regressorsCoeffsValues)), key=lambda index: np.abs(
             sum(self.regressorsCoeffsValues[index] != 0) - self.nbFeatureToSelect))
 
-        self.selectedFeaturesNames = X.columns[self.regressorsCoeffsValues[indexForObjNbOfFeatures] != 0]
+        self.selectedFeaturesNames = X.columns[self.regressorsCoeffsValues[indexForObjNbOfFeatures] != 0].values.tolist()
 
-    def getSelectedFeaturesNames(self):
+    def getSelectedFeaturesNames(self) -> list[str]:
         return self.selectedFeaturesNames

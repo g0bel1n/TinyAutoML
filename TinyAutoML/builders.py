@@ -6,6 +6,7 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler, OneHotEncoder, F
 
 from TinyAutoML.Preprocessing.LassoSelectorTransformer import LassoSelectorTransformer
 from TinyAutoML.Preprocessing.NonStationarityCorrector import NonStationarityCorrector
+from TinyAutoML.support.MyTools import isIndexedByTime
 
 
 def buildColumnTransformer(X: pd.DataFrame) -> ColumnTransformer:
@@ -15,7 +16,7 @@ def buildColumnTransformer(X: pd.DataFrame) -> ColumnTransformer:
     numerical_ix = X.select_dtypes(include=['int64', 'float64']).columns
     categorical_ix = X.select_dtypes(include=['object', 'bool']).columns
 
-    if X.index.dtype == 'datetime64[ns]':
+    if isIndexedByTime(X):
         numerical_process = Pipeline([('NonStationarityCorrector', NonStationarityCorrector()),
                                       ('MinMaxScaler', MinMaxScaler(feature_range=[-1, 1]))])
     else:
@@ -32,7 +33,7 @@ def buildColumnTransformer(X: pd.DataFrame) -> ColumnTransformer:
 def buildMetaPipeline(X: pd.DataFrame, estimator: BaseEstimator) -> Pipeline:
     cols = X.columns
     columnTransformer = buildColumnTransformer(X)
-
+    
     if len(cols) > 15:
         return Pipeline(
             [('Preprocessing', columnTransformer),

@@ -38,7 +38,3 @@ def test_classification_report():
     dm.classification_report(X, y)
     assert True
 
-
-def test_roc_curve():
-    dm.roc_curve(X, y)
-    assert True

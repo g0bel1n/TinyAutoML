@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO)
 
 class MetaPipeline(BaseEstimator):
     #Wrapper
-    
+
     def __init__(self, model: Union[BestModel,DemocraticModel,OneRulerForAll], verbose: bool=True):
         self.model = model
         self.pipe : Pipeline
@@ -49,7 +49,7 @@ class MetaPipeline(BaseEstimator):
         return self.pipe.fit(X, y).transform(X)
 
     def get_scores(self, X : pd.DataFrame, y: pd.Series):
-            return self.pipe.named_steps[self.model.__repr__()].estimatorPool.get_scores(X,y)
+            return self.pipe.named_steps[self.model.__repr__()].estimatorPool.get_scores(self.pipe.transform(X),y)
 
     def classification_report(self, X: pd.DataFrame, y: pd.Series):
         #Return sklearn classification report

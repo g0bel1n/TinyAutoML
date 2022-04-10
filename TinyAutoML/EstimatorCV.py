@@ -15,8 +15,9 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 class MetaPipelineCV(BaseEstimator):
+    #Wrapper
 
-    def __init__(self, model: Union[BestModelCV,DemocraticModelCV,OneRulerForAllCV], verbose=True):
+    def __init__(self, model: Union[BestModelCV,DemocraticModelCV,OneRulerForAllCV], verbose: bool=True):
         self.model = model
         self.verbose = verbose
         # To shut the logs
@@ -43,7 +44,7 @@ class MetaPipelineCV(BaseEstimator):
         return self.model.fit(X, y).transform(X)
 
     def get_scores(self,X: pd.DataFrame,y: pd.Series) -> list[tuple[str, float]]:
-        return self.model.estimatorPoolCV.get_scores(X,y)
+        return self.model.estimatorPoolCV.get_scores(self.transform(X),y)
 
     def classification_report(self, X: pd.DataFrame, y: pd.Series):
         #Return sklearn classification report

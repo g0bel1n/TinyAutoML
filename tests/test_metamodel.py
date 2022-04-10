@@ -33,14 +33,10 @@ def test_fit_transform():
 
 
 def test_get_scores():
-    assert not mp.get_scores().isnull().values.any()
+    assert np.all(np.array(mp.get_scores(X,y))!=0)
 
 
 def test_classification_report():
     mp.classification_report(X, y)
     assert True
 
-
-def test_roc_curve():
-    mp.roc_curve(X, y)
-    assert True

@@ -11,7 +11,7 @@ from TinyAutoML.builders import buildColumnTransformer, buildMetaPipeline
 iris = load_breast_cancer()
 X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
 y = iris.target
-today = datetime.today()
+today = datetime.now()
 
 time_df = pd.DataFrame({'col1': [1, 2, 3], 'col2': [1, 2, 3],
                         'date': [today, today + timedelta(days=365), today + timedelta(days=700)]}).set_index('date')

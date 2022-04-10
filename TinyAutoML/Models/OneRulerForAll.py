@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 import pandas as pd
 from sklearn.base import BaseEstimator
@@ -17,7 +18,7 @@ class OneRulerForAll(BaseEstimator):
     the pool might be right, given the pool outputs
     """
 
-    def __init__(self, gridSearch = True, metrics = 'accuracy', nSplits=10, ruler=None):
+    def __init__(self, gridSearch: bool = True, metrics: str = 'accuracy', nSplits: int=10, ruler: Optional[BaseEstimator] =None):
 
         if ruler is None:
             self.ruler = RandomForestClassifier()

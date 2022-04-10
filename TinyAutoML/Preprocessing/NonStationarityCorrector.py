@@ -32,7 +32,6 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
                     self.colsToKeepIntact.append(col)
 
         assert len(self.colsToKeepIntact) + len(self.colsToCorrect) == len(X.columns), "Column(s) were lost in process"
-
         return self
 
     def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:

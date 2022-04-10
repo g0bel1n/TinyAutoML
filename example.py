@@ -1,20 +1,26 @@
 import pandas as pd
 import numpy as np
+from sklearn.datasets import load_breast_cancer
 from TinyAutoML.Models import *
 from TinyAutoML.EstimatorCV import MetaPipelineCV
 from TinyAutoML.Estimator import MetaPipeline
 
 model = DemocraticModelCV(gridSearch=True, metrics='accuracy')
 mp = MetaPipelineCV(model=model)
-
+"""
 df = pd.read_csv('examples/database.csv')
 df.dropna(inplace=True)
 y = np.random.choice([0,1],len(df.iloc[:,2]))
 df['Date'] = pd.to_datetime(df['Date'])
 
 df.set_index(['Date'], inplace=True)
-X = df.iloc[:,2:6]
+X = df.iloc[:,2:20]
+"""
 
+
+iris = load_breast_cancer()
+X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+y = iris.target
 cut = int(len(y) * 0.8)
 
 X_train, X_test = X[:cut], X[cut:]
