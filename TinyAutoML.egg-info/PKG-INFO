@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: TinyAutoML
+Version: 0.2.1.6
+Summary: Combinaison of ML models for binary classification. Academic Project.
+Home-page: https://github.com/g0bel1n/TinyAutoML
+Author: g0bel1n
+Author-email: lucas.saban@ensae.fr
+License: MIT
+Download-URL: https://github.com/g0bel1n/TinyAutoML/archive/refs/tags/v0.1.8.tar.gz
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+License-File: LICENSE.txt
+
+UNKNOWN
+

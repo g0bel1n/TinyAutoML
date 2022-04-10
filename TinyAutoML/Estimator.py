@@ -1,21 +1,27 @@
 import logging
 
 import pandas as pd
+from typing import Union
+from TinyAutoML.Models import BestModel
+from TinyAutoML.Models import DemocraticModel
+from TinyAutoML.Models import OneRulerForAll
 from matplotlib import pyplot as plt
 from sklearn.base import BaseEstimator
 from sklearn.metrics import classification_report, roc_curve
+from sklearn.pipeline import Pipeline
 
-from .builders import buildMetaPipeline
+from TinyAutoML.builders import buildMetaPipeline
 
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 class MetaPipeline(BaseEstimator):
-
-    def __init__(self, model: BaseEstimator, verbose=True):
+    #Wrapper
+    
+    def __init__(self, model: Union[BestModel,DemocraticModel,OneRulerForAll], verbose: bool=True):
         self.model = model
-        self.pipe = None
+        self.pipe : Pipeline
         self.verbose = verbose
         # To shut the logs
         if not verbose: logging.basicConfig(level=logging.CRITICAL)
@@ -42,11 +48,8 @@ class MetaPipeline(BaseEstimator):
     def fit_transform(self, X: pd.DataFrame, y: pd.Series):
         return self.pipe.fit(X, y).transform(X)
 
-    def get_scores(self):
-        if self.model.__repr__() == 'ORFA':
-            return 'scores are not available for ORFA model'
-        else:
-            return self.pipe.named_steps[self.model.__repr__()].scores
+    def get_scores(self, X : pd.DataFrame, y: pd.Series):
+            return self.pipe.named_steps[self.model.__repr__()].estimatorPool.get_scores(X,y)
 
     def classification_report(self, X: pd.DataFrame, y: pd.Series):
         #Return sklearn classification report
@@ -76,5 +79,3 @@ class MetaPipeline(BaseEstimator):
         plt.show()
 
 
-if __name__ == '__main__':
-    MetaPipeline()

@@ -42,7 +42,7 @@ def getAdaptedCrossVal(X: pd.DataFrame, nSplits: int) -> Union[TimeSeriesSplit, 
 
 
 def checkClassBalance(y: pd.Series):
-    if not len(y[y == 1]) / len(y) <= 0.7 :
+    if len(y[y == 1]) / len(y) > 0.7:
         logging.warning('Unbalanced Target')
         raise(ValueError)
     return True

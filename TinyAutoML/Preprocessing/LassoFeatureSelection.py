@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 
-from TinyAutoML.Preprocessing.PenalizationGrid import PenalizationGrid
+from .PenalizationGrid import PenalizationGrid
 
 
 class FeatureSelection:
@@ -26,7 +26,7 @@ class FeatureSelection:
         self.regressorsCoeffsValues.append(lasso.coef_[0])
 
     def __featureSelectionBatchStep(self, penalizationPartialGrid: list, X, y):
-        threads = [None] * self.batchSize
+        threads = list[threading.Thread] * self.batchSize
 
         for threadIndex, penalizationCoeff in enumerate(penalizationPartialGrid):
             threads[threadIndex] = threading.Thread(target=self.__featureSelectionStep, args=[penalizationCoeff, X, y])
