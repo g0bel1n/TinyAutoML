@@ -1,7 +1,0 @@
-pandas
-scikit-learn
-tqdm
-numpy
-statsmodels
-matplotlib
-xgboost
