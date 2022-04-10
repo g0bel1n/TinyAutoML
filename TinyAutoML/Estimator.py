@@ -2,15 +2,16 @@ import logging
 
 import pandas as pd
 from typing import Union
-from TinyAutoML.Models import BestModel
-from TinyAutoML.Models import DemocraticModel
-from TinyAutoML.Models import OneRulerForAll
+
 from matplotlib import pyplot as plt
 from sklearn.base import BaseEstimator
 from sklearn.metrics import classification_report, roc_curve
 from sklearn.pipeline import Pipeline
 
-from TinyAutoML.builders import buildMetaPipeline
+from .builders import buildMetaPipeline
+from .Models import BestModel
+from .Models import DemocraticModel
+from .Models import OneRulerForAll
 
 
 logger = logging.getLogger(__name__)

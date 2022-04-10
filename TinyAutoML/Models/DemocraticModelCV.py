@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator
 
-from TinyAutoML.Models.EstimatorsPoolCV import EstimatorPoolCV
+from .EstimatorsPoolCV import EstimatorPoolCV
 
 from ..support.MyTools import getAdaptedCrossVal, checkClassBalance
 

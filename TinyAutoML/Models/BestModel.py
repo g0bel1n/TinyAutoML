@@ -1,20 +1,12 @@
-from lib2to3.pytree import Base
 import logging
-from typing import Union
 
 import pandas as pd
-import xgboost as xgb
-from sklearn.base import BaseEstimator
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_val_score, RandomizedSearchCV, TimeSeriesSplit, StratifiedKFold
-from sklearn.naive_bayes import GaussianNB
-from sklearn.tree import DecisionTreeClassifier
 
-from TinyAutoML.Models.EstimatorsPool import EstimatorPool
-from TinyAutoML.support.MyTools import extract_score_params, getAdaptedCrossVal, checkClassBalance
-from TinyAutoML.constants.gsp import estimators_params
+from sklearn.base import BaseEstimator
+
+
+from .EstimatorsPool import EstimatorPool
+from ..support.MyTools import getAdaptedCrossVal, checkClassBalance
 
 
 class BestModel(BaseEstimator):

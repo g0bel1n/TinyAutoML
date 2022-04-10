@@ -7,8 +7,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import RandomizedSearchCV
 
 from .EstimatorsPool import EstimatorPool
-from TinyAutoML.support.MyTools import getAdaptedCrossVal, checkClassBalance
-from TinyAutoML.constants.gsp import estimators_params
+from  ..support.MyTools import getAdaptedCrossVal, checkClassBalance
+from  ..constants.gsp import estimators_params
 
 
 class OneRulerForAll(BaseEstimator):

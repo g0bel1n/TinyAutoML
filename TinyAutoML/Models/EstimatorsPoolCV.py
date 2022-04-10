@@ -1,4 +1,4 @@
-from typing import Union, Tuple, Any
+from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -13,8 +13,8 @@ from sklearn.model_selection import (RandomizedSearchCV, StratifiedKFold,
 from sklearn.naive_bayes import GaussianNB
 from sklearn.pipeline import Pipeline
 from tqdm import tqdm
-from TinyAutoML.constants.gsp import estimators_params
-from TinyAutoML.builders import buildMetaPipeline
+from  ..constants.gsp import estimators_params
+from  ..builders import buildMetaPipeline
 
 
 class EstimatorPoolCV(BaseEstimator):

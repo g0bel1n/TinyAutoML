@@ -4,14 +4,10 @@ from typing import Optional
 import pandas as pd
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import RandomizedSearchCV
 
-from TinyAutoML.Models.EstimatorsPoolCV import EstimatorPoolCV
+from  .EstimatorsPoolCV import EstimatorPoolCV
 
-from .EstimatorsPool import EstimatorPool
-from TinyAutoML.support.MyTools import getAdaptedCrossVal, checkClassBalance
-from TinyAutoML.constants.gsp import estimators_params
-
+from  ..support.MyTools import getAdaptedCrossVal, checkClassBalance
 
 class OneRulerForAllCV(BaseEstimator):
     """
