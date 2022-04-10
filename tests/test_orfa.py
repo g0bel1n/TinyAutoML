@@ -10,7 +10,7 @@ X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
 y = iris.target
 
 global mp
-mp: MetaPipeline = MetaPipeline(model=orfa.OneRulerForAll())
+mp: MetaPipeline = MetaPipeline(model=orfa())
 
 # For now, the following tests do not test output values but rather if it can run without issues
 def test_fit():
