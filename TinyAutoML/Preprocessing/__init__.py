@@ -1,4 +1,4 @@
-from TinyAutoML.Preprocessing.LassoSelectorTransformer import LassoSelectorTransformer
-from TinyAutoML.Preprocessing.NonStationarityCorrector import NonStationarityCorrector
+from .LassoSelectorTransformer import LassoSelectorTransformer
+from .NonStationarityCorrector import NonStationarityCorrector
 
 __all__=['LassoSelectorTransformer', 'NonStationarityCorrector']
