@@ -11,10 +11,10 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
     Selects features according to their order of apparition when varying the shrinkage coefficient of LASSO regression
     """
 
-    def __init__(self):
+    def __init__(self, preSelectionSize=50):
 
         self.selectedFeaturesNames = list[str]
-        self.preSelectionSize = 50
+        self.preSelectionSize = preSelectionSize
 
     def __preselect(self, X: pd.DataFrame, y: pd.Series) -> pd.DataFrame:
         # Preselection for datasets with many features
