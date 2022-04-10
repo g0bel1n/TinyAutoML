@@ -3,3 +3,7 @@
 dev.ipynb
 dist
 build
+*.egg-info
+.vscode
+.idea
+.DS_Store
