@@ -1,6 +1,8 @@
 import logging
 
 import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
+
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import StandardScaler
 from statsmodels.tsa.stattools import adfuller

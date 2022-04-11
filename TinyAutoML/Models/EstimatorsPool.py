@@ -3,6 +3,8 @@ from typing import Union, Tuple, Any
 
 import numpy as np
 import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
+
 from numpy import ndarray
 from sklearn.base import BaseEstimator
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis

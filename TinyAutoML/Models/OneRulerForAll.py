@@ -2,6 +2,8 @@ import logging
 from typing import Optional
 
 import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
+
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import RandomizedSearchCV
