@@ -2,10 +2,10 @@ import pandas as pd
 import numpy as np
 from sklearn.datasets import load_breast_cancer
 from TinyAutoML.Models import *
-from TinyAutoML.EstimatorCV import MetaPipelineCV
-from TinyAutoML.Estimator import MetaPipeline
+from MetaPipelineCV import MetaPipelineCV
+from MetaPipeline import MetaPipeline
 
-model = BestModel(gridSearch=True, metrics='accuracy')
+model = OneRulerForAll(gridSearch=True, metrics='accuracy')
 mp = MetaPipeline(model=model)
 """
 df = pd.read_csv('examples/database.csv')
@@ -29,7 +29,7 @@ y_train, y_test = y[:cut], y[cut:]
 mp.fit(X_train, y_train)
 
 mp.transform(X,y)
-mp.predict(X_test.iloc[:2,:])
+mp.predict(X_test)
 mp.classification_report(X_test, y_test)
 
 

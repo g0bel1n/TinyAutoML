@@ -1,5 +1,5 @@
-from .Estimator import MetaPipeline
-from .EstimatorCV import MetaPipelineCV
+from .MetaPipeline import MetaPipeline
+from .MetaPipelineCV import MetaPipelineCV
 
 
 __all__ = ['MetaPipeline', 'MetaPipelineCV']
