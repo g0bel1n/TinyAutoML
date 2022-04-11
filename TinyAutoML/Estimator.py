@@ -1,6 +1,8 @@
 import logging
 
 import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
+
 from typing import Union
 
 from matplotlib import pyplot as plt

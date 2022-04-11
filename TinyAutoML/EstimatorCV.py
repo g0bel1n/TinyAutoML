@@ -2,6 +2,8 @@ from typing import Union
 import logging
 
 import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
+
 from matplotlib import pyplot as plt
 from sklearn.base import BaseEstimator
 from sklearn.metrics import classification_report, roc_curve
