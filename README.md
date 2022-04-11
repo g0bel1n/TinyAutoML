@@ -34,10 +34,10 @@ print(mp.classification_report(X_test, y_test))
 
 ``` python
 
-metapipe = tam.Estimator.Metapipeline(model, grid_search)
+metapipe = tam.Estimator.Metapipeline(model, gridSearch)
 
 model = 'orfa', 'metamodel' or 'democraticmodel'
-grid_search: bool
+gridSearch: bool
 
     .predict(self, X: pd.DataFrame)
     

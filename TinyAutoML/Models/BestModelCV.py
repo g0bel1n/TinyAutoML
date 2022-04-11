@@ -23,7 +23,7 @@ class BestModelCV(BaseEstimator):
         self.estimatorPoolCV = EstimatorPoolCV()
         self.scores = pd.DataFrame()
         self.n_splits = n_splits
-        self.grid_search = gridSearch
+        self.gridSearch = gridSearch
         self.metrics = metrics
 
 
@@ -37,7 +37,7 @@ class BestModelCV(BaseEstimator):
         # Récupération d'un split de CV adapté selon l'indexage du set
         cv = getAdaptedCrossVal(X, self.n_splits)
 
-        if self.grid_search:
+        if self.gridSearch:
             self.estimatorPoolCV.fitWithGridSearch(X,y,cv,'accuracy')
         else:
             self.estimatorPoolCV.fit(X, y)
