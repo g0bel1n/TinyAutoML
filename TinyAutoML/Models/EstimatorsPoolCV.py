@@ -48,7 +48,7 @@ class EstimatorPoolCV(BaseEstimator):
                 grid = {f'{estimator[1].__repr__()}__{key}': value for key, value in estimators_params[estimator[0]].items()}
                 clf = RandomizedSearchCV(estimator=pipe,
                                          param_distributions=grid, scoring=metrics,
-                                         n_jobs=-1, cv=cv, verbose=1)
+                                         n_jobs=-2, cv=cv, verbose=1)
                 clf.fit(X, y)
 
                 pipe.set_params(**clf.best_params_)
