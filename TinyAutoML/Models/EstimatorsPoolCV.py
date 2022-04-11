@@ -2,6 +2,7 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
+from xgboost import XGBClassifier
 pd.options.mode.chained_assignment = None  # default='warn'
 
 from numpy import ndarray
@@ -27,6 +28,7 @@ class EstimatorPoolCV(BaseEstimator):
                                ("Logistic Regression", LogisticRegression(fit_intercept=True)),
                                ('Gaussian Naive Bayes', GaussianNB()),
                                ('LDA', LinearDiscriminantAnalysis()),
+                               ('xgb', XGBClassifier(use_label_encoder=False))
                                ]
 
         self.estimatorsPipeline: list[tuple[str,Pipeline]] = []
@@ -46,7 +48,7 @@ class EstimatorPoolCV(BaseEstimator):
                 grid = {f'{estimator[1].__repr__()}__{key}': value for key, value in estimators_params[estimator[0]].items()}
                 clf = RandomizedSearchCV(estimator=pipe,
                                          param_distributions=grid, scoring=metrics,
-                                         n_jobs=-1, cv=cv, verbose=4)
+                                         n_jobs=-1, cv=cv, verbose=1)
                 clf.fit(X, y)
 
                 pipe.set_params(**clf.best_params_)

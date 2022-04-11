@@ -2,11 +2,11 @@ import pandas as pd
 import numpy as np
 from sklearn.datasets import load_breast_cancer
 from TinyAutoML.Models import *
-from MetaPipelineCV import MetaPipelineCV
-from MetaPipeline import MetaPipeline
+from TinyAutoML import MetaPipelineCV,MetaPipeline
 
-model = OneRulerForAll(gridSearch=True, metrics='accuracy')
-mp = MetaPipeline(model=model)
+
+model = BestModelCV(gridSearch=True, metrics='accuracy')
+mp = MetaPipelineCV(model=model)
 """
 df = pd.read_csv('examples/database.csv')
 df.dropna(inplace=True)
