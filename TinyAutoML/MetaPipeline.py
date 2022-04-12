@@ -33,7 +33,7 @@ class MetaPipeline(BaseEstimator):
 
     def from_pipe(self, pipe: EstimatorPool, X:pd.DataFrame):
         self.pipe = buildMetaPipeline(X, self.model)
-        self.pipe[:-1] = pipe
+        self.pipe[:-1] = pipe[:-1]
         self.pipe[-1] = self.pipe[-1].from_pool(pipe[-1].estimatorPool)
         return self
     
