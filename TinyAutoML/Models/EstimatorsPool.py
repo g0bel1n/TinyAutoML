@@ -1,12 +1,11 @@
-from lib2to3.pytree import Base
-from typing import Union, Tuple, Any
+
 
 import numpy as np
 import pandas as pd
-from xgboost import XGBClassifier
-pd.options.mode.chained_assignment = None  # default='warn'
 
+from typing import Union
 from numpy import ndarray
+from xgboost import XGBClassifier
 from sklearn.base import BaseEstimator
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
@@ -15,10 +14,12 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import (RandomizedSearchCV, StratifiedKFold,
                                      TimeSeriesSplit)
 from sklearn.naive_bayes import GaussianNB
+
 from ..constants.gsp import estimators_params
 
+pd.options.mode.chained_assignment = None  # default='warn'
 
-class EstimatorPool(BaseEstimator):
+class EstimatorPool():
 
     def __init__(self):
 

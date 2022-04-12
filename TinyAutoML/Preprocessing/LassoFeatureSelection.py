@@ -1,13 +1,12 @@
 import threading
-
 import numpy as np
 import pandas as pd
-pd.options.mode.chained_assignment = None  # default='warn'
 
 from sklearn.linear_model import LogisticRegression
 
 from .PenalizationGrid import PenalizationGrid
 
+pd.options.mode.chained_assignment = None  # default='warn'
 
 class FeatureSelection:
 

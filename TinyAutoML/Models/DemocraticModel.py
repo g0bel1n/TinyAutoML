@@ -1,13 +1,17 @@
 import logging
-
-import pandas as pd
-pd.options.mode.chained_assignment = None  # default='warn'
-
 import numpy as np
-from sklearn.base import BaseEstimator
+import pandas as pd
+
+from typing import Optional, Union
 
 from .EstimatorsPool import EstimatorPool
+from .EstimatorsPoolCV import EstimatorPoolCV
+from .MetaModel import MetaModel
 from ..support.MyTools import getAdaptedCrossVal, checkClassBalance
+
+
+pd.options.mode.chained_assignment = None  # default='warn'
+
 
 class _AvailableIfDescriptor:
     """Implements a conditional property using the descriptor protocol.
@@ -54,7 +58,7 @@ def available_if(check):
     return lambda fn: _AvailableIfDescriptor(fn, check, attribute_name=fn.__name__)
 
 
-class DemocraticModel(BaseEstimator):
+class DemocraticModel(MetaModel):
     """
     Hard Voting Classifier
     
@@ -62,13 +66,14 @@ class DemocraticModel(BaseEstimator):
     Classes are assumed to be in alphabetical order
     """
 
-    def __init__(self, parameterTuning = True, metrics = 'accuracy', nSplits=10, voting='soft'):
-        self.estimatorPool = EstimatorPool()
+    def __init__(self,comprehensiveSearch: bool = True, parameterTuning: bool = True, metrics: str = 'accuracy', nSplits: int =10, voting: str='soft'):
+        self.estimatorPool : Optional[Union[EstimatorPoolCV, EstimatorPool]] = None
         self.nSplits = nSplits
         self.parameterTuning = parameterTuning
         self.metrics = metrics
         self.voting = voting
-        self.nEstimators = len(self.estimatorPool)
+        self.nEstimators : int 
+        self.comprehensiveSearch = comprehensiveSearch
 
     def _check_soft_voting(self):
         if self.voting == "hard":
@@ -84,17 +89,22 @@ class DemocraticModel(BaseEstimator):
             )
         return True
 
-    def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
+
+    def fit(self, X: pd.DataFrame, y: pd.Series) -> MetaModel:
 
         checkClassBalance(y)
         logging.info("Training models...")
         cv = getAdaptedCrossVal(X, self.nSplits)
 
+        if self.estimatorPool is None :
+            self .estimatorPool = EstimatorPoolCV() if self.comprehensiveSearch else EstimatorPool()
         # Training the pool
-        if self.parameterTuning:
-            self.estimatorPool.fitWithparameterTuning(X, y, cv, self.metrics)
-        else:
-            self.estimatorPool.fit(X, y)
+            if self.parameterTuning:
+                self.estimatorPool.fitWithparameterTuning(X, y, cv, self.metrics)
+            else:
+                self.estimatorPool.fit(X, y)
+
+        self.nEstimators = len(self.estimatorPool)
 
         return self
 
@@ -105,7 +115,7 @@ class DemocraticModel(BaseEstimator):
             self.predict_proba(X),axis=1)
 
     @available_if(_check_hard_voting)
-    def predict_proportion(self, X: pd.DataFrame) -> pd.Series:
+    def predict_proportion(self, X: pd.DataFrame) -> np.ndarray:
         """
         Returns the proportion of model votes for each class
         """
@@ -127,7 +137,7 @@ class DemocraticModel(BaseEstimator):
         estimatorsPoolProbas = self.estimatorPool.predict_proba(X)
         return np.mean(estimatorsPoolProbas, axis=0)
 
-    def transform(self, X: pd.Series):
+    def transform(self, X: pd.DataFrame):
         return X
 
     def __repr__(self, **kwargs):

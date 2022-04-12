@@ -2,8 +2,8 @@ from .DemocraticModel import DemocraticModel
 from .BestModel import BestModel
 from .OneRulerForAll import OneRulerForAll
 
-from .DemocraticModelCV import DemocraticModelCV
-from .BestModelCV import BestModelCV
-from .OneRulerForAllCV import OneRulerForAllCV
+from .EstimatorsPool import EstimatorPool
+from .EstimatorsPoolCV import EstimatorPoolCV
+from .MetaModel import MetaModel
 
-__all__ = ['DemocraticModel','BestModel','OneRulerForAll', 'DemocraticModelCV', 'BestModelCV', 'OneRulerForAllCV']
+__all__ = ['DemocraticModel', 'BestModel', 'OneRulerForAll', 'EstimatorPool', 'EstimatorPoolCV', 'MetaModel']

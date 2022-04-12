@@ -1,12 +1,12 @@
 import logging
 import pandas as pd
-pd.options.mode.chained_assignment = None  # default='warn'
 
 from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.feature_selection import SelectKBest
 
 from .LassoFeatureSelection import FeatureSelection
 
+pd.options.mode.chained_assignment = None  # default='warn'
 
 class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
     """

@@ -1,12 +1,10 @@
-from typing import Union
-
 import numpy as np
 import pandas as pd
-from xgboost import XGBClassifier
-pd.options.mode.chained_assignment = None  # default='warn'
 
+from tqdm import tqdm
+from typing import Union
 from numpy import ndarray
-from sklearn.base import BaseEstimator
+from xgboost import XGBClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -15,10 +13,11 @@ from sklearn.model_selection import (RandomizedSearchCV, StratifiedKFold,
                                      TimeSeriesSplit)
 from sklearn.naive_bayes import GaussianNB
 from sklearn.pipeline import Pipeline
-from tqdm import tqdm
+
 from  ..constants.gsp import estimators_params
 from  ..builders import buildMetaPipeline
 
+pd.options.mode.chained_assignment = None  # default='warn'
 
 class EstimatorPoolCV():
 
