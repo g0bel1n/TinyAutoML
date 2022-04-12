@@ -7,7 +7,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 from sklearn.base import BaseEstimator
 from sklearn.pipeline import Pipeline
 
-from .EstimatorsPoolCV import EstimatorPoolCV
+from .EstimatorPoolCV import EstimatorPoolCV
 
 from ..support.MyTools import  getAdaptedCrossVal, checkClassBalance
 
@@ -27,9 +27,7 @@ class BestModelCV(BaseEstimator):
         self.metrics = metrics
 
 
-    def fit(self, X: pd.DataFrame, y: pd.Series, ) -> BaseEstimator:
-
-
+    def fit(self, X: pd.DataFrame, y: pd.Series, pool: EstimatorPoolCV=None) -> BaseEstimator:
         logging.info("Training models")
 
         # Pour détecter une distribution déséquilibrée...
@@ -37,10 +35,13 @@ class BestModelCV(BaseEstimator):
         # Récupération d'un split de CV adapté selon l'indexage du set
         cv = getAdaptedCrossVal(X, self.n_splits)
 
-        if self.parameterTuning:
-            self.estimatorPoolCV.fitWithparameterTuning(X,y,cv,'accuracy')
+        if pool is not None:
+            self.estimatorPoolCV = pool
         else:
-            self.estimatorPoolCV.fit(X, y)
+            if self.parameterTuning:
+                self.estimatorPoolCV.fitWithparameterTuning(X,y,cv,'accuracy')
+            else:
+                self.estimatorPoolCV.fit(X, y)
 
         # Getting the best estimator according to the metric mean
         best_score , self.best_estimator_name, self.best_estimator = self.estimatorPoolCV.get_best(X,y)

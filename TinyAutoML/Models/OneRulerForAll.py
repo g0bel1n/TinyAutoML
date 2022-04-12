@@ -1,4 +1,5 @@
 import logging
+import copy
 from typing import Optional
 
 import pandas as pd
@@ -8,7 +9,7 @@ from sklearn.base import BaseEstimator
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import RandomizedSearchCV
 
-from .EstimatorsPool import EstimatorPool
+from .EstimatorPool import EstimatorPool
 from  ..support.MyTools import getAdaptedCrossVal, checkClassBalance
 from  ..constants.gsp import estimators_params
 
@@ -33,19 +34,21 @@ class OneRulerForAll(BaseEstimator):
         self.parameterTuning = parameterTuning
         self.metrics = metrics
 
-    def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
+    def fit(self, X: pd.DataFrame, y: pd.Series, pool: EstimatorPool=None) -> BaseEstimator:
 
         checkClassBalance(y)
 
         logging.info("Training models...")
 
         cv = getAdaptedCrossVal(X, self.nSplits)
-
-        # Training the pool
-        if self.parameterTuning:
-            self.estimatorPool.fitWithparameterTuning(X, y, cv, self.metrics)
+        if pool is not None:
+            self.estimatorPool = pool
         else:
-            self.estimatorPool.fit(X, y)
+        # Training the pool
+            if self.parameterTuning:
+                self.estimatorPool.fitWithparameterTuning(X, y, cv, self.metrics)
+            else:
+                self.estimatorPool.fit(X, y)
 
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
 
@@ -59,6 +62,7 @@ class OneRulerForAll(BaseEstimator):
         self.ruler.fit(estimatorsPoolOutputs, y)
 
         return self
+
 
     # Overriding sklearn BaseEstimator methods
     def predict(self, X: pd.DataFrame) -> pd.Series:

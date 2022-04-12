@@ -6,7 +6,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 import numpy as np
 from sklearn.base import BaseEstimator
 
-from .EstimatorsPool import EstimatorPool
+from .EstimatorPool import EstimatorPool
 from ..support.MyTools import getAdaptedCrossVal, checkClassBalance
 
 class _AvailableIfDescriptor:
@@ -84,17 +84,20 @@ class DemocraticModel(BaseEstimator):
             )
         return True
 
-    def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
+    def fit(self, X: pd.DataFrame, y: pd.Series, pool: EstimatorPool=None) -> BaseEstimator:
 
         checkClassBalance(y)
         logging.info("Training models...")
         cv = getAdaptedCrossVal(X, self.nSplits)
-
-        # Training the pool
-        if self.parameterTuning:
-            self.estimatorPool.fitWithparameterTuning(X, y, cv, self.metrics)
+        
+        if pool is not None:
+            self.estimatorPool = pool
         else:
-            self.estimatorPool.fit(X, y)
+            # Training the pool
+            if self.parameterTuning:
+                self.estimatorPool.fitWithparameterTuning(X, y, cv, self.metrics)
+            else:
+                self.estimatorPool.fit(X, y)
 
         return self
 
@@ -126,6 +129,7 @@ class DemocraticModel(BaseEstimator):
         """
         estimatorsPoolProbas = self.estimatorPool.predict_proba(X)
         return np.mean(estimatorsPoolProbas, axis=0)
+
 
     def transform(self, X: pd.Series):
         return X

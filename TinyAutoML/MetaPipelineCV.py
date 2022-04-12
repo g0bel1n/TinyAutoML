@@ -2,6 +2,7 @@ from typing import Union
 import logging
 
 import pandas as pd
+
 pd.options.mode.chained_assignment = None  # default='warn'
 
 from matplotlib import pyplot as plt
@@ -11,6 +12,7 @@ from sklearn.metrics import classification_report, roc_curve
 from .Models import BestModelCV
 from .Models import DemocraticModelCV
 from .Models import OneRulerForAllCV
+from .Models import EstimatorPoolCV
 
 
 logger = logging.getLogger(__name__)
@@ -25,10 +27,10 @@ class MetaPipelineCV(BaseEstimator):
         # To shut the logs
         if not verbose: logging.basicConfig(level=logging.CRITICAL)
 
-    def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
+    def fit(self, X: pd.DataFrame, y: pd.Series, pool = None) -> BaseEstimator:
 
         # some of the MetaPipeline steps requires information on the data, therefore we have to initialize it here
-        self.model.fit(X,y)
+        self.model.fit(X,y,pool)
 
         return self
 
@@ -38,6 +40,9 @@ class MetaPipelineCV(BaseEstimator):
 
     def predict_proba(self, X: pd.DataFrame):
         return self.model.predict_proba(X)
+    
+    def get_pool(self):
+        return self.model.estimatorPoolCV
 
     def transform(self, X: pd.DataFrame, y=None):
         return self.model.transform(X)
