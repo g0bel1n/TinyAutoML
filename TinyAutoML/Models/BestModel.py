@@ -7,7 +7,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 from sklearn.base import BaseEstimator
 
 
-from .EstimatorsPool import EstimatorPool
+from .EstimatorPool import EstimatorPool
 from ..support.MyTools import getAdaptedCrossVal, checkClassBalance
 
 
@@ -24,6 +24,20 @@ class BestModel(BaseEstimator):
         self.n_splits = n_splits
         self.gridSearch = gridSearch
         self.metrics = metrics
+        
+    def from_pool(self, pool: EstimatorPool, *args) -> BaseEstimator:
+        try:
+            X,y = args
+        except:
+            raise TypeError("Expected X and y values for from_pool in BestModel")
+        
+        self.estimatorPool = pool
+        best_score , self.best_estimator_name, self.best_estimator = self.estimatorPool.get_best(X,y)
+        
+        logging.info("The best estimator is {0} with a cross-validation accuracy (in Sample) of {1}".format(
+            self.best_estimator_name, best_score))
+        
+        return self
 
     def fit(self, X: pd.DataFrame, y: pd.Series, ) -> BaseEstimator:
 

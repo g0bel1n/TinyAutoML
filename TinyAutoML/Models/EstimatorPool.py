@@ -41,7 +41,7 @@ class EstimatorPool(BaseEstimator):
             if estimator[0] in estimators_params:
                 clf = RandomizedSearchCV(estimator=estimator[1],
                                          param_distributions=estimators_params[estimator[0]], scoring=metrics,
-                                         n_jobs=-2, cv=cv)
+                                         n_jobs=9, cv=cv)
                 clf.fit(X, y)
 
                 estimator[1].set_params(**clf.best_params_)

@@ -8,7 +8,7 @@ from sklearn.base import BaseEstimator
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import RandomizedSearchCV
 
-from .EstimatorsPool import EstimatorPool
+from .EstimatorPool import EstimatorPool
 from  ..support.MyTools import getAdaptedCrossVal, checkClassBalance
 from  ..constants.gsp import estimators_params
 
@@ -53,11 +53,15 @@ class OneRulerForAll(BaseEstimator):
         if self.rulerName in estimators_params:
             clf = RandomizedSearchCV(estimator=RandomForestClassifier(),
                                      param_distributions=estimators_params[self.rulerName], scoring=self.metrics,
-                                     n_jobs=-2, cv=cv)
+                                     n_jobs=None, cv=cv)
             clf.fit(estimatorsPoolOutputs, y)
             self.ruler.set_params(**clf.best_params_)
         self.ruler.fit(estimatorsPoolOutputs, y)
 
+        return self
+
+    def from_pool(self, pool: EstimatorPool) -> BaseEstimator:
+        self.estimatorPool = pool
         return self
 
     # Overriding sklearn BaseEstimator methods

@@ -6,7 +6,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 import numpy as np
 from sklearn.base import BaseEstimator
 
-from .EstimatorsPoolCV import EstimatorPoolCV
+from .EstimatorPoolCV import EstimatorPoolCV
 
 from ..support.MyTools import getAdaptedCrossVal, checkClassBalance
 
@@ -127,6 +127,12 @@ class DemocraticModelCV(BaseEstimator):
         """
         estimatorsPoolProbas = self.estimatorPoolCV.predict_proba(X)
         return np.mean(estimatorsPoolProbas, axis=0)
+    
+    def from_pool(self, pool: EstimatorPoolCV) -> BaseEstimator:
+        
+        self.estimatorPoolCV = pool
+        
+        return self
 
     def transform(self, X: pd.DataFrame):
         return X

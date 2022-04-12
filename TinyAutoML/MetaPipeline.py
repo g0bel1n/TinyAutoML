@@ -1,6 +1,7 @@
 import logging
 
 import pandas as pd
+
 pd.options.mode.chained_assignment = None  # default='warn'
 
 from typing import Union
@@ -14,6 +15,7 @@ from .builders import buildMetaPipeline
 from .Models import BestModel
 from .Models import DemocraticModel
 from .Models import OneRulerForAll
+from .Models import EstimatorPool
 
 
 logger = logging.getLogger(__name__)
@@ -22,12 +24,21 @@ logging.basicConfig(level=logging.INFO)
 class MetaPipeline(BaseEstimator):
     #Wrapper
 
-    def __init__(self, model: Union[BestModel,DemocraticModel,OneRulerForAll], verbose: bool=True):
+    def __init__(self, model: Union[BestModel,DemocraticModel,OneRulerForAll,EstimatorPool], verbose: bool=True):
         self.model = model
         self.pipe : Pipeline
         self.verbose = verbose
         # To shut the logs
         if not verbose: logging.basicConfig(level=logging.CRITICAL)
+
+    def from_pipe(self, pipe: EstimatorPool, X:pd.DataFrame):
+        self.pipe = buildMetaPipeline(X, self.model)
+        self.pipe[:-1] = pipe
+        self.pipe[-1] = self.pipe[-1].from_pool(pipe[-1].estimatorPool)
+        return self
+    
+    def get_pipe(self):
+        return self.pipe
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
 

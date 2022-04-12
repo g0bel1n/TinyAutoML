@@ -7,7 +7,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import RandomForestClassifier
 
-from  .EstimatorsPoolCV import EstimatorPoolCV
+from  .EstimatorPoolCV import EstimatorPoolCV
 
 from  ..support.MyTools import getAdaptedCrossVal, checkClassBalance
 
@@ -49,6 +49,10 @@ class OneRulerForAllCV(BaseEstimator):
 
         self.ruler.fit(estimatorsPoolOutputs, y)
 
+        return self
+
+    def from_pool(self, pool: EstimatorPoolCV) -> BaseEstimator:
+        self.estimatorPoolCV = pool
         return self
 
     # Overriding sklearn BaseEstimator methods
