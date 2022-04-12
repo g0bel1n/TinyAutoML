@@ -31,7 +31,7 @@ class MetaPipeline(BaseEstimator):
         # To shut the logs
         if not verbose: logging.basicConfig(level=logging.CRITICAL)
 
-    def from_pipe(self, pipe: EstimatorPool, X:pd.DataFrame):
+    def from_pipe(self, pipe: Pipeline, X:pd.DataFrame):
         self.pipe = buildMetaPipeline(X, self.model)
         self.pipe[:-1] = pipe[:-1]
         self.pipe[-1] = self.pipe[-1].from_pool(pipe[-1].estimatorPool)
