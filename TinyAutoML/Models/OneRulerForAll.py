@@ -1,4 +1,5 @@
 import logging
+import copy
 from typing import Optional
 
 import pandas as pd
@@ -33,19 +34,21 @@ class OneRulerForAll(BaseEstimator):
         self.parameterTuning = parameterTuning
         self.metrics = metrics
 
-    def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
+    def fit(self, X: pd.DataFrame, y: pd.Series, pool = None) -> BaseEstimator:
 
         checkClassBalance(y)
 
         logging.info("Training models...")
 
         cv = getAdaptedCrossVal(X, self.nSplits)
-
-        # Training the pool
-        if self.parameterTuning:
-            self.estimatorPool.fitWithparameterTuning(X, y, cv, self.metrics)
+        if pool is not None:
+            self.estimatorPool = pool
         else:
-            self.estimatorPool.fit(X, y)
+        # Training the pool
+            if self.parameterTuning:
+                self.estimatorPool.fitWithparameterTuning(X, y, cv, self.metrics)
+            else:
+                self.estimatorPool.fit(X, y)
 
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
 
@@ -53,16 +56,13 @@ class OneRulerForAll(BaseEstimator):
         if self.rulerName in estimators_params:
             clf = RandomizedSearchCV(estimator=RandomForestClassifier(),
                                      param_distributions=estimators_params[self.rulerName], scoring=self.metrics,
-                                     n_jobs=None, cv=cv)
+                                     n_jobs=-2, cv=cv)
             clf.fit(estimatorsPoolOutputs, y)
             self.ruler.set_params(**clf.best_params_)
         self.ruler.fit(estimatorsPoolOutputs, y)
 
         return self
 
-    def from_pool(self, pool: EstimatorPool) -> BaseEstimator:
-        self.estimatorPool = pool
-        return self
 
     # Overriding sklearn BaseEstimator methods
     def predict(self, X: pd.DataFrame) -> pd.Series:

@@ -28,7 +28,7 @@ class EstimatorPoolCV(BaseEstimator):
                                ("Logistic Regression", LogisticRegression(fit_intercept=True)),
                                ('Gaussian Naive Bayes', GaussianNB()),
                                ('LDA', LinearDiscriminantAnalysis()),
-                               ('xgb', XGBClassifier(use_label_encoder=False))
+                               #('xgb', XGBClassifier(use_label_encoder=False))
                                ]
 
         self.estimatorsPipeline: list[tuple[str,Pipeline]] = []

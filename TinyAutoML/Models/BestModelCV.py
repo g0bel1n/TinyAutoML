@@ -27,24 +27,7 @@ class BestModelCV(BaseEstimator):
         self.metrics = metrics
 
 
-    def from_pool(self, pool: EstimatorPoolCV, *args) -> BaseEstimator:
-        try:
-            X,y = args
-        except:
-            raise TypeError("Expected X and y values for from_pool in BestModelCV")
-        
-        self.estimatorPool = pool
-        
-        best_score , self.best_estimator_name, self.best_estimator = self.estimatorPoolCV.get_best(X,y)
-        
-        logging.info("The best estimator is {0} with a cross-validation accuracy (in Sample) of {1}".format(
-            self.best_estimator_name, best_score))
-        
-        return self
-
-    def fit(self, X: pd.DataFrame, y: pd.Series, ) -> BaseEstimator:
-
-
+    def fit(self, X: pd.DataFrame, y: pd.Series, pool = None) -> BaseEstimator:
         logging.info("Training models")
 
         # Pour détecter une distribution déséquilibrée...
@@ -52,10 +35,13 @@ class BestModelCV(BaseEstimator):
         # Récupération d'un split de CV adapté selon l'indexage du set
         cv = getAdaptedCrossVal(X, self.n_splits)
 
-        if self.parameterTuning:
-            self.estimatorPoolCV.fitWithparameterTuning(X,y,cv,'accuracy')
+        if pool is not None:
+            self.estimatorPoolCV = pool
         else:
-            self.estimatorPoolCV.fit(X, y)
+            if self.parameterTuning:
+                self.estimatorPoolCV.fitWithparameterTuning(X,y,cv,'accuracy')
+            else:
+                self.estimatorPoolCV.fit(X, y)
 
         # Getting the best estimator according to the metric mean
         best_score , self.best_estimator_name, self.best_estimator = self.estimatorPoolCV.get_best(X,y)

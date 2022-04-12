@@ -26,7 +26,7 @@ class EstimatorPool(BaseEstimator):
                                ("Logistic Regression", LogisticRegression(fit_intercept=True)),
                                ('Gaussian Naive Bayes', GaussianNB()),
                                ('LDA', LinearDiscriminantAnalysis()),
-                               ('xgb', XGBClassifier(use_label_encoder=False))
+                               #('xgb', XGBClassifier(use_label_encoder=False))
                                ]
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> list[tuple[str, BaseEstimator]]:
