@@ -21,12 +21,7 @@ class OneRulerForAll(MetaModel):
 
     def __init__(self, comprehensiveSearch: bool = True, parameterTuning: bool = True, metrics: str = 'accuracy', nSplits: int=10, ruler: Optional[BaseEstimator] =None):
 
-        if ruler is None:
-            self.ruler = RandomForestClassifier()
-            self.rulerName = 'random forest classifier'
-        else:
-            self.ruler = ruler
-
+        self.ruler = RandomForestClassifier() if ruler is None else ruler
         self.estimatorPool : Optional[Union[EstimatorPoolCV, EstimatorPool]] = None
         self.comprehensiveSearch = comprehensiveSearch
         self.nSplits = nSplits

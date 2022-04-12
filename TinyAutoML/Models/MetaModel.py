@@ -17,7 +17,7 @@ class MetaModel(ABC, BaseEstimator):
     estimatorPool : Union[EstimatorPool, EstimatorPoolCV]
 
     @abstractmethod
-    def __init__(self,comprehensiveSearch: bool = True, parameterTuning: bool = True, metrics: str = 'accuracy', nSplits: int=10, ruler: Optional[BaseEstimator] =None):
+    def __init__(self,comprehensiveSearch: bool = True, parameterTuning: bool = True, metrics: str = 'accuracy', nSplits: int=10):
         pass
     @abstractmethod
     def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
