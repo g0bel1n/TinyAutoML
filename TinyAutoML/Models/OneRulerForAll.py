@@ -34,7 +34,7 @@ class OneRulerForAll(BaseEstimator):
         self.parameterTuning = parameterTuning
         self.metrics = metrics
 
-    def fit(self, X: pd.DataFrame, y: pd.Series, pool = None) -> BaseEstimator:
+    def fit(self, X: pd.DataFrame, y: pd.Series, pool: EstimatorPool=None) -> BaseEstimator:
 
         checkClassBalance(y)
 

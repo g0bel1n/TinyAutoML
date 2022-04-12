@@ -84,7 +84,7 @@ class DemocraticModel(BaseEstimator):
             )
         return True
 
-    def fit(self, X: pd.DataFrame, y: pd.Series, pool = None) -> BaseEstimator:
+    def fit(self, X: pd.DataFrame, y: pd.Series, pool: EstimatorPool=None) -> BaseEstimator:
 
         checkClassBalance(y)
         logging.info("Training models...")

@@ -32,7 +32,7 @@ class OneRulerForAllCV(BaseEstimator):
         self.parameterTuning = parameterTuning
         self.metrics = metrics
 
-    def fit(self, X: pd.DataFrame, y: pd.Series, pool = None) -> BaseEstimator:
+    def fit(self, X: pd.DataFrame, y: pd.Series, pool: EstimatorPoolCV=None) -> BaseEstimator:
 
         checkClassBalance(y)
         logging.info("Training models...")
