@@ -5,8 +5,10 @@ from TinyAutoML.Models import *
 from TinyAutoML import MetaPipelineCV,MetaPipeline
 
 
-model = BestModel(parameterTuning=True, metrics='accuracy')
+model = OneRulerForAllCV(comprehensiveSearch = False, parameterTuning=True, metrics='accuracy')
 mp = MetaPipeline(model=model)
+
+
 """
 df = pd.read_csv('examples/database.csv')
 df.dropna(inplace=True)

@@ -20,7 +20,7 @@ from  ..constants.gsp import estimators_params
 from  ..builders import buildMetaPipeline
 
 
-class EstimatorPoolCV(BaseEstimator):
+class EstimatorPoolCV():
 
     def __init__(self):
 
@@ -31,11 +31,12 @@ class EstimatorPoolCV(BaseEstimator):
                                ('xgb', XGBClassifier(use_label_encoder=False))
                                ]
 
+        self.is_fitted = False
         self.estimatorsPipeline: list[tuple[str,Pipeline]] = []
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> list[tuple[str, Pipeline]]:
         self.estimatorsPipeline = [(estimator_name, buildMetaPipeline(X, estimator).fit(X,y)) for estimator_name, estimator in self.estimatorsList]
-
+        self.is_fitted = True
         return self.estimatorsPipeline
 
     def fitWithparameterTuning(self, X: pd.DataFrame, y: pd.Series,
@@ -55,7 +56,8 @@ class EstimatorPoolCV(BaseEstimator):
 
             pipe.fit(X, y)
             self.estimatorsPipeline.append((estimator[0], pipe))
-
+            
+        self.is_fitted = True
         return self.estimatorsPipeline
 
     def predict(self, X: pd.DataFrame) -> pd.DataFrame:

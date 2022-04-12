@@ -28,9 +28,12 @@ class EstimatorPool(BaseEstimator):
                                ('LDA', LinearDiscriminantAnalysis()),
                                ('xgb', XGBClassifier(use_label_encoder=False))
                                ]
+        
+        self.is_fitted = False
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> list[tuple[str, BaseEstimator]]:
         for estimator in self.estimatorsList: estimator[1].fit(X, y)
+        self.is_fitted = True
         return self.estimatorsList
 
     def fitWithparameterTuning(self, X: pd.DataFrame, y: pd.Series,
@@ -49,6 +52,7 @@ class EstimatorPool(BaseEstimator):
 
             estimator[1].fit(X, y)
 
+        self.is_fitted = True
         return self.estimatorsList
 
     def predict(self, X: pd.DataFrame) -> pd.DataFrame:
