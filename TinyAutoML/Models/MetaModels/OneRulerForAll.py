@@ -3,7 +3,6 @@ from numpy import ndarray
 import pandas as pd
 
 from typing import Optional, Union
-from sklearn.base import ClassifierMixin
 from sklearn.ensemble import RandomForestClassifier
 
 from ..MetaModel import MetaModel

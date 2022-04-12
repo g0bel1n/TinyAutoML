@@ -1,4 +1,5 @@
 import threading
+from typing import Union
 import numpy as np
 import pandas as pd
 
@@ -36,7 +37,7 @@ class FeatureSelection:
         for thread in threads:
             thread.join()
 
-    def fit(self, X: pd.DataFrame, y: pd.Series):
+    def fit(self, X:  Union[pd.DataFrame, pd.Series], y: pd.Series):
 
         while not self.penalizationGrid.isEmpty():
             penalizationPartialGrid = self.penalizationGrid.getNextKCoeffs(self.batchSize)

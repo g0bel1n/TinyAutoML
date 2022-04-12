@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 
 from typing import Any, Optional, Union
-from sklearn.base import ClassifierMixin
-from sklearn.pipeline import Pipeline
 
 from ..MetaModel import MetaModel
 from ..EstimatorsPools.EstimatorsPool import EstimatorPool

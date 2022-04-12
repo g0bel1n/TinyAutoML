@@ -1,9 +1,9 @@
 import logging
 import pandas as pd
 
-from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.preprocessing import StandardScaler
 from statsmodels.tsa.stattools import adfuller
+from sklearn.preprocessing import StandardScaler
+from sklearn.base import BaseEstimator, TransformerMixin
 
 from ..constants.GLOBAL_PARAMS import WINDOW
 

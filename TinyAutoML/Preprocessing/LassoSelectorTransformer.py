@@ -1,8 +1,10 @@
 import logging
+from typing import Union
+from numpy import ndarray
 import pandas as pd
 
-from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.feature_selection import SelectKBest
+from sklearn.base import TransformerMixin, BaseEstimator
 
 from .LassoFeatureSelection import FeatureSelection
 
@@ -18,19 +20,20 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
         self.selectedFeaturesNames = list[str]
         self.preSelectionSize = preSelectionSize
 
-    def __preselect(self, X: pd.DataFrame, y: pd.Series) -> pd.DataFrame:
+    def __preselect(self, X: pd.DataFrame, y: pd.Series) -> Union[pd.DataFrame, pd.Series]:
         # Preselection for datasets with many features
         preselector = SelectKBest(k=self.preSelectionSize)
         preselector.fit(X, y)
-        cols = preselector.get_support(indices=True).tolist()
+        support = preselector.get_support(indices=True)
+        cols = support.tolist() if support is not None else X.columns
         X = X.copy()
         return X.iloc[:, cols]
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> TransformerMixin:
-        X = self.__preselect(X, y) if (X.shape[1]) > self.preSelectionSize else X
+        X_ = self.__preselect(X, y) if (X.shape[1]) > self.preSelectionSize else X
 
         featureSelection = FeatureSelection()
-        featureSelection.fit(X, y)
+        featureSelection.fit(X_, y)
 
         self.selectedFeaturesNames = featureSelection.getSelectedFeaturesNames()
         return self
