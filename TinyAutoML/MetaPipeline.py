@@ -1,11 +1,12 @@
 import logging
+import numpy as np
 import pandas as pd
 
 from typing import Optional, Union
 from matplotlib import pyplot as plt
-from sklearn.base import BaseEstimator
-from sklearn.metrics import classification_report, roc_curve
 from sklearn.pipeline import Pipeline
+from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.metrics import classification_report, roc_curve
 
 from .builders import buildMetaPipeline
 from .Models import EstimatorPool, EstimatorPoolCV, MetaModel
@@ -17,7 +18,7 @@ logging.basicConfig(level=logging.INFO)
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-class MetaPipeline(BaseEstimator):
+class MetaPipeline(BaseEstimator, ClassifierMixin):
     #Wrapper
 
     def __init__(self, model: MetaModel, verbose: bool=True):
@@ -27,8 +28,8 @@ class MetaPipeline(BaseEstimator):
         # To shut the logs
         if not verbose: logging.basicConfig(level=logging.CRITICAL)
 
-    def fit(self, X: pd.DataFrame, y: pd.Series, pool:Optional[Union[EstimatorPool, EstimatorPoolCV]] = None) -> BaseEstimator:
-
+    def fit(self, X: Union[pd.DataFrame,np.ndarray], y: Union[pd.Series,np.ndarray], pool:Optional[Union[EstimatorPool, EstimatorPoolCV]] = None) -> BaseEstimator:
+        if y.shape[1]!=1: raise ValueError('The target is not a vector')
         # some of the MetaPipeline steps requires information on the data, therefore we have to initialize it here
         self.estimator = self.model if self.model.comprehensiveSearch else buildMetaPipeline(X, self.model) 
         if pool is not None : self.__set_pool(pool)
@@ -37,7 +38,7 @@ class MetaPipeline(BaseEstimator):
 
         return self
 
-    def get_pool(self) -> Union[EstimatorPoolCV, EstimatorPool]:
+    def get_pool(self) -> Optional[Union[EstimatorPoolCV, EstimatorPool]]:
         try:
             if type(self.estimator) is MetaModel :
                 return self.estimator.get_pool()
@@ -52,30 +53,38 @@ class MetaPipeline(BaseEstimator):
         elif type(self.estimator) is Pipeline: self.estimator.named_steps[self.model.__repr__()].set_pool(fitted_pool)
 
     #Overloading BaseEstimator methods
-    def predict(self, X: pd.DataFrame):
+    def predict(self, X: Union[pd.DataFrame,np.ndarray]):
+        if self.estimator is None : raise ValueError('The estimator has not been fitted beforehand')
         return self.estimator.predict(X)
 
-    def predict_proba(self, X: pd.DataFrame):
+    def predict_proba(self, X: Union[pd.DataFrame,np.ndarray]):
+        if self.estimator is None : raise ValueError('The estimator has not been fitted beforehand')
         return self.estimator.predict_proba(X)
 
-    def transform(self, X: pd.DataFrame, y=None):
+    def transform(self, X: Union[pd.DataFrame,np.ndarray], y=None):
+        if self.estimator is None : raise ValueError('The estimator has not been fitted beforehand')
         return self.estimator.transform(X)
 
-    def fit_transform(self, X: pd.DataFrame, y: pd.Series):
-        return self.estimator.fit(X, y).transform(X)
-
-    def get_scores(self, X : pd.DataFrame, y: pd.Series):
+    def get_scores(self, X : Union[pd.DataFrame,np.ndarray], y: Union[pd.Series,np.ndarray]):
+        if y.shape[1]!=1: raise ValueError('The target is not a vector')
+        
         if type(self.estimator) is MetaModel :
             return self.estimator.estimatorPool.get_scores(self.estimator.transform(X),y)
         elif type(self.estimator) is Pipeline: 
             return self.estimator.named_steps[self.model.__repr__()].estimatorPool.get_scores(self.estimator.transform(X),y)
 
-    def classification_report(self, X: pd.DataFrame, y: pd.Series):
+    def classification_report(self, X: Union[pd.DataFrame,np.ndarray], y: Union[pd.Series,np.ndarray]):
         #Return sklearn classification report
+        if self.estimator is None : raise ValueError('The estimator has not been fitted beforehand')
+        if y.shape[1]!=1: raise ValueError('The target is not a vector')
+
         y_pred = self.estimator.predict(X)
         print(classification_report(y, y_pred))
 
     def roc_curve(self, X: pd.DataFrame, y: pd.Series):
+
+        if self.estimator is None : raise ValueError('The estimator has not been fitted beforehand')
+        if y.shape[1]!=1: raise ValueError('The target is not a vector')
 
         ns_probs = [0 for _ in range(len(y))]
 

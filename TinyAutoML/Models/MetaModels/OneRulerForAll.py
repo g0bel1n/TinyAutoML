@@ -1,14 +1,16 @@
 import logging
+from numpy import ndarray
 import pandas as pd
 
 from typing import Optional, Union
-from sklearn.base import BaseEstimator
+from sklearn.base import ClassifierMixin
 from sklearn.ensemble import RandomForestClassifier
 
-from .MetaModel import MetaModel
-from .EstimatorsPool import EstimatorPool
-from  .EstimatorsPoolCV import EstimatorPoolCV
-from  ..support.MyTools import getAdaptedCrossVal, checkClassBalance
+from ..MetaModel import MetaModel
+from ..EstimatorsPools.EstimatorsPool import EstimatorPool
+from ..EstimatorsPools.EstimatorsPoolCV import EstimatorPoolCV
+from ...support.MyTools import getAdaptedCrossVal, checkClassBalance
+
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -19,9 +21,9 @@ class OneRulerForAll(MetaModel):
     the pool might be right, given the pool outputs
     """
 
-    def __init__(self, comprehensiveSearch: bool = True, parameterTuning: bool = True, metrics: str = 'accuracy', nSplits: int=10, ruler: Optional[BaseEstimator] =None):
+    def __init__(self, comprehensiveSearch: bool = True, parameterTuning: bool = True, metrics: str = 'accuracy', nSplits: int=10, ruler = RandomForestClassifier() ):
 
-        self.ruler = RandomForestClassifier() if ruler is None else ruler
+        self.ruler = ruler
         self.estimatorPool : Optional[Union[EstimatorPoolCV, EstimatorPool]] = None
         self.comprehensiveSearch = comprehensiveSearch
         self.nSplits = nSplits
@@ -52,12 +54,13 @@ class OneRulerForAll(MetaModel):
         return self
 
     # Overriding sklearn BaseEstimator methods
-    def predict(self, X: pd.DataFrame) -> pd.Series:
+    def predict(self, X: pd.DataFrame) -> Union[pd.Series,ndarray, list[ndarray]]:
         assert self.estimatorPool is not None and self.estimatorPool.is_fitted , 'Please fit the model before'
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
+        
         return self.ruler.predict(estimatorsPoolOutputs)
 
-    def predict_proba(self, X: pd.DataFrame) -> pd.Series:
+    def predict_proba(self, X: pd.DataFrame) -> Union[pd.Series,ndarray, list[ndarray]]:
         assert self.estimatorPool is not None and self.estimatorPool.is_fitted , 'Please fit the model before'
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
         return self.ruler.predict_proba(estimatorsPoolOutputs)

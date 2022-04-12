@@ -1,14 +1,16 @@
 import logging
+import numpy as np
 import pandas as pd
 
-from typing import Optional, Union
-from sklearn.base import BaseEstimator
+from typing import Any, Optional, Union
+from sklearn.base import ClassifierMixin
 from sklearn.pipeline import Pipeline
 
-from .EstimatorsPool import EstimatorPool
-from .EstimatorsPoolCV import EstimatorPoolCV
-from .MetaModel import MetaModel
-from ..support.MyTools import  getAdaptedCrossVal, checkClassBalance
+from ..MetaModel import MetaModel
+from ..EstimatorsPools.EstimatorsPool import EstimatorPool
+from ..EstimatorsPools.EstimatorsPoolCV import EstimatorPoolCV
+from ...support.MyTools import getAdaptedCrossVal, checkClassBalance
+
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -16,7 +18,7 @@ class BestModel(MetaModel):
 
     def __init__(self, comprehensiveSearch: bool = True, parameterTuning: bool =True, metrics: str ='accuracy', n_splits: int =10):
         self.best_estimator_name : str
-        self.best_estimator : Union[Pipeline, BaseEstimator]
+        self.best_estimator : Any
         self.best_estimator_index : int
 
         # Pool of estimators
@@ -57,10 +59,15 @@ class BestModel(MetaModel):
         return self
 
     # Overloading sklearn BaseEstimator methods to use the best estimator
-    def predict(self, X: pd.DataFrame) -> pd.Series:
-        return self.best_estimator.predict(X)
+    def predict(self, X: Union[pd.DataFrame,np.ndarray]) -> Union[pd.Series,np.ndarray, list[np.ndarray]]:
 
-    def predict_proba(self, X: pd.DataFrame) -> pd.Series:
+        if hasattr(self.best_estimator, 'predict') is True : self.best_estimator.predict(X)
+        try: pred = self.best_estimator.predict(X)
+        except AttributeError as e:
+            raise AttributeError from e
+        return pred
+
+    def predict_proba(self, X: Union[pd.DataFrame,np.ndarray]) -> Union[pd.Series,np.ndarray, list[np.ndarray]]:
         return self.best_estimator.predict_proba(X)
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:

@@ -1,26 +1,36 @@
+import numpy as np
 import pandas as pd
+from typing import Union
 
+
+from sklearn.pipeline import Pipeline
 from sklearn.base import BaseEstimator
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, OneHotEncoder, FunctionTransformer
 
+from .support.MyTools import isIndexedByTime
 from .Preprocessing.LassoSelectorTransformer import LassoSelectorTransformer
 from .Preprocessing.NonStationarityCorrector import NonStationarityCorrector
-from .support.MyTools import isIndexedByTime
 
 
-def buildColumnTransformer(X: pd.DataFrame) -> ColumnTransformer:
+def buildColumnTransformer(X: Union[pd.DataFrame,np.ndarray]) -> ColumnTransformer:
 
     # Select numerical and categorical feature to be able to apply different transformers
+    if type(X) is pd.DataFrame:
+        numerical_ix = X.select_dtypes(include=['int64', 'float64']).columns
+        categorical_ix = X.select_dtypes(include=['object', 'bool']).columns
 
-    numerical_ix = X.select_dtypes(include=['int64', 'float64']).columns
-    categorical_ix = X.select_dtypes(include=['object', 'bool']).columns
+    elif type(X) is np.ndarray :
+        numerical_ix = X.dtype(include=['int64', 'float64']).columns
+        categorical_ix = X.dtype(include=['object', 'bool']).columns
 
-    if isIndexedByTime(X):
+    else : raise ValueError('X is not valid')
+
+    if (type(X)is pd.DataFrame and  isIndexedByTime(X)):
+
         numerical_process = Pipeline([('NonStationarityCorrector', NonStationarityCorrector()),
                                       ('MinMaxScaler', MinMaxScaler(feature_range=[-1, 1]))])
-    else:
+    else : 
         numerical_process = Pipeline([('StandardScaler', StandardScaler()),
                                       ('MinMaxScaler', MinMaxScaler(feature_range=[-1, 1]))])
 
@@ -31,8 +41,10 @@ def buildColumnTransformer(X: pd.DataFrame) -> ColumnTransformer:
     return ColumnTransformer(transformers=transformer)
 
 
-def buildMetaPipeline(X: pd.DataFrame, estimator: BaseEstimator) -> Pipeline:
-    cols = X.columns
+def buildMetaPipeline(X: Union[pd.DataFrame,np.ndarray], estimator: BaseEstimator) -> Pipeline:
+
+    cols = X.columns if type(X) is pd.DataFrame else [f'feature_{i}' for i in range(X.shape[1])]
+
     columnTransformer = buildColumnTransformer(X)
     
     if len(cols) > 15:

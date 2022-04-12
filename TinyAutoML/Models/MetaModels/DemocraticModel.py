@@ -4,10 +4,11 @@ import pandas as pd
 
 from typing import Optional, Union
 
-from .EstimatorsPool import EstimatorPool
-from .EstimatorsPoolCV import EstimatorPoolCV
-from .MetaModel import MetaModel
-from ..support.MyTools import getAdaptedCrossVal, checkClassBalance
+from ..MetaModel import MetaModel
+from ..EstimatorsPools.EstimatorsPool import EstimatorPool
+from ..EstimatorsPools.EstimatorsPoolCV import EstimatorPoolCV
+from ...support.MyTools import getAdaptedCrossVal, checkClassBalance
+
 
 
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -29,7 +30,7 @@ class _AvailableIfDescriptor:
 
         # update the docstring of the descriptor
 
-    def __get__(self, obj, owner=None):
+    def __get__(self, obj, owner):
         attr_err = AttributeError(
             f"This {repr(owner.__name__)} has no attribute {repr(self.attribute_name)}"
         )
@@ -109,31 +110,29 @@ class DemocraticModel(MetaModel):
         return self
 
     # Overriding sklearn BaseEstimator methods
-    def predict(self, X: pd.DataFrame) -> np.ndarray:
+    def predict(self, X: pd.DataFrame) -> Union[pd.Series,np.ndarray, list[np.ndarray]]:
 
-        return np.argmax(self.predict_proportion(X), axis=1) if self.voting == 'hard' else np.argmax(
+        return np.argmax(self.predict_proportion(X)) if self.voting == 'hard' else np.argmax(
             self.predict_proba(X),axis=1)
 
     @available_if(_check_hard_voting)
-    def predict_proportion(self, X: pd.DataFrame) -> np.ndarray:
+    def predict_proportion(self, X: Union[pd.DataFrame,np.ndarray]) -> list:
         """
         Returns the proportion of model votes for each class
         """
+        if self.estimatorPool is None : raise ValueError('You must fit the estimator')
+
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
-        estimator_names = estimatorsPoolOutputs.columns
-        classes = np.sort(np.unique(estimatorsPoolOutputs.values))
 
-        for c in classes:
-            estimatorsPoolOutputs[f"{c}_proportion"] = (estimatorsPoolOutputs[estimator_names] == c).sum(
-                axis=1) / self.nEstimators
-
-        return estimatorsPoolOutputs[[f"{c}_proportion" for c in classes]].values
+        prop = float(estimatorsPoolOutputs.iloc[0,:].sum())/self.nEstimators
+        return [1-prop, prop] 
 
     @available_if(_check_soft_voting)
-    def predict_proba(self, X: pd.DataFrame) -> np.ndarray:
+    def predict_proba(self, X: Union[pd.DataFrame,np.ndarray]) -> Union[pd.Series,np.ndarray, list[np.ndarray]]:
         """
         Returns the average model probability per class
         """
+        if self.estimatorPool is None : raise ValueError('You must fit the estimator')
         estimatorsPoolProbas = self.estimatorPool.predict_proba(X)
         return np.mean(estimatorsPoolProbas, axis=0)
 

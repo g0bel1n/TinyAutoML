@@ -1,16 +1,17 @@
+import numpy as np
 import pandas as pd
 
-from typing import Optional, Union
+from typing import Union
 from abc import ABC, abstractmethod
-from sklearn.base import BaseEstimator
+from sklearn.base import BaseEstimator, ClassifierMixin
 
-from .EstimatorsPool import EstimatorPool
-from .EstimatorsPoolCV import EstimatorPoolCV
+from .EstimatorsPools.EstimatorsPool import EstimatorPool
+from .EstimatorsPools.EstimatorsPoolCV import EstimatorPoolCV
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-class MetaModel(ABC, BaseEstimator):
+class MetaModel(ABC, BaseEstimator, ClassifierMixin):
 
     comprehensiveSearch : bool
     is_fitted : bool
@@ -20,20 +21,20 @@ class MetaModel(ABC, BaseEstimator):
     def __init__(self,comprehensiveSearch: bool = True, parameterTuning: bool = True, metrics: str = 'accuracy', nSplits: int=10):
         pass
     @abstractmethod
-    def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
+    def fit(self, X: Union[pd.DataFrame,np.ndarray], y: Union[pd.Series,np.ndarray]) -> ClassifierMixin:
         pass
 
     # Overriding sklearn BaseEstimator methods
     @abstractmethod
-    def predict(self, X: pd.DataFrame) -> pd.Series:
+    def predict(self, X: Union[pd.DataFrame,np.ndarray]) -> Union[pd.Series,np.ndarray]:
         pass
     
     @abstractmethod
-    def predict_proba(self, X: pd.DataFrame) -> pd.Series:
+    def predict_proba(self, X: Union[pd.DataFrame,np.ndarray]) -> Union[pd.Series,np.ndarray]:
         pass
     
     @abstractmethod
-    def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+    def transform(self, X: Union[pd.DataFrame,np.ndarray]) -> Union[pd.DataFrame,np.ndarray]:
         pass
 
     def get_pool(self) -> Union[EstimatorPoolCV, EstimatorPool]:
