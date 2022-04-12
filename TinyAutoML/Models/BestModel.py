@@ -26,7 +26,7 @@ class BestModel(BaseEstimator):
         self.metrics = metrics
         
 
-    def fit(self, X: pd.DataFrame, y: pd.Series, pool: EstimatorPool= None) -> BaseEstimator:
+    def fit(self, X: pd.DataFrame, y: pd.Series, pool: EstimatorPool=None) -> BaseEstimator:
         logging.info("Training models")
 
         # Pour détecter une distribution déséquilibrée...
