@@ -22,7 +22,7 @@ cut = int(len(y) * 0.8)
 X_train, X_test = X[:cut], X[cut:]
 y_train, y_test = y[:cut], y[cut:]
 
-model = DemocraticModelCV(gridSearch=True, metrics='accuracy')
+model = DemocraticModelCV(parameterTuning=True, metrics='accuracy')
 mp = MetaPipelineCV(model=model)
 mp.fit(X_train, y_train)
 print(mp.classification_report(X_test, y_test))
@@ -34,10 +34,10 @@ print(mp.classification_report(X_test, y_test))
 
 ``` python
 
-metapipe = tam.Estimator.Metapipeline(model, gridSearch)
+metapipe = tam.Estimator.Metapipeline(model, parameterTuning)
 
 model = 'orfa', 'metamodel' or 'democraticmodel'
-gridSearch: bool
+parameterTuning: bool
 
     .predict(self, X: pd.DataFrame)
     

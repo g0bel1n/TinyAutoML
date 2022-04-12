@@ -38,7 +38,7 @@ class EstimatorPoolCV(BaseEstimator):
 
         return self.estimatorsPipeline
 
-    def fitWithGridSearch(self, X: pd.DataFrame, y: pd.Series,
+    def fitWithparameterTuning(self, X: pd.DataFrame, y: pd.Series,
                           cv: Union[TimeSeriesSplit, StratifiedKFold],
                           metrics) -> list[tuple[str, Pipeline]]:
 
@@ -48,7 +48,7 @@ class EstimatorPoolCV(BaseEstimator):
                 grid = {f'{estimator[1].__repr__()}__{key}': value for key, value in estimators_params[estimator[0]].items()}
                 clf = RandomizedSearchCV(estimator=pipe,
                                          param_distributions=grid, scoring=metrics,
-                                         n_jobs=-2, cv=cv, verbose=1)
+                                         n_jobs=-2, cv=cv, verbose=1, n_iter=min(10, len(grid)))
                 clf.fit(X, y)
 
                 pipe.set_params(**clf.best_params_)

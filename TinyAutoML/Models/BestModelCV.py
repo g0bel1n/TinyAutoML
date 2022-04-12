@@ -14,7 +14,7 @@ from ..support.MyTools import  getAdaptedCrossVal, checkClassBalance
 
 class BestModelCV(BaseEstimator):
 
-    def __init__(self, gridSearch: bool =True, metrics: str ='accuracy', n_splits: int =10):
+    def __init__(self, parameterTuning: bool =True, metrics: str ='accuracy', n_splits: int =10):
         self.best_estimator_name : str
         self.best_estimator_ : Pipeline
         self.best_estimator_index : int
@@ -23,7 +23,7 @@ class BestModelCV(BaseEstimator):
         self.estimatorPoolCV = EstimatorPoolCV()
         self.scores = pd.DataFrame()
         self.n_splits = n_splits
-        self.gridSearch = gridSearch
+        self.parameterTuning = parameterTuning
         self.metrics = metrics
 
 
@@ -37,8 +37,8 @@ class BestModelCV(BaseEstimator):
         # Récupération d'un split de CV adapté selon l'indexage du set
         cv = getAdaptedCrossVal(X, self.n_splits)
 
-        if self.gridSearch:
-            self.estimatorPoolCV.fitWithGridSearch(X,y,cv,'accuracy')
+        if self.parameterTuning:
+            self.estimatorPoolCV.fitWithparameterTuning(X,y,cv,'accuracy')
         else:
             self.estimatorPoolCV.fit(X, y)
 
