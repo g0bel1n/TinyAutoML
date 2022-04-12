@@ -3,7 +3,6 @@ import logging
 
 import pandas as pd
 
-EstimatorPoolCV
 pd.options.mode.chained_assignment = None  # default='warn'
 
 from matplotlib import pyplot as plt
