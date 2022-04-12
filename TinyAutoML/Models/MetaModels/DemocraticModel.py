@@ -5,8 +5,8 @@ import pandas as pd
 from typing import Optional, Union
 
 from ..MetaModel import MetaModel
-from ..EstimatorsPools.EstimatorsPool import EstimatorPool
-from ..EstimatorsPools.EstimatorsPoolCV import EstimatorPoolCV
+from ..EstimatorPools.EstimatorPool import EstimatorPool
+from ..EstimatorPools.EstimatorPoolCV import EstimatorPoolCV
 from ...support.MyTools import getAdaptedCrossVal, checkClassBalance
 
 
@@ -73,7 +73,7 @@ class DemocraticModel(MetaModel):
         self.parameterTuning = parameterTuning
         self.metrics = metrics
         self.voting = voting
-        self.nEstimators : int 
+        self.nEstimator : int 
         self.comprehensiveSearch = comprehensiveSearch
 
     def _check_soft_voting(self):
@@ -105,7 +105,7 @@ class DemocraticModel(MetaModel):
             else:
                 self.estimatorPool.fit(X, y)
 
-        self.nEstimators = len(self.estimatorPool)
+        self.nEstimator = len(self.estimatorPool)
 
         return self
 
@@ -124,7 +124,7 @@ class DemocraticModel(MetaModel):
 
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
 
-        prop = float(estimatorsPoolOutputs.iloc[0,:].sum())/self.nEstimators
+        prop = float(estimatorsPoolOutputs.iloc[0,:].sum())/self.nEstimator
         return [1-prop, prop] 
 
     @available_if(_check_soft_voting)

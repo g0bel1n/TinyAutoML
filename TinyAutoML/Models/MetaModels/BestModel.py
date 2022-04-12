@@ -5,8 +5,8 @@ import pandas as pd
 from typing import Any, Optional, Union
 
 from ..MetaModel import MetaModel
-from ..EstimatorsPools.EstimatorsPool import EstimatorPool
-from ..EstimatorsPools.EstimatorsPoolCV import EstimatorPoolCV
+from ..EstimatorPools.EstimatorPool import EstimatorPool
+from ..EstimatorPools.EstimatorPoolCV import EstimatorPoolCV
 from ...support.MyTools import getAdaptedCrossVal, checkClassBalance
 
 

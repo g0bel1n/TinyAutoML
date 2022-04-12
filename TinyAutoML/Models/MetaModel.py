@@ -5,8 +5,8 @@ from typing import Union
 from abc import ABC, abstractmethod
 from sklearn.base import BaseEstimator, ClassifierMixin
 
-from .EstimatorsPools.EstimatorsPool import EstimatorPool
-from .EstimatorsPools.EstimatorsPoolCV import EstimatorPoolCV
+from .EstimatorPools.EstimatorPool import EstimatorPool
+from .EstimatorPools.EstimatorPoolCV import EstimatorPoolCV
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
