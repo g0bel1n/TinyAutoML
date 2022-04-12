@@ -5,8 +5,8 @@ from TinyAutoML.Models import *
 from TinyAutoML import MetaPipelineCV,MetaPipeline
 
 
-model = BestModelCV(gridSearch=True, metrics='accuracy')
-mp = MetaPipelineCV(model=model)
+model = BestModel(parameterTuning=True, metrics='accuracy')
+mp = MetaPipeline(model=model)
 """
 df = pd.read_csv('examples/database.csv')
 df.dropna(inplace=True)

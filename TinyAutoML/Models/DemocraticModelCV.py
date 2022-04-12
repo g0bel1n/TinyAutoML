@@ -63,10 +63,10 @@ class DemocraticModelCV(BaseEstimator):
     Classes are assumed to be in alphabetical order
     """
 
-    def __init__(self, gridSearch: bool = True, metrics: str = 'accuracy', nSplits: int =10, voting: str='soft'):
+    def __init__(self, parameterTuning: bool = True, metrics: str = 'accuracy', nSplits: int =10, voting: str='soft'):
         self.estimatorPoolCV = EstimatorPoolCV()
         self.nSplits = nSplits
-        self.gridSearch = gridSearch
+        self.parameterTuning = parameterTuning
         self.metrics = metrics
         self.voting = voting
         self.nEstimators = len(self.estimatorPoolCV)
@@ -92,8 +92,8 @@ class DemocraticModelCV(BaseEstimator):
         cv = getAdaptedCrossVal(X, self.nSplits)
 
         # Training the pool
-        if self.gridSearch:
-            self.estimatorPoolCV.fitWithGridSearch(X, y, cv, self.metrics)
+        if self.parameterTuning:
+            self.estimatorPoolCV.fitWithparameterTuning(X, y, cv, self.metrics)
         else:
             self.estimatorPoolCV.fit(X, y)
 

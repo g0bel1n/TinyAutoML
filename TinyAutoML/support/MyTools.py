@@ -10,7 +10,7 @@ from sklearn.model_selection import TimeSeriesSplit, StratifiedKFold
 def extract_score_params(cv_results: dict, n_splits: int, k_last_splits=5) -> tuple[np.float64, dict]:
     """
     :param k_last_splits: k last splits to consider for averaging scores
-    :param cv_results: output of GridSearchCV.cv_results_
+    :param cv_results: output of parameterTuningCV.cv_results_
     :param n_splits: number of splits in the cross_validation
     :return: best score on the last k splits, and the params
     """

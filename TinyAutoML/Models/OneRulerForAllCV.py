@@ -18,7 +18,7 @@ class OneRulerForAllCV(BaseEstimator):
     the pool might be right, given the pool outputs
     """
 
-    def __init__(self, gridSearch: bool = True, metrics: str = 'accuracy', nSplits: int=10, ruler: Optional[BaseEstimator] =None):
+    def __init__(self, parameterTuning: bool = True, metrics: str = 'accuracy', nSplits: int=10, ruler: Optional[BaseEstimator] =None):
 
         if ruler is None:
             self.ruler = RandomForestClassifier()
@@ -28,7 +28,7 @@ class OneRulerForAllCV(BaseEstimator):
 
         self.estimatorPoolCV = EstimatorPoolCV()
         self.nSplits = nSplits
-        self.gridSearch = gridSearch
+        self.parameterTuning = parameterTuning
         self.metrics = metrics
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> BaseEstimator:
@@ -40,8 +40,8 @@ class OneRulerForAllCV(BaseEstimator):
         cv = getAdaptedCrossVal(X, self.nSplits)
 
         # Training the pool
-        if self.gridSearch:
-            self.estimatorPoolCV.fitWithGridSearch(X, y, cv, self.metrics)
+        if self.parameterTuning:
+            self.estimatorPoolCV.fitWithparameterTuning(X, y, cv, self.metrics)
         else:
             self.estimatorPoolCV.fit(X, y)
 

@@ -33,15 +33,16 @@ class EstimatorPool(BaseEstimator):
         for estimator in self.estimatorsList: estimator[1].fit(X, y)
         return self.estimatorsList
 
-    def fitWithGridSearch(self, X: pd.DataFrame, y: pd.Series,
+    def fitWithparameterTuning(self, X: pd.DataFrame, y: pd.Series,
                           cv: Union[TimeSeriesSplit, StratifiedKFold],
                           metrics) -> list[tuple[str, BaseEstimator]]:
 
         for estimator in self.estimatorsList:
             if estimator[0] in estimators_params:
+                grid = estimators_params[estimator[0]]
                 clf = RandomizedSearchCV(estimator=estimator[1],
-                                         param_distributions=estimators_params[estimator[0]], scoring=metrics,
-                                         n_jobs=9, cv=cv)
+                                         param_distributions=grid, scoring=metrics,
+                                         n_jobs=-2, cv=cv, n_iter=min(10, len(grid)))
                 clf.fit(X, y)
 
                 estimator[1].set_params(**clf.best_params_)
