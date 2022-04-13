@@ -1,4 +1,3 @@
-#%%
 import pandas as pd
 from TinyAutoML.Models import *
 from TinyAutoML import MetaPipeline
@@ -48,7 +47,3 @@ mp_3.classification_report(X_test, y_test)
 #mp.transform(X,y)
 #mp.predict(X_test)
 #mp.classification_report(X_test, y_test)
-
-
-
-# %%
