@@ -14,7 +14,6 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import (RandomizedSearchCV, StratifiedKFold,
                                      TimeSeriesSplit)
 from sklearn.naive_bayes import GaussianNB
-from tqdm import tqdm
 
 from ...constants.gsp import estimators_params
 
@@ -42,7 +41,7 @@ class EstimatorPool():
                           cv: Union[TimeSeriesSplit, StratifiedKFold],
                           metric) -> list[tuple[str, ClassifierMixin]]:
 
-        for estimator in tqdm(self.estimatorsList):
+        for estimator in self.estimatorsList:
             if estimator[0] in estimators_params:
                 grid = estimators_params[estimator[0]]
                 clf = RandomizedSearchCV(estimator=estimator[1],
