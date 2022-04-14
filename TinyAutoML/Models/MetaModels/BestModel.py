@@ -43,7 +43,7 @@ class BestModel(MetaModel):
         # Training the pool
             if self.parameterTuning:
 
-                self.estimatorPool.fitWithparameterTuning(X, y, cv, self.metrics)
+                self.estimatorPool.fitWithParameterTuning(X, y, cv, self.metrics)
             else:
        
                 self.estimatorPool.fit(X, y)

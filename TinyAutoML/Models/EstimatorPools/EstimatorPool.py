@@ -14,6 +14,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import (RandomizedSearchCV, StratifiedKFold,
                                      TimeSeriesSplit)
 from sklearn.naive_bayes import GaussianNB
+from tqdm import tqdm
 
 from ...constants.gsp import estimators_params
 
@@ -37,11 +38,11 @@ class EstimatorPool():
         self.is_fitted = True
         return self.estimatorsList
 
-    def fitWithparameterTuning(self, X: pd.DataFrame, y: pd.Series,
+    def fitWithParameterTuning(self, X: pd.DataFrame, y: pd.Series,
                           cv: Union[TimeSeriesSplit, StratifiedKFold],
                           metric) -> list[tuple[str, ClassifierMixin]]:
 
-        for estimator in self.estimatorsList:
+        for estimator in tqdm(self.estimatorsList):
             if estimator[0] in estimators_params:
                 grid = estimators_params[estimator[0]]
                 clf = RandomizedSearchCV(estimator=estimator[1],

@@ -12,6 +12,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import (RandomizedSearchCV, StratifiedKFold,
                                      TimeSeriesSplit)
 from sklearn.naive_bayes import GaussianNB
+from tqdm import tqdm
 from sklearn.pipeline import Pipeline
 
 from  ...constants.gsp import estimators_params
@@ -24,8 +25,8 @@ class EstimatorPoolCV():
 
     def __init__(self):
 
-        self.estimatorsList = [("random forest classifier", RandomForestClassifier()),
-                               ("Logistic Regression", LogisticRegression(fit_intercept=True)),
+        self.estimatorsList = [('random forest classifier', RandomForestClassifier()),
+                               ('Logistic Regression', LogisticRegression(fit_intercept=True)),
                                ('Gaussian Naive Bayes', GaussianNB()),
                                ('LDA', LinearDiscriminantAnalysis()),
                                ('xgb', XGBClassifier(use_label_encoder=False, eval_metric='logloss'))
@@ -39,7 +40,7 @@ class EstimatorPoolCV():
         self.is_fitted = True
         return self.estimatorsPipeline
 
-    def fitWithparameterTuning(self, X: pd.DataFrame, y: pd.Series, cv: Union[TimeSeriesSplit, StratifiedKFold], metric: str) -> list[tuple[str, Pipeline]]:
+    def fitWithParameterTuning(self, X: pd.DataFrame, y: pd.Series, cv: Union[TimeSeriesSplit, StratifiedKFold], metric: str) -> list[tuple[str, Pipeline]]:
 
 
         for estimator in tqdm(self.estimatorsList):

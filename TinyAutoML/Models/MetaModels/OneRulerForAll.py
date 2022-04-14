@@ -42,7 +42,7 @@ class OneRulerForAll(MetaModel):
             self .estimatorPool = EstimatorPoolCV() if self.comprehensiveSearch else EstimatorPool()
         # Training the pool
             if self.parameterTuning:
-                self.estimatorPool.fitWithparameterTuning(X, y, cv, self.metrics)
+                self.estimatorPool.fitWithParameterTuning(X, y, cv, self.metrics)
             else:
                 self.estimatorPool.fit(X, y)
 
