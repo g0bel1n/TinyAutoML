@@ -1,8 +1,7 @@
 import pandas as pd
-import numpy as np
-from sklearn.datasets import load_breast_cancer
 from TinyAutoML.Models import *
 from TinyAutoML import MetaPipeline
+from examples.example_utils import add_AR_cols, create_binary_box
 
 """iris = load_breast_cancer()
 X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
@@ -11,12 +10,14 @@ y = iris.target
 
 
 df = pd.read_csv('examples/database.csv')
-df.dropna(inplace=True)
-y = np.random.choice([0,1],len(df.iloc[:,2]))
 df['Date'] = pd.to_datetime(df['Date'])
 
-df.set_index(['Date'], inplace=True)
-X = df.iloc[:,2:20]
+df = create_binary_box(df, relative_threshold = 0.05, box_length=5).set_index('Date').dropna(axis = 0)
+df = add_AR_cols(df,7).dropna(axis = 0)
+
+#X,y = df.drop('Box', axis=1)[:'2020'], df['Box'][:'2020']
+X,y = df.drop('Box', axis=1)[:'2020'].values, df['Box'][:'2020'].values
+
 cut = int(len(y) * 0.8)
 
 X_train, X_test = X[:cut], X[cut:]
@@ -46,5 +47,3 @@ mp_3.classification_report(X_test, y_test)
 #mp.transform(X,y)
 #mp.predict(X_test)
 #mp.classification_report(X_test, y_test)
-
-

@@ -37,7 +37,7 @@ class EstimatorPool():
         self.is_fitted = True
         return self.estimatorsList
 
-    def fitWithparameterTuning(self, X: pd.DataFrame, y: pd.Series,
+    def fitWithParameterTuning(self, X: pd.DataFrame, y: pd.Series,
                           cv: Union[TimeSeriesSplit, StratifiedKFold],
                           metric) -> list[tuple[str, ClassifierMixin]]:
 
