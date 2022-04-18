@@ -1,17 +1,17 @@
 import logging
-from numpy import ndarray
-import pandas as pd
-
 from typing import Optional, Union
+
+import pandas as pd
+from numpy import ndarray
 from sklearn.ensemble import RandomForestClassifier
 
-from ..MetaModel import MetaModel
+from ...support.MyTools import checkClassBalance, getAdaptedCrossVal
 from ..EstimatorPools.EstimatorPool import EstimatorPool
 from ..EstimatorPools.EstimatorPoolCV import EstimatorPoolCV
-from ...support.MyTools import getAdaptedCrossVal, checkClassBalance
-
+from ..MetaModel import MetaModel
 
 pd.options.mode.chained_assignment = None  # default='warn'
+
 
 class OneRulerForAll(MetaModel):
     """
@@ -20,15 +20,21 @@ class OneRulerForAll(MetaModel):
     the pool might be right, given the pool outputs
     """
 
-    def __init__(self, comprehensiveSearch: bool = True, parameterTuning: bool = True, metrics: str = 'accuracy', nSplits: int=10, ruler = RandomForestClassifier() ):
+    def __init__(
+        self,
+        comprehensiveSearch: bool = True,
+        parameterTuning: bool = True,
+        metrics: str = "accuracy",
+        nSplits: int = 10,
+        ruler=RandomForestClassifier(),
+    ):
 
         self.ruler = ruler
-        self.estimatorPool : Optional[Union[EstimatorPoolCV, EstimatorPool]] = None
+        self.estimatorPool: Optional[Union[EstimatorPoolCV, EstimatorPool]] = None
         self.comprehensiveSearch = comprehensiveSearch
         self.nSplits = nSplits
         self.parameterTuning = parameterTuning
         self.metrics = metrics
-
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> MetaModel:
 
@@ -38,9 +44,11 @@ class OneRulerForAll(MetaModel):
 
         cv = getAdaptedCrossVal(X, self.nSplits)
 
-        if self.estimatorPool is None :
-            self .estimatorPool = EstimatorPoolCV() if self.comprehensiveSearch else EstimatorPool()
-        # Training the pool
+        if self.estimatorPool is None:
+            self.estimatorPool = (
+                EstimatorPoolCV() if self.comprehensiveSearch else EstimatorPool()
+            )
+            # Training the pool
             if self.parameterTuning:
                 self.estimatorPool.fitWithParameterTuning(X, y, cv, self.metrics)
             else:
@@ -53,14 +61,20 @@ class OneRulerForAll(MetaModel):
         return self
 
     # Overriding sklearn BaseEstimator methods
-    def predict(self, X: pd.DataFrame) -> Union[pd.Series,ndarray, list[ndarray]]:
-        assert self.estimatorPool is not None and self.estimatorPool.is_fitted , 'Please fit the model before'
+    def predict(self, X: pd.DataFrame) -> Union[pd.Series, ndarray, list[ndarray]]:
+        assert (
+            self.estimatorPool is not None and self.estimatorPool.is_fitted
+        ), "Please fit the model before"
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
-        
+
         return self.ruler.predict(estimatorsPoolOutputs)
 
-    def predict_proba(self, X: pd.DataFrame) -> Union[pd.Series,ndarray, list[ndarray]]:
-        assert self.estimatorPool is not None and self.estimatorPool.is_fitted , 'Please fit the model before'
+    def predict_proba(
+        self, X: pd.DataFrame
+    ) -> Union[pd.Series, ndarray, list[ndarray]]:
+        assert (
+            self.estimatorPool is not None and self.estimatorPool.is_fitted
+        ), "Please fit the model before"
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
         return self.ruler.predict_proba(estimatorsPoolOutputs)
 
@@ -68,4 +82,4 @@ class OneRulerForAll(MetaModel):
         return X
 
     def __repr__(self, **kwargs):
-        return 'ORFA'
+        return "ORFA"

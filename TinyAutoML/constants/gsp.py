@@ -1,18 +1,29 @@
 # RANDOM FOREST
 
 # Number of features to consider at every split
-max_features = ['auto', 'sqrt']
+max_features = ["auto", "sqrt"]
 # Maximum number of levels in tree
 max_depth = [2, 3, 4, 5]
 
 # Method of selecting samples for training each tree
 bootstrap = [False]
 # Create the random grid
-random_forest_grid = {'max_features': max_features,
-                      'max_depth': max_depth,
-                      'bootstrap': bootstrap}
+random_forest_grid = {
+    "max_features": max_features,
+    "max_depth": max_depth,
+    "bootstrap": bootstrap,
+}
 
-xgb_params = {'objective': ['binary:logistic'], 'min_child_weight': [1, 5, 10], 'gamma': [0.5, 1, 1.5, 2, 5], 'subsample': [0.6, 0.8, 1.0], 'colsample_bytree': [0.6, 0.8, 1.0], 'max_depth': range(2, 10), 'silent': [True], 'verbosity': [0]}
+xgb_params = {
+    "objective": ["binary:logistic"],
+    "min_child_weight": [1, 5, 10],
+    "gamma": [0.5, 1, 1.5, 2, 5],
+    "subsample": [0.6, 0.8, 1.0],
+    "colsample_bytree": [0.6, 0.8, 1.0],
+    "max_depth": range(2, 10),
+    "silent": [True],
+    "verbosity": [0],
+}
 
 
-estimators_params = {'random forest classifier': random_forest_grid, "xgb": xgb_params}
+estimators_params = {"random forest classifier": random_forest_grid, "xgb": xgb_params}

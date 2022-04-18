@@ -9,6 +9,7 @@ from ..constants.GLOBAL_PARAMS import WINDOW
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
+
 class NonStationarityCorrector(BaseEstimator, TransformerMixin):
     """
     Correct columns that don't seem stationary according to Augmented Dicker Fuller statistical stationarity test
@@ -22,9 +23,9 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
         self.colsToCorrect = []
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> TransformerMixin:
-        '''
+        """
         split the cols according to Augmented Dicker Fuller statistical stationarity test
-        '''
+        """
         for col in X.columns:
             if col not in self.colsToKeepIntact:
                 test_results = adfuller(X[col].values)[0]
@@ -33,7 +34,9 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
                 else:
                     self.colsToKeepIntact.append(col)
 
-        assert len(self.colsToKeepIntact) + len(self.colsToCorrect) == len(X.columns), "Column(s) were lost in process"
+        assert len(self.colsToKeepIntact) + len(self.colsToCorrect) == len(
+            X.columns
+        ), "Column(s) were lost in process"
         return self
 
     def transform(self, X: pd.DataFrame, y=None) -> pd.DataFrame:
@@ -45,12 +48,22 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
                 # Depending on the window size, std can be null.
                 # In that situation the actual value can be replaced by the last non null value
                 # We also use loc[start+WINDOW:] in order to leave the WINDOW first rows intact. Otherwise, it would be nans
-                X[col].iloc[WINDOW:] = ((X[col] - X[col].rolling(window=WINDOW).mean()) / X[col].rolling(window=WINDOW).std(skipna=True).replace(to_replace=0., method='ffill')).iloc[WINDOW:]
+                X[col].iloc[WINDOW:] = (  # type: ignore
+                    (X[col] - X[col].rolling(window=WINDOW).mean())
+                    / X[col]
+                    .rolling(window=WINDOW)
+                    .std(skipna=True)
+                    .replace(to_replace=0.0, method="ffill")
+                ).iloc[
+                    WINDOW:
+                ]  # type: ignore
 
-            if self.colsToKeepIntact: X[self.colsToKeepIntact] = StandardScaler().fit_transform(
-                X[self.colsToKeepIntact])
+            if self.colsToKeepIntact:
+                X[self.colsToKeepIntact] = StandardScaler().fit_transform(
+                    X[self.colsToKeepIntact]
+                )
         else:
             X[X.columns] = StandardScaler().fit_transform(X[X.columns])
-            assert type(X) == pd.DataFrame, 'type error'
+            assert type(X) == pd.DataFrame, "type error"
 
         return X

@@ -1,8 +1,10 @@
 import os
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
+
 print(os.listdir())
 from TinyAutoML import MetaPipeline
 from TinyAutoML.Models import DemocraticModel
@@ -33,8 +35,6 @@ def test_fit_transform():
     assert np.all(np.isfinite(dm.fit_transform(X, y)))
 
 
-
 def test_classification_report():
     dm.classification_report(X, y)
     assert True
-

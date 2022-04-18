@@ -10,6 +10,7 @@ from .LassoFeatureSelection import FeatureSelection
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
+
 class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
     """
     Selects features according to their order of apparition when varying the shrinkage coefficient of LASSO regression
@@ -20,7 +21,9 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
         self.selectedFeaturesNames = list[str]
         self.preSelectionSize = preSelectionSize
 
-    def __preselect(self, X: pd.DataFrame, y: pd.Series) -> Union[pd.DataFrame, pd.Series]:
+    def __preselect(
+        self, X: pd.DataFrame, y: pd.Series
+    ) -> Union[pd.DataFrame, pd.Series]:
         # Preselection for datasets with many features
         preselector = SelectKBest(k=self.preSelectionSize)
         preselector.fit(X, y)
@@ -40,5 +43,5 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
 
     def transform(self, X: pd.DataFrame, y=None):
         X = X.copy()
-        
-        return X.loc[:,self.selectedFeaturesNames]
+
+        return X.loc[:, self.selectedFeaturesNames]

@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
-
 from TinyAutoML import MetaPipeline
 from TinyAutoML.Models import BestModel
 
@@ -33,10 +32,9 @@ def test_fit_transform():
 
 
 def test_get_scores():
-    assert np.all(np.array(mp.get_scores(X,y))!=0)
+    assert np.all(np.array(mp.get_scores(X, y)) != 0)
 
 
 def test_classification_report():
     mp.classification_report(X, y)
     assert True
-

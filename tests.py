@@ -1,3 +1,3 @@
 import pytest
-tcode = pytest.main(["tests"])
 
+tcode = pytest.main(["tests"])
