@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Saban Kientz Alexa
+    given-names: Lucas Thomas Maria
+title: "TinyAutoML"
+version: 2.3.3
+url: https://github.com/g0bel1n/TinyAutoML
+date-released: 2022-04-18
