@@ -3,9 +3,6 @@ import pandas as pd
 from examples.example_utils import add_AR_cols, create_binary_box
 from TinyAutoML import MetaPipeline
 from TinyAutoML.Models import *
-from TinyAutoML.Preprocessing.LassoFeatureSelectionParallel import (
-    FeatureSelectionParallel,
-)
 
 """iris = load_breast_cancer()
 X = pd.DataFrame(data=iris.data, columns=iris.feature_names)
