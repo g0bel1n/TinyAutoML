@@ -1,5 +1,6 @@
 import logging
 from typing import Optional, Union
+from copy import deepcopy
 
 import numpy as np
 import pandas as pd
@@ -30,50 +31,66 @@ class MetaPipeline(BaseEstimator, ClassifierMixin, TransformerMixin):
 
     def fit(
         self,
-        X: Union[pd.DataFrame, np.ndarray],
+        X: pd.DataFrame,
         y: Union[pd.Series, np.ndarray],
-        pool: Optional[Union[EstimatorPool, EstimatorPoolCV]] = None,
+        pool: Optional[EstimatorPoolCV] = None,
+        **kwargs
     ) -> BaseEstimator:
         if type(y) is np.ndarray and len(y.shape) != 1:
             raise ValueError("The target is not a vector")
+
         # some of the MetaPipeline steps requires information on the data, therefore we have to initialize it here
         self.estimator = (
             self.model
             if self.model.comprehensiveSearch
             else buildMetaPipeline(X, self.model)
         )
-        if pool is not None:
-            self.__set_pool(pool)
 
-        self.estimator.fit(X, y)
+        if pool is not None and self.model.comprehensiveSearch:
+            self.__set_pool(pool)
+            self.estimator.fit(X, y, **kwargs)  # type: ignore
+
+        elif pool is not None and type(self.estimator) is Pipeline:
+            self.estimator = deepcopy(pool)  # type: ignore
+            self.estimator.steps.pop()  # type: ignore
+            X = pd.DataFrame(
+                pool.transform(X),  # type: ignore
+                columns=self.estimator.named_steps[  # type: ignore
+                    "Lasso Selector"
+                ].selectedFeaturesNames,
+            )
+
+            self.model.fit(X, y, **kwargs)  # type: ignore
+            self.estimator.steps.append((self.model.__repr__(), self.model))  # type: ignore
+            print(self.estimator)
+        else:
+            self.estimator.fit(X, y, **kwargs)  # type: ignore
 
         return self
 
-    def get_pool(self) -> Optional[Union[EstimatorPoolCV, EstimatorPool]]:
+    def get_pool(self) -> Optional[Union[EstimatorPoolCV, Pipeline]]:
         try:
             if type(self.estimator) is MetaModel:
-                return self.estimator.get_pool()
+                return self.estimator.get_pool()  # type: ignore
             elif type(self.estimator) is Pipeline:
-                return self.estimator.named_steps[self.model.__repr__()].get_pool()
+                return self.estimator
         except AttributeError as e:
             raise AttributeError("Please, fit the estimator beforehand") from e
 
     def __set_pool(self, fitted_pool: Union[EstimatorPool, EstimatorPoolCV]):
         if type(self.estimator) is MetaModel:
-            self.estimator.set_pool(fitted_pool)
-        elif type(self.estimator) is Pipeline:
-            self.estimator.named_steps[self.model.__repr__()].set_pool(fitted_pool)
+            self.estimator.set_pool(fitted_pool)  # type: ignore
 
     # Overloading BaseEstimator methods
-    def predict(self, X: Union[pd.DataFrame, np.ndarray]):
+    def predict(self, X: Union[pd.DataFrame, np.ndarray], **kwargs):
         if self.estimator is None:
             raise ValueError("The estimator has not been fitted beforehand")
-        return self.estimator.predict(X)
+        return self.estimator.predict(X, **kwargs)
 
-    def predict_proba(self, X: Union[pd.DataFrame, np.ndarray]):
+    def predict_proba(self, X: Union[pd.DataFrame, np.ndarray], **kwargs):
         if self.estimator is None:
             raise ValueError("The estimator has not been fitted beforehand")
-        return self.estimator.predict_proba(X)
+        return self.estimator.predict_proba(X, **kwargs)
 
     def transform(self, X: Union[pd.DataFrame, np.ndarray], y=None):
         if self.estimator is None:
@@ -81,14 +98,17 @@ class MetaPipeline(BaseEstimator, ClassifierMixin, TransformerMixin):
         return self.estimator.transform(X)
 
     def get_scores(
-        self, X: Union[pd.DataFrame, np.ndarray], y: Union[pd.Series, np.ndarray]
+        self,
+        X: Union[pd.DataFrame, np.ndarray],
+        y: Union[pd.Series, np.ndarray],
+        **kwargs
     ):
         if type(y) is np.ndarray and len(y.shape) != 1:
             raise ValueError("The target is not a vector")
 
         if type(self.estimator) is MetaModel:
             return self.estimator.estimatorPool.get_scores(
-                self.estimator.transform(X), y
+                self.estimator.transform(X), y, **kwargs
             )
         elif type(self.estimator) is Pipeline:
             return self.estimator.named_steps[

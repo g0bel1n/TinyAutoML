@@ -1,13 +1,9 @@
-import logging
-from typing import Optional, Union
+from typing import Union
 
 import pandas as pd
 from numpy import ndarray
 from sklearn.ensemble import RandomForestClassifier
 
-from ...support.MyTools import checkClassBalance, getAdaptedCrossVal
-from ..EstimatorPools.EstimatorPool import EstimatorPool
-from ..EstimatorPools.EstimatorPoolCV import EstimatorPoolCV
 from ..MetaModel import MetaModel
 
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -28,35 +24,16 @@ class OneRulerForAll(MetaModel):
         nSplits: int = 10,
         ruler=RandomForestClassifier(),
     ):
-
+        super().__init__(comprehensiveSearch, parameterTuning, metrics, nSplits)
         self.ruler = ruler
-        self.estimatorPool: Optional[Union[EstimatorPoolCV, EstimatorPool]] = None
-        self.comprehensiveSearch = comprehensiveSearch
-        self.nSplits = nSplits
-        self.parameterTuning = parameterTuning
-        self.metrics = metrics
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> MetaModel:
 
-        checkClassBalance(y)
+        super().fit(X, y)
 
-        logging.info("Training models...")
-
-        cv = getAdaptedCrossVal(X, self.nSplits)
-
-        if self.estimatorPool is None:
-            self.estimatorPool = (
-                EstimatorPoolCV() if self.comprehensiveSearch else EstimatorPool()
-            )
-            # Training the pool
-            if self.parameterTuning:
-                self.estimatorPool.fitWithParameterTuning(X, y, cv, self.metrics)
-            else:
-                self.estimatorPool.fit(X, y)
-
-        estimatorsPoolOutputs = self.estimatorPool.predict(X)
-
-        self.ruler.fit(estimatorsPoolOutputs, y)
+        estimatorsPoolOutputs = pd.DataFrame(self.estimatorPool.predict(X))
+        X_ruler = pd.concat((X, estimatorsPoolOutputs), axis=1)
+        self.ruler.fit(X_ruler, y)
 
         return self
 
@@ -66,8 +43,8 @@ class OneRulerForAll(MetaModel):
             self.estimatorPool is not None and self.estimatorPool.is_fitted
         ), "Please fit the model before"
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
-
-        return self.ruler.predict(estimatorsPoolOutputs)
+        X_ruler = pd.concat((X, estimatorsPoolOutputs), axis=1)
+        return self.ruler.predict(X_ruler)
 
     def predict_proba(
         self, X: pd.DataFrame
@@ -76,10 +53,12 @@ class OneRulerForAll(MetaModel):
             self.estimatorPool is not None and self.estimatorPool.is_fitted
         ), "Please fit the model before"
         estimatorsPoolOutputs = self.estimatorPool.predict(X)
-        return self.ruler.predict_proba(estimatorsPoolOutputs)
+        X_ruler = pd.concat((X, estimatorsPoolOutputs), axis=1)
+        return self.ruler.predict_proba(X_ruler)
 
     def transform(self, X: pd.DataFrame):
-        return X
+        estimatorsPoolOutputs = self.estimatorPool.predict(X)
+        return pd.concat((X, estimatorsPoolOutputs), axis=1)
 
     def __repr__(self, **kwargs):
         return "ORFA"

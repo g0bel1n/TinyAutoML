@@ -55,7 +55,7 @@ class FeatureSelectionConcurrence:
                 self.batchSize
             )
             self.__featureSelectionBatchStep(penalizationPartialGrid, X, y)
-        print(self.regressorsCoeffsValues)
+
         indexForObjNbOfFeatures = min(
             range(len(self.regressorsCoeffsValues)),
             key=lambda index: np.abs(

@@ -49,7 +49,8 @@ if __name__ == "__main__":
     )
     mp_3 = MetaPipeline(model=model_3)
     mp_3.fit(X_train, y_train, pool=pool)
-
+    print(mp_2.estimator)
+    print(mp_3.estimator)
     mp_2.classification_report(X_test, y_test)
     mp.classification_report(X_test, y_test)
     mp_3.classification_report(X_test, y_test)

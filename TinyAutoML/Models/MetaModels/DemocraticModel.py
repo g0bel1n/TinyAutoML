@@ -1,12 +1,8 @@
-import logging
-from typing import Optional, Union
+from typing import Union
 
 import numpy as np
 import pandas as pd
 
-from ...support.MyTools import checkClassBalance, getAdaptedCrossVal
-from ..EstimatorPools.EstimatorPool import EstimatorPool
-from ..EstimatorPools.EstimatorPoolCV import EstimatorPoolCV
 from ..MetaModel import MetaModel
 
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -73,13 +69,9 @@ class DemocraticModel(MetaModel):
         nSplits: int = 10,
         voting: str = "soft",
     ):
-        self.estimatorPool: Optional[Union[EstimatorPoolCV, EstimatorPool]] = None
-        self.nSplits = nSplits
-        self.parameterTuning = parameterTuning
-        self.metrics = metrics
+        super().__init__(comprehensiveSearch, parameterTuning, metrics, nSplits)
         self.voting = voting
         self.nEstimator: int
-        self.comprehensiveSearch = comprehensiveSearch
 
     def _check_soft_voting(self):
         if self.voting == "hard":
@@ -95,31 +87,19 @@ class DemocraticModel(MetaModel):
             )
         return True
 
-    def fit(self, X: pd.DataFrame, y: pd.Series) -> MetaModel:
+    def fit(self, X: pd.DataFrame, y: pd.Series, **kwargs) -> MetaModel:
 
-        checkClassBalance(y)
-        logging.info("Training models...")
-        cv = getAdaptedCrossVal(X, self.nSplits)
+        super().fit(X, y, **kwargs)
 
-        if self.estimatorPool is None:
-            self.estimatorPool = (
-                EstimatorPoolCV() if self.comprehensiveSearch else EstimatorPool()
-            )
-            # Training the pool
-            if self.parameterTuning:
-                self.estimatorPool.fitWithParameterTuning(X, y, cv, self.metrics)
-            else:
-                self.estimatorPool.fit(X, y)
-
-        self.nEstimator = len(self.estimatorPool)
+        self.nEstimator = len(self.estimatorPool)  # type: ignore
 
         return self
 
     # Overriding sklearn BaseEstimator methods
     def predict(
-        self, X: pd.DataFrame
+        self, X: pd.DataFrame, **kwargs
     ) -> Union[pd.Series, np.ndarray, list[np.ndarray]]:
-
+        print("used")
         return (
             np.argmax(self.predict_proportion(X))
             if self.voting == "hard"
@@ -127,28 +107,28 @@ class DemocraticModel(MetaModel):
         )
 
     @available_if(_check_hard_voting)
-    def predict_proportion(self, X: Union[pd.DataFrame, np.ndarray]) -> list:
+    def predict_proportion(self, X: Union[pd.DataFrame, np.ndarray], **kwargs) -> list:
         """
         Returns the proportion of model votes for each class
         """
         if self.estimatorPool is None:
             raise ValueError("You must fit the estimator")
 
-        estimatorsPoolOutputs = self.estimatorPool.predict(X)
+        estimatorsPoolOutputs = self.estimatorPool.predict(X, **kwargs)
 
         prop = float(estimatorsPoolOutputs.iloc[0, :].sum()) / self.nEstimator
         return [1 - prop, prop]
 
     @available_if(_check_soft_voting)
     def predict_proba(
-        self, X: Union[pd.DataFrame, np.ndarray]
+        self, X: Union[pd.DataFrame, np.ndarray], **kwargs
     ) -> Union[pd.Series, np.ndarray, list[np.ndarray]]:
         """
         Returns the average model probability per class
         """
         if self.estimatorPool is None:
             raise ValueError("You must fit the estimator")
-        estimatorsPoolProbas = self.estimatorPool.predict_proba(X)
+        estimatorsPoolProbas = self.estimatorPool.predict_proba(X, **kwargs)
         return np.mean(estimatorsPoolProbas, axis=0)
 
     def transform(self, X: pd.DataFrame):

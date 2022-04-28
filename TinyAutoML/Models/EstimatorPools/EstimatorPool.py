@@ -30,9 +30,11 @@ class EstimatorPool:
 
         self.is_fitted = False
 
-    def fit(self, X: pd.DataFrame, y: pd.Series) -> list[tuple[str, ClassifierMixin]]:
+    def fit(
+        self, X: pd.DataFrame, y: pd.Series, **kwargs
+    ) -> list[tuple[str, ClassifierMixin]]:
         for estimator in self.estimatorsList:
-            estimator[1].fit(X, y)
+            estimator[1].fit(X, y, **kwargs)
         self.is_fitted = True
         return self.estimatorsList
 
@@ -42,6 +44,7 @@ class EstimatorPool:
         y: pd.Series,
         cv: Union[TimeSeriesSplit, StratifiedKFold],
         metric,
+        **kwargs,
     ) -> list[tuple[str, ClassifierMixin]]:
 
         for estimator in self.estimatorsList:
@@ -55,42 +58,51 @@ class EstimatorPool:
                     cv=cv,
                     n_iter=min(10, len(grid)),
                 )
-                clf.fit(X, y)
+                clf.fit(X, y, **kwargs)
 
                 estimator[1].set_params(**clf.best_params_)
 
-            estimator[1].fit(X, y)
+            estimator[1].fit(X, y, **kwargs)
 
         self.is_fitted = True
         return self.estimatorsList
 
-    def predict(self, X: Union[pd.DataFrame, np.ndarray]) -> pd.DataFrame:
+    def predict(self, X: Union[pd.DataFrame, np.ndarray], **kwargs) -> pd.DataFrame:
         return pd.DataFrame(
-            {estimator[0]: estimator[1].predict(X) for estimator in self.estimatorsList}
+            {
+                estimator[0]: estimator[1].predict(X, **kwargs)
+                for estimator in self.estimatorsList
+            }
         )
 
-    def predict_proba(self, X: Union[pd.DataFrame, np.ndarray]) -> ndarray:
+    def predict_proba(self, X: Union[pd.DataFrame, np.ndarray], **kwargs) -> ndarray:
         return np.array(
-            [estimator[1].predict_proba(X) for estimator in self.estimatorsList]
+            [
+                estimator[1].predict_proba(X, **kwargs)
+                for estimator in self.estimatorsList
+            ]
         )
 
     def get_best(
-        self, X: Union[pd.DataFrame, np.ndarray], y: pd.Series
+        self, X: Union[pd.DataFrame, np.ndarray], y: pd.Series, **kwargs
     ) -> tuple[float, str, Any]:
 
         scores = [
-            accuracy_score(estimator[1].predict(X), y)
+            accuracy_score(estimator[1].predict(X, **kwargs), y)
             for estimator in self.estimatorsList
         ]
         return float(np.max(scores)), *self.estimatorsList[np.argmax(scores)]
 
     def get_scores(
-        self, X: Union[pd.DataFrame, np.ndarray], y: Union[pd.Series, np.ndarray]
+        self,
+        X: Union[pd.DataFrame, np.ndarray],
+        y: Union[pd.Series, np.ndarray],
+        **kwargs,
     ) -> list[tuple[str, float]]:
         return [
-            (estimator_name, accuracy_score(estimator.predict(X), y))
+            (estimator_name, accuracy_score(estimator.predict(X, **kwargs), y))
             for estimator_name, estimator in self.estimatorsList
         ]
 
-    def __len__(self):
+    def __len__(self, **kwargs):
         return len(self.estimatorsList)

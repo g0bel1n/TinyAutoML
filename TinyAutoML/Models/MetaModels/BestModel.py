@@ -1,12 +1,9 @@
 import logging
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 import numpy as np
 import pandas as pd
 
-from ...support.MyTools import checkClassBalance, getAdaptedCrossVal
-from ..EstimatorPools.EstimatorPool import EstimatorPool
-from ..EstimatorPools.EstimatorPoolCV import EstimatorPoolCV
 from ..MetaModel import MetaModel
 
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -18,44 +15,19 @@ class BestModel(MetaModel):
         comprehensiveSearch: bool = True,
         parameterTuning: bool = True,
         metrics: str = "accuracy",
-        n_splits: int = 10,
+        nSplits: int = 10,
     ):
         self.best_estimator_name: str
         self.best_estimator: Any
         self.best_estimator_index: int
 
         # Pool of estimators
-        self.estimatorPool: Optional[Union[EstimatorPoolCV, EstimatorPool]] = None
+        super().__init__(comprehensiveSearch, parameterTuning, metrics, nSplits)
         self.scores = pd.DataFrame()
-        self.n_splits = n_splits
-        self.parameterTuning = parameterTuning
-        self.metrics = metrics
-        self.comprehensiveSearch = comprehensiveSearch
 
-    def fit(
-        self,
-        X: pd.DataFrame,
-        y: pd.Series,
-    ) -> MetaModel:
+    def fit(self, X: pd.DataFrame, y: pd.Series, **kwargs) -> MetaModel:
 
-        logging.info("Training models")
-
-        # Pour détecter une distribution déséquilibrée...
-        checkClassBalance(y)
-        # Récupération d'un split de CV adapté selon l'indexage du set
-        cv = getAdaptedCrossVal(X, self.n_splits)
-
-        if self.estimatorPool is None:
-            self.estimatorPool = (
-                EstimatorPoolCV() if self.comprehensiveSearch else EstimatorPool()
-            )
-            # Training the pool
-            if self.parameterTuning:
-
-                self.estimatorPool.fitWithParameterTuning(X, y, cv, self.metrics)
-            else:
-
-                self.estimatorPool.fit(X, y)
+        super().fit(X, y, **kwargs)
 
         # Getting the best estimator according to the metric mean
         (
@@ -74,21 +46,19 @@ class BestModel(MetaModel):
 
     # Overloading sklearn BaseEstimator methods to use the best estimator
     def predict(
-        self, X: Union[pd.DataFrame, np.ndarray]
+        self, X: Union[pd.DataFrame, np.ndarray], **kwargs
     ) -> Union[pd.Series, np.ndarray, list[np.ndarray]]:
 
-        if hasattr(self.best_estimator, "predict") is True:
-            self.best_estimator.predict(X)
         try:
-            pred = self.best_estimator.predict(X)
+            pred = self.best_estimator.predict(X, **kwargs)
         except AttributeError as e:
             raise AttributeError from e
         return pred
 
     def predict_proba(
-        self, X: Union[pd.DataFrame, np.ndarray]
+        self, X: Union[pd.DataFrame, np.ndarray], **kwargs
     ) -> Union[pd.Series, np.ndarray, list[np.ndarray]]:
-        return self.best_estimator.predict_proba(X)
+        return self.best_estimator.predict_proba(X, **kwargs)
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
         return X

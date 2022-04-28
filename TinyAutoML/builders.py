@@ -44,8 +44,8 @@ def buildColumnTransformer(X: Union[pd.DataFrame, np.ndarray]) -> ColumnTransfor
         )
 
     transformer = [
-        ("Categorical", OneHotEncoder(), categorical_ix),
-        ("Numerical", numerical_process, numerical_ix),
+        ("Categorical", OneHotEncoder(), categorical_ix),  # type: ignore
+        ("Numerical", numerical_process, numerical_ix),  # type: ignore
     ]
 
     return ColumnTransformer(transformers=transformer)

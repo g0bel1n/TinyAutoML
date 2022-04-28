@@ -1,5 +1,4 @@
 from multiprocessing import Pool, cpu_count
-import threading
 
 from typing import Union
 import numpy as np
@@ -48,7 +47,6 @@ class FeatureSelectionParallel:
                 self.featureSelectionStep, self.penalizationGrid.values
             )
 
-        print(self.regressorsCoeffsValues)
         indexForObjNbOfFeatures = min(
             range(len(self.regressorsCoeffsValues)),
             key=lambda index: np.abs(
@@ -61,5 +59,4 @@ class FeatureSelectionParallel:
         ].values.tolist()
 
     def getSelectedFeaturesNames(self) -> list[str]:
-        print(self.selectedFeaturesNames)
         return self.selectedFeaturesNames

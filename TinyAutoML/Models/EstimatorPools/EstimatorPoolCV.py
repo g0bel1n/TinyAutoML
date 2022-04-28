@@ -33,9 +33,11 @@ class EstimatorPoolCV:
         self.is_fitted = False
         self.estimatorsPipeline: list[tuple[str, Pipeline]] = []
 
-    def fit(self, X: pd.DataFrame, y: pd.Series) -> list[tuple[str, Pipeline]]:
+    def fit(
+        self, X: pd.DataFrame, y: pd.Series, **kwargs
+    ) -> list[tuple[str, Pipeline]]:
         self.estimatorsPipeline = [
-            (estimator_name, buildMetaPipeline(X, estimator).fit(X, y))
+            (estimator_name, buildMetaPipeline(X, estimator).fit(X, y, **kwargs))
             for estimator_name, estimator in self.estimatorsList
         ]
         self.is_fitted = True
@@ -47,6 +49,7 @@ class EstimatorPoolCV:
         y: pd.Series,
         cv: Union[TimeSeriesSplit, StratifiedKFold],
         metric: str,
+        **kwargs,
     ) -> list[tuple[str, Pipeline]]:
 
         for estimator in tqdm(self.estimatorsList):
@@ -65,20 +68,20 @@ class EstimatorPoolCV:
                     verbose=1,
                     n_iter=min(10, len(grid)),
                 )
-                clf.fit(X, y)
+                clf.fit(X, y, **kwargs)
 
                 pipe.set_params(**clf.best_params_)
 
-            pipe.fit(X, y)
+            pipe.fit(X, y, **kwargs)
             self.estimatorsPipeline.append((estimator[0], pipe))
 
         self.is_fitted = True
         return self.estimatorsPipeline
 
-    def predict(self, X: Union[pd.DataFrame, np.ndarray]) -> pd.DataFrame:
+    def predict(self, X: Union[pd.DataFrame, np.ndarray], **kwargs) -> pd.DataFrame:
         return pd.DataFrame(
             {
-                estimator_name[0]: pipe.predict(X)
+                estimator_name[0]: pipe.predict(X, **kwargs)
                 for estimator_name, pipe in self.estimatorsPipeline
             }
         )
@@ -87,21 +90,28 @@ class EstimatorPoolCV:
         return np.array([pipe.predict_proba(X) for _, pipe in self.estimatorsPipeline])
 
     def get_best(
-        self, X: Union[pd.DataFrame, np.ndarray], y: Union[pd.Series, np.ndarray]
+        self,
+        X: Union[pd.DataFrame, np.ndarray],
+        y: Union[pd.Series, np.ndarray],
+        **kwargs,
     ) -> tuple[float, str, Pipeline]:
 
         scores = [
-            accuracy_score(pipe.predict(X), y) for _, pipe in self.estimatorsPipeline
+            accuracy_score(pipe.predict(X, **kwargs), y)
+            for _, pipe in self.estimatorsPipeline
         ]
         return float(np.max(scores)), *self.estimatorsPipeline[np.argmax(scores)]
 
     def get_scores(
-        self, X: Union[pd.DataFrame, np.ndarray], y: Union[pd.Series, np.ndarray]
+        self,
+        X: Union[pd.DataFrame, np.ndarray],
+        y: Union[pd.Series, np.ndarray],
+        **kwargs,
     ) -> list[tuple[str, float]]:
         return [
-            (estimator_name, accuracy_score(pipe.predict(X), y))
+            (estimator_name, accuracy_score(pipe.predict(X, **kwargs), y))
             for estimator_name, pipe in self.estimatorsPipeline
         ]
 
-    def __len__(self):
+    def __len__(self, **kwargs):
         return len(self.estimatorsPipeline)
