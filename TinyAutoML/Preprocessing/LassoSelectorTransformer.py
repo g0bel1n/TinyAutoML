@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.feature_selection import SelectKBest
 from sklearn.base import TransformerMixin, BaseEstimator
 
-from .LassoFeatureSelection import FeatureSelection
+from .LassoFeatureSelectionConcurrence import FeatureSelectionConcurrence
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -35,7 +35,7 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
     def fit(self, X: pd.DataFrame, y: pd.Series) -> TransformerMixin:
         X_ = self.__preselect(X, y) if (X.shape[1]) > self.preSelectionSize else X
 
-        featureSelection = FeatureSelection()
+        featureSelection = FeatureSelectionConcurrence()
         featureSelection.fit(X_, y)
 
         self.selectedFeaturesNames = featureSelection.getSelectedFeaturesNames()

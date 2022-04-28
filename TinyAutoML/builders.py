@@ -19,17 +19,13 @@ from .support.MyTools import isIndexedByTime
 
 def buildColumnTransformer(X: Union[pd.DataFrame, np.ndarray]) -> ColumnTransformer:
 
+    if type(X) is np.ndarray:
+        X = pd.DataFrame(X)
+
     # Select numerical and categorical feature to be able to apply different transformers
     if type(X) is pd.DataFrame:
         numerical_ix = X.select_dtypes(include=["int64", "float64"]).columns
         categorical_ix = X.select_dtypes(include=["object", "bool"]).columns
-
-    elif type(X) is np.ndarray:
-        numerical_ix = X.dtype(include=["int64", "float64"]).columns
-        categorical_ix = X.dtype(include=["object", "bool"]).columns
-
-    else:
-        raise ValueError("X is not valid")
 
     if type(X) is pd.DataFrame and isIndexedByTime(X):
 

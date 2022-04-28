@@ -1,4 +1,5 @@
 import threading
+
 from typing import Union
 import numpy as np
 import pandas as pd
@@ -10,7 +11,7 @@ from .PenalizationGrid import PenalizationGrid
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-class FeatureSelection:
+class FeatureSelectionConcurrence:
     def __init__(self, batchSize=10, nbFeatureToSelect=15):
 
         self.penalizationGrid = PenalizationGrid()
@@ -54,7 +55,7 @@ class FeatureSelection:
                 self.batchSize
             )
             self.__featureSelectionBatchStep(penalizationPartialGrid, X, y)
-
+        print(self.regressorsCoeffsValues)
         indexForObjNbOfFeatures = min(
             range(len(self.regressorsCoeffsValues)),
             key=lambda index: np.abs(

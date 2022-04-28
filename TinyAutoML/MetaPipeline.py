@@ -4,7 +4,7 @@ from typing import Optional, Union
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.base import BaseEstimator, ClassifierMixin, TransformerMixin
 from sklearn.metrics import classification_report, roc_curve
 from sklearn.pipeline import Pipeline
 
@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO)
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-class MetaPipeline(BaseEstimator, ClassifierMixin):
+class MetaPipeline(BaseEstimator, ClassifierMixin, TransformerMixin):
     # Wrapper
 
     def __init__(self, model: MetaModel, verbose: bool = True):
@@ -34,9 +34,7 @@ class MetaPipeline(BaseEstimator, ClassifierMixin):
         y: Union[pd.Series, np.ndarray],
         pool: Optional[Union[EstimatorPool, EstimatorPoolCV]] = None,
     ) -> BaseEstimator:
-        if (type(y) is np.ndarray and len(y.shape) != 1) or (
-            type(y) is pd.Series and y.shape[1] != 1
-        ):
+        if type(y) is np.ndarray and len(y.shape) != 1:
             raise ValueError("The target is not a vector")
         # some of the MetaPipeline steps requires information on the data, therefore we have to initialize it here
         self.estimator = (
@@ -85,9 +83,7 @@ class MetaPipeline(BaseEstimator, ClassifierMixin):
     def get_scores(
         self, X: Union[pd.DataFrame, np.ndarray], y: Union[pd.Series, np.ndarray]
     ):
-        if (type(y) is np.ndarray and len(y.shape) != 1) or (
-            type(y) is pd.Series and y.shape[1] != 1
-        ):
+        if type(y) is np.ndarray and len(y.shape) != 1:
             raise ValueError("The target is not a vector")
 
         if type(self.estimator) is MetaModel:
@@ -105,9 +101,7 @@ class MetaPipeline(BaseEstimator, ClassifierMixin):
         # Return sklearn classification report
         if self.estimator is None:
             raise ValueError("The estimator has not been fitted beforehand")
-        if (type(y) is np.ndarray and len(y.shape) != 1) or (
-            type(y) is pd.Series and y.shape[1] != 1
-        ):
+        if type(y) is np.ndarray and len(y.shape) != 1:
             raise ValueError("The target is not a vector")
 
         y_pred = self.estimator.predict(X)
@@ -117,9 +111,7 @@ class MetaPipeline(BaseEstimator, ClassifierMixin):
 
         if self.estimator is None:
             raise ValueError("The estimator has not been fitted beforehand")
-        if (type(y) is np.ndarray and len(y.shape) != 1) or (
-            type(y) is pd.Series and y.shape[1] != 1
-        ):
+        if type(y) is np.ndarray and len(y.shape) != 1:
             raise ValueError("The target is not a vector")
 
         ns_probs = [0 for _ in range(len(y))]

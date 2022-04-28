@@ -10,7 +10,7 @@ setup(
         "TinyAutoML.Models",
         "TinyAutoML.support",
     ],
-    url="https://github.com/g0bel1n/TinyAutoML/tree/pooling-opt",
+    url="https://github.com/g0bel1n/TinyAutoML",
     license="MIT",
     author="g0bel1n",
     author_email="lucas.saban@ensae.fr",
