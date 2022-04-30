@@ -35,14 +35,14 @@ jobs:
     - name: Update analysis notebook
       run: |
         python -m pip install jupyter nbconvert nbformat
-        jupyter nbconvert --to markdown --execute notebooks/introduction-to-Tiny-AutoML.ipynb --ExecutePreprocessor.kernel_name='python3' --output README
-        
+        jupyter nbconvert --to markdown --execute notebooks/introduction-to-Tiny-AutoML.ipynb  --NbConvertApp.output_files_dir='../ressources' --output README.md
+        mv notebooks/README.md ..
     - name: commit updated notebook
       uses: EndBug/add-and-commit@v7
       with:
         author_name: Plot update bot
-        message: "Update READM.md"
-        add: "README.md"
+        message: "Update README.md"
+        add: "README.md" "ressources"
     - name: Test with pytest
       run: |
         python tests.py
