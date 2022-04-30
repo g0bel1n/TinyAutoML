@@ -1,60 +1,55 @@
-# **TinyAutoML**
+<h1 align="center">
+  <img alt="TinyAutoML Logo" src="https://user-images.githubusercontent.com/73651505/166115086-2cd01294-75ed-4e36-a65f-419c530a0dbe.png" width="448px"/><br/>
+</h1>
 
-[![Tests](https://github.com/g0bel1n/TinyAutoML/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/g0bel1n/TinyAutoML/actions/workflows/python-app.yml)
-[![License: MIT](https://img.shields.io/github/license/g0bel1n/TinyAutoML?style=flat-square)
-![Python 3.9+](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
-![Pypi](https://img.shields.io/pypi/v/TinyAutoML?style=flat-square)
-![Size](https://img.shields.io/github/repo-size/g0bel1N/TinyAutoML?style=flat-square)
-![commit](https://img.shields.io/github/commit-activity/m/g0bel1n/TinyAutoML?style=flat-square)
+
+<p align="center">TinyAutoML is a Machine Learning Python3.9 library thought as an extension of Scikit-Learn.<br/> It builds an <b>adaptable</b> and <b>auto-tuned</b> pipeline to handle binary classification tasks.<br/> </p>
+
+
+<p align="center">
+<a href="https://github.com/g0bel1n/TinyAutoML/actions/workflows/python-app.yml" 
+target="_blank"><img src="https://github.com/g0bel1n/TinyAutoML/actions/workflows/python-app.yml/badge.svg?branch=master" alt="Tests" /></a>
+<img src="https://img.shields.io/github/license/g0bel1n/TinyAutoML?style=flat-square" alt="Licence MIT" />
+<img src="https://img.shields.io/pypi/v/TinyAutoML?style=flat-square" alt="Pypi" />
+<img src="https://img.shields.io/github/repo-size/g0bel1N/TinyAutoML?style=flat-square" alt="Size" />
+<img src="https://img.shields.io/github/commit-activity/m/g0bel1n/TinyAutoML?style=flat-square" alt="Commits" />
+<a href="https://www.python.org/downloads/release/python-390/" 
+target="_blank"><img src="https://img.shields.io/badge/python-3.9-blue.svg" alt="Python Version" /></a>
+</p>
 
 ---
 
-TinyAutoML is a Machine Learning Python3.9 library thought as an extension of Scikit-Learn. It builds an adaptable and auto-tuned pipeline to handle binary classification tasks.
-
-In a few words, your data goes through 2 main preprocessing steps. The first one is scaling and NonStationnarity correction, which is followed by Lasso Feature selection. 
-
-Finally, one of the three MetaModels is fitted on the transformed data.
-
-Let's import the library !
+<p align="center">
+In a few words, your data goes through 2 main preprocessing steps. <br/>
+The first one is scaling and NonStationnarity correction, which is followed by Lasso Feature selection.<br/>
+Finally, one of the three <b>MetaModels</b> is fitted on the transformed data.
+</p>
 
 
-```python
-%pip install TinyAutoML
-```
+---
 
-    Collecting TinyAutoML
-      Downloading TinyAutoML-0.2.3.3.tar.gz (8.4 kB)
-      Preparing metadata (setup.py) ... [?25l- done
-    [?25hRequirement already satisfied: pandas in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from TinyAutoML) (1.3.4)
-    Requirement already satisfied: scikit-learn in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from TinyAutoML) (1.0.2)
-    Requirement already satisfied: tqdm in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from TinyAutoML) (4.62.3)
-    Requirement already satisfied: numpy in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from TinyAutoML) (1.21.6)
-    Requirement already satisfied: statsmodels in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from TinyAutoML) (0.13.2)
-    Requirement already satisfied: matplotlib in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from TinyAutoML) (3.4.3)
-    Requirement already satisfied: xgboost in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from TinyAutoML) (1.5.2)
-    Requirement already satisfied: cycler>=0.10 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from matplotlib->TinyAutoML) (0.11.0)
-    Requirement already satisfied: kiwisolver>=1.0.1 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from matplotlib->TinyAutoML) (1.4.2)
-    Requirement already satisfied: pillow>=6.2.0 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from matplotlib->TinyAutoML) (9.1.0)
-    Requirement already satisfied: pyparsing>=2.2.1 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from matplotlib->TinyAutoML) (3.0.8)
-    Requirement already satisfied: python-dateutil>=2.7 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from matplotlib->TinyAutoML) (2.8.2)
-    Requirement already satisfied: pytz>=2017.3 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from pandas->TinyAutoML) (2022.1)
-    Requirement already satisfied: threadpoolctl>=2.0.0 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from scikit-learn->TinyAutoML) (3.1.0)
-    Requirement already satisfied: joblib>=0.11 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from scikit-learn->TinyAutoML) (1.1.0)
-    Requirement already satisfied: scipy>=1.1.0 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from scikit-learn->TinyAutoML) (1.8.0)
-    Requirement already satisfied: packaging>=21.3 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from statsmodels->TinyAutoML) (21.3)
-    Requirement already satisfied: patsy>=0.5.2 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from statsmodels->TinyAutoML) (0.5.2)
-    Requirement already satisfied: six in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from patsy>=0.5.2->statsmodels->TinyAutoML) (1.16.0)
-    Using legacy 'setup.py install' for TinyAutoML, since package 'wheel' is not installed.
-    Installing collected packages: TinyAutoML
-      Running setup.py install for TinyAutoML ... [?25l- done
-    [?25hSuccessfully installed TinyAutoML-0.2.3.3
-    Note: you may need to restart the kernel to use updated packages.
+### Latest News ! :
 
+* Logging format changed from default to [TinyAutoML]
+* Added Github Actions Workflow for CI, for updating the README.md !
+* Added parallel computation of LassoFeatureSelector
+* New example notebook based on VIX index directionnal forecasting
+
+
+## ⚡️ Quick start 
+
+First, let's install and import the library !
+
+- Install the last release using pip
+
+    ```python
+    %pip install TinyAutoML
+    ````
 
 
 ```python
 import os
-os.chdir('..')
+os.chdir('..') #For Github CI, you don't have to run that
 ```
 
 
@@ -187,11 +182,11 @@ orfa_model.classification_report(X_test,y_test)
 
                   precision    recall  f1-score   support
     
-               0       0.96      0.92      0.94        26
-               1       0.98      0.99      0.98        88
+               0       0.93      0.96      0.94        26
+               1       0.99      0.98      0.98        88
     
         accuracy                           0.97       114
-       macro avg       0.97      0.96      0.96       114
+       macro avg       0.96      0.97      0.96       114
     weighted avg       0.97      0.97      0.97       114
     
 
@@ -205,7 +200,7 @@ democratic_model.roc_curve(X_test,y_test)
 
 
     
-![png](README_files/README_22_0.png)
+![png](README_files/README_24_0.png)
     
 
 
@@ -219,7 +214,7 @@ best_model.get_scores(X_test,y_test)
 
 
 
-    [('random forest classifier', 0.9912280701754386),
+    [('random forest classifier', 0.9824561403508771),
      ('Logistic Regression', 0.9473684210526315),
      ('Gaussian Naive Bayes', 0.956140350877193),
      ('LDA', 0.9473684210526315),
