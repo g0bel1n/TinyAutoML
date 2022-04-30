@@ -32,8 +32,8 @@ Finally, one of the three <b>MetaModels</b> is fitted on the transformed data.
 
 * Logging format changed from default to [TinyAutoML]
 * Added Github Actions Workflow for CI, for updating the README.md !
-* Added parallel computation of LassoFeatureSelector
-* New example notebook based on VIX index directionnal forecasting
+* Added parallel computation of `LassoFeatureSelector` -> [LassoFeatureSelectionParallel](https://github.com/g0bel1n/TinyAutoML/blob/master/TinyAutoML/Preprocessing/LassoFeatureSelectionParallel.py)
+* New [example notebook](https://github.com/g0bel1n/TinyAutoML/blob/master/notebooks/vix_example.ipynb) based on VIX index directionnal forecasting
 
 
 ## ⚡️ Quick start 
@@ -58,49 +58,49 @@ from TinyAutoML.Models import *
 from TinyAutoML import MetaPipeline
 ```
 
-## MetaModels
+## `MetaModels`
 
-MetaModels inherit from the MetaModel Abstract Class. They all implement ensemble methods and therefore are based on EstimatorPools.
+`MetaModels` inherit from the `MetaModel` Abstract Class. They all implement ensemble methods and therefore are based on `EstimatorPools`.
 
-When training EstimatorPools, you are faced with a choice :  doing parameterTuning on entire pipelines with the estimators on the top or training the estimators using the same pipeline and only training the top. The first case refers to what we will be calling **comprehensiveSearch**.
+When training `EstimatorPools`, you are faced with a choice :  doing `parameterTuning` on entire pipelines with the estimators on the top or training the estimators using the same pipeline and only training the top. The first case refers to what we will be calling `comprehensiveSearch`.
 
-Moreover, as we will see in details later, those EstimatorPools can be shared across MetaModels.
+Moreover, as we will see in details later, those `EstimatorPools` can be shared across `MetaModels`.
 
 They are all initialised with those minimum arguments :
 
 ```python
 MetaModel(comprehensiveSearch: bool = True, parameterTuning: bool = True, metrics: str = 'accuracy', nSplits: int=10)
 ```
-- nSplits corresponds to the number of split of the cross validation
+- `nSplits` corresponds to the number of split of the cross validation
 - The other parameters are equivoque
 
 
-**They need to be put in the MetaPipeline wrapper to work**
+**They need to be put in the `MetaPipeline` wrapper to work**
 
-**There are 3 MetaModels**
+**There are 3 `MetaModels`**
 
-1- BestModel : selects the best performing model of the pool
+1- `BestModel` : selects the best performing model of the pool
 
 
 ```python
 best_model = MetaPipeline(BestModel(comprehensiveSearch = False, parameterTuning = False))
 ```
 
-2- OneRulerForAll : implements Stacking using a RandomForestClassifier by default. The user is free to use another classifier using the ruler arguments
+2- `OneRulerForAll` : implements Stacking using a `RandomForestClassifier` by default. The user is free to use another classifier using the ruler arguments
 
 
 ```python
 orfa_model = MetaPipeline(OneRulerForAll(comprehensiveSearch=False, parameterTuning=False))
 ```
 
-3- DemocraticModel : implements Soft and Hard voting models through the voting argument
+3- `DemocraticModel` : implements Soft and Hard voting models through the voting argument
 
 
 ```python
 democratic_model = MetaPipeline(DemocraticModel(comprehensiveSearch=False, parameterTuning=False, voting='soft'))
 ```
 
-As of release v0.2.3.2 (13/04/2022) there are 5 models on which these MetaModels rely in the EstimatorPool:
+As of release v0.2.3.2 (13/04/2022) there are 5 models on which these `MetaModels` rely in the `EstimatorPool`:
 - Random Forest Classifier
 - Logistic Regression
 - Gaussian Naive Bayes
@@ -111,7 +111,7 @@ As of release v0.2.3.2 (13/04/2022) there are 5 models on which these MetaModels
 ***
 
 
-We'll use the breast_cancer dataset from sklearn as an example:
+We'll use the breast_cancer dataset from `sklearn` as an example:
 
 
 ```python
@@ -129,7 +129,7 @@ X_train, X_test = X[:cut], X[cut:]
 y_train, y_test = y[:cut], y[cut:]
 ```
 
-Let's train a BestModel first and reuse its Pool for the other MetaModels
+Let's train a `BestModel` first and reuse its Pool for the other `MetaModels`
 
 
 ```python
@@ -154,7 +154,7 @@ We can now extract the pool
 pool = best_model.get_pool()
 ```
 
-And use it when fitting the other MetaModels to skip the fitting of the underlying models:
+And use it when fitting the other `MetaModels` to skip the fitting of the underlying models:
 
 
 ```python
@@ -173,7 +173,7 @@ democratic_model.fit(X_train,y_train,pool=pool)
 
 
 
-Great ! Let's look at the results with the sk_learn classification report :
+Great ! Let's look at the results with the sk_learn `classification_report` :
 
 
 ```python
@@ -182,16 +182,16 @@ orfa_model.classification_report(X_test,y_test)
 
                   precision    recall  f1-score   support
     
-               0       0.92      0.92      0.92        26
-               1       0.98      0.98      0.98        88
+               0       0.89      0.92      0.91        26
+               1       0.98      0.97      0.97        88
     
         accuracy                           0.96       114
-       macro avg       0.95      0.95      0.95       114
+       macro avg       0.93      0.94      0.94       114
     weighted avg       0.96      0.96      0.96       114
     
 
 
-Looking good! What about the ROC Curve ?
+Looking good! What about the `roc_curve` ?
 
 
 ```python
@@ -214,7 +214,7 @@ best_model.get_scores(X_test,y_test)
 
 
 
-    [('random forest classifier', 0.9736842105263158),
+    [('random forest classifier', 0.9824561403508771),
      ('Logistic Regression', 0.9473684210526315),
      ('Gaussian Naive Bayes', 0.956140350877193),
      ('LDA', 0.9473684210526315),
@@ -224,6 +224,4 @@ best_model.get_scores(X_test,y_test)
 
 ## What's next ? 
 
-You can do the same steps with comprehensiveSearch set to True if you have the time and if you want to improve your results. You can also try new rulers and so on.
-
-Maria, Thomas and Lucas.
+You can do the same steps with `comprehensiveSearch` set to True if you have the time and if you want to improve your results. You can also try new rulers and so on.
