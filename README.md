@@ -42,9 +42,9 @@ First, let's install and import the library !
 
 - Install the last release using pip
 
-    ```python
-    %pip install TinyAutoML
-    ````
+```python
+%pip install TinyAutoML
+````
 
 
 ```python
@@ -182,12 +182,12 @@ orfa_model.classification_report(X_test,y_test)
 
                   precision    recall  f1-score   support
     
-               0       0.93      0.96      0.94        26
-               1       0.99      0.98      0.98        88
+               0       0.92      0.92      0.92        26
+               1       0.98      0.98      0.98        88
     
-        accuracy                           0.97       114
-       macro avg       0.96      0.97      0.96       114
-    weighted avg       0.97      0.97      0.97       114
+        accuracy                           0.96       114
+       macro avg       0.95      0.95      0.95       114
+    weighted avg       0.96      0.96      0.96       114
     
 
 
@@ -214,7 +214,7 @@ best_model.get_scores(X_test,y_test)
 
 
 
-    [('random forest classifier', 0.9824561403508771),
+    [('random forest classifier', 0.9736842105263158),
      ('Logistic Regression', 0.9473684210526315),
      ('Gaussian Naive Bayes', 0.956140350877193),
      ('LDA', 0.9473684210526315),
