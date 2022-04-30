@@ -1,6 +1,10 @@
 # TinyAutoML
 [![Tests](https://github.com/g0bel1n/TinyAutoML/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/g0bel1n/TinyAutoML/actions/workflows/python-app.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/github/license/g0bel1n/TinyAutoML?style=flat-square)
+![Python 3.9+](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
+![Pypi](https://img.shields.io/pypi/v/TinyAutoML?style=flat-square)
+![Size](https://img.shields.io/github/repo-size/g0bel1N/TinyAutoML?style=flat-square)
+![commit](https://img.shields.io/github/commit-activity/m/g0bel1n/TinyAutoML?style=flat-square)
 
 Meta - Pipeline for Stat'App project.
 Only works for binary classification for now.
