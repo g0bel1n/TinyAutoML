@@ -11,10 +11,12 @@ Only works for binary classification for now.
 
 ## Example:
 
+### See the [introductory notebook](https://github.com/g0bel1n/TinyAutoML/blob/master/introduction-to-Tiny-AutoML.ipynb)
+
 ``` python
 import pandas as pd
 from TinyAutoML as MetaPipelineCV
-from TinyAutoML.Models import DemocraticModelCV
+from TinyAutoML.Models import DemocraticModelCV, OneRulerForAllCV
 from sklearn.datasets import load_breast_cancer
 
 ds = load_breast_cancer()
@@ -26,10 +28,18 @@ cut = int(len(y) * 0.8)
 X_train, X_test = X[:cut], X[cut:]
 y_train, y_test = y[:cut], y[cut:]
 
-model = DemocraticModelCV(parameterTuning=True, metrics='accuracy')
+model = DemocraticModelCV(comprehensiveSearch=True, metrics='accuracy')
 mp = MetaPipelineCV(model=model)
 mp.fit(X_train, y_train)
 print(mp.classification_report(X_test, y_test))
+
+# Pool sharing :
+trained_pool = mp.get_pool()
+
+model_2 = OneRulerForAllCV(comprehensiveSearch=True, metrics='accuracy')
+mp_2 = MetaPipelineCV(model=model_2)
+mp_2.fit(X_train, y_train, pool = trained_pool) #Training time way shorter
+mp_2.predict(X_test)
 
 ```
 
@@ -38,25 +48,21 @@ print(mp.classification_report(X_test, y_test))
 
 ``` python
 
-metapipe = tam.Estimator.Metapipeline(model, parameterTuning)
-
-model = 'orfa', 'metamodel' or 'democraticmodel'
-parameterTuning: bool
-
-    .predict(self, X: pd.DataFrame)
+    .predict(X: pd.DataFrame, **kwargs)
     
-    .transform(self, X: pd.DataFrame, y=None)
+    .transform(X: pd.DataFrame, y=None)
     
-    .fit_transform(self, X: pd.DataFrame, y: pd.Series)
+    .fit(X: pd.DataFrame, y: pd.Series, pool = None, **kwargs)
     
-    .get_scores(self)
+    .fit_transform(X: pd.DataFrame, y: pd.Series, **kwargs)
     
-    .classification_report(self, X: pd.DataFrame, y: pd.Series)
+    .get_scores()
     
-    .roc_curve(self,X: pd.DataFrame, y:pd.Series)
+    .get_pool()
+    
+    .classification_report(X: pd.DataFrame, y: pd.Series)
+    
+    .roc_curve(X: pd.DataFrame, y:pd.Series)
 
 ```
-
-orfa stands for One Ruler For All and is equivalent to the ensemble learning technic called Stacking. The user can pass his own top model. Default is RandomForestClassifier()
-metamodel selects the best model amongst a pool of classifiers.
 
