@@ -37,6 +37,7 @@ jobs:
         python -m pip install jupyter nbconvert nbformat
         jupyter nbconvert --to markdown --execute notebooks/introduction-to-Tiny-AutoML.ipynb  --NbConvertApp.output_files_dir='../ressources' --output README.md
         mv notebooks/README.md ..
+        
     - name: commit updated notebook
       uses: EndBug/add-and-commit@v7
       with:
