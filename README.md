@@ -38,8 +38,8 @@ Let's import the library !
     Requirement already satisfied: pyparsing>=2.2.1 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from matplotlib->TinyAutoML) (3.0.8)
     Requirement already satisfied: python-dateutil>=2.7 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from matplotlib->TinyAutoML) (2.8.2)
     Requirement already satisfied: pytz>=2017.3 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from pandas->TinyAutoML) (2022.1)
-    Requirement already satisfied: scipy>=1.1.0 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from scikit-learn->TinyAutoML) (1.8.0)
     Requirement already satisfied: threadpoolctl>=2.0.0 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from scikit-learn->TinyAutoML) (3.1.0)
+    Requirement already satisfied: scipy>=1.1.0 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from scikit-learn->TinyAutoML) (1.8.0)
     Requirement already satisfied: joblib>=0.11 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from scikit-learn->TinyAutoML) (1.1.0)
     Requirement already satisfied: patsy>=0.5.2 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from statsmodels->TinyAutoML) (0.5.2)
     Requirement already satisfied: packaging>=21.3 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from statsmodels->TinyAutoML) (21.3)
@@ -141,8 +141,8 @@ Let's train a BestModel first and reuse its Pool for the other MetaModels
 best_model.fit(X_train,y_train)
 ```
 
-    INFO:root:Training models...
-    INFO:root:The best estimator is random forest classifier with a cross-validation accuracy (in Sample) of 1.0
+    [TinyAutoML] Training models...
+    [TinyAutoML] The best estimator is random forest classifier with a cross-validation accuracy (in Sample) of 1.0
 
 
 
@@ -167,50 +167,8 @@ orfa_model.fit(X_train,y_train,pool=pool)
 democratic_model.fit(X_train,y_train,pool=pool)
 ```
 
-    INFO:root:Training models...
-    INFO:root:Training models...
-
-
-    Pipeline(steps=[('Preprocessing',
-                     ColumnTransformer(transformers=[('Categorical',
-                                                      OneHotEncoder(),
-                                                      Index([], dtype='object')),
-                                                     ('Numerical',
-                                                      Pipeline(steps=[('StandardScaler',
-                                                                       StandardScaler()),
-                                                                      ('MinMaxScaler',
-                                                                       MinMaxScaler(feature_range=[-1,
-                                                                                                   1]))]),
-                                                      Index(['mean radius', 'mean texture', 'mean perimeter', 'mean area',
-           'mean smoothness', 'mean compactness', 'mean concavit...
-           'worst smoothness', 'worst compactness', 'worst concavity',
-           'worst concave points', 'worst symmetry', 'worst fractal dimension'],
-          dtype='object'))])),
-                    ('fc_tf',
-                     FunctionTransformer(func=<function buildMetaPipeline.<locals>.<lambda> at 0x7fa7801edfc0>)),
-                    ('Lasso Selector', LassoSelectorTransformer()),
-                    ('ORFA',
-                     OneRulerForAll(comprehensiveSearch=False, parameterTuning=False))])
-    Pipeline(steps=[('Preprocessing',
-                     ColumnTransformer(transformers=[('Categorical',
-                                                      OneHotEncoder(),
-                                                      Index([], dtype='object')),
-                                                     ('Numerical',
-                                                      Pipeline(steps=[('StandardScaler',
-                                                                       StandardScaler()),
-                                                                      ('MinMaxScaler',
-                                                                       MinMaxScaler(feature_range=[-1,
-                                                                                                   1]))]),
-                                                      Index(['mean radius', 'mean texture', 'mean perimeter', 'mean area',
-           'mean smoothness', 'mean compactness', 'mean concavit...
-           'worst smoothness', 'worst compactness', 'worst concavity',
-           'worst concave points', 'worst symmetry', 'worst fractal dimension'],
-          dtype='object'))])),
-                    ('fc_tf',
-                     FunctionTransformer(func=<function buildMetaPipeline.<locals>.<lambda> at 0x7fa7801edfc0>)),
-                    ('Lasso Selector', LassoSelectorTransformer()),
-                    ('Democratic Model',
-                     DemocraticModel(comprehensiveSearch=False, parameterTuning=False))])
+    [TinyAutoML] Training models...
+    [TinyAutoML] Training models...
 
 
 
@@ -229,11 +187,11 @@ orfa_model.classification_report(X_test,y_test)
 
                   precision    recall  f1-score   support
     
-               0       0.92      0.92      0.92        26
-               1       0.98      0.98      0.98        88
+               0       0.89      0.92      0.91        26
+               1       0.98      0.97      0.97        88
     
         accuracy                           0.96       114
-       macro avg       0.95      0.95      0.95       114
+       macro avg       0.93      0.94      0.94       114
     weighted avg       0.96      0.96      0.96       114
     
 
