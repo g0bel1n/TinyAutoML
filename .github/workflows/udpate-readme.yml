@@ -40,4 +40,4 @@ jobs:
       with:
         author_name:  readme update bot
         message: "Update README.md"
-        add: "README.md, ressources"
+        add: "notebooks/README.md, ressources"
