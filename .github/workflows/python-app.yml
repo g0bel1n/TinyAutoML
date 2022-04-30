@@ -41,9 +41,9 @@ jobs:
     - name: commit updated notebook
       uses: EndBug/add-and-commit@v7
       with:
-        author_name: Plot update bot
+        author_name:  readme update bot
         message: "Update README.md"
-        add: "README.md" "ressources"
+        add: "README.md, ressources"
     - name: Test with pytest
       run: |
         python tests.py
