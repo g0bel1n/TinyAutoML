@@ -1,9 +1,23 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+title: TinyAutoML
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
 authors:
-  - family-names: Saban Kientz Alexa
-    given-names: Lucas Thomas Maria
-title: "TinyAutoML"
+  - given-names: Lucas
+    family-names: Saban
+    email: lucas.saban@ensae.fr
+    affiliation: Ensae Paris
+  - given-names: Thomas
+    family-names: Kientz
+    email: thomas.kientz@ensae.fr
+    affiliation: Ensae Paris
+  - given-names: Maria
+    family-names: Alexa
+    email: maria.alexa@ensae.fr
+    affiliation: Ensae Paris
 version: 2.3.3
 url: https://github.com/g0bel1n/TinyAutoML
 date-released: 2022-04-18
+
