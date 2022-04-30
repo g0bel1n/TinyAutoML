@@ -99,7 +99,6 @@ class DemocraticModel(MetaModel):
     def predict(
         self, X: pd.DataFrame, **kwargs
     ) -> Union[pd.Series, np.ndarray, list[np.ndarray]]:
-        print("used")
         return (
             np.argmax(self.predict_proportion(X))
             if self.voting == "hard"

@@ -13,7 +13,9 @@ from .builders import buildMetaPipeline
 from .Models import EstimatorPool, EstimatorPoolCV, MetaModel
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(format='[TinyAutoML] %(message)s', level=logging.INFO)
+
+
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -62,7 +64,6 @@ class MetaPipeline(BaseEstimator, ClassifierMixin, TransformerMixin):
 
             self.model.fit(X, y, **kwargs)  # type: ignore
             self.estimator.steps.append((self.model.__repr__(), self.model))  # type: ignore
-            print(self.estimator)
         else:
             self.estimator.fit(X, y, **kwargs)  # type: ignore
 
