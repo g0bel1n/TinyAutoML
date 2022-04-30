@@ -35,7 +35,7 @@ jobs:
     - name: Move readme file
       run: |
         mv notebooks/README.md README.md
-        mv notebooks/README_files README_files
+        mv notebooks/README_files ..
         
     - name: commit updated notebook
       uses: EndBug/add-and-commit@v7
