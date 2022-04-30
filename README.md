@@ -39,10 +39,10 @@ Let's import the library !
     Requirement already satisfied: python-dateutil>=2.7 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from matplotlib->TinyAutoML) (2.8.2)
     Requirement already satisfied: pytz>=2017.3 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from pandas->TinyAutoML) (2022.1)
     Requirement already satisfied: threadpoolctl>=2.0.0 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from scikit-learn->TinyAutoML) (3.1.0)
-    Requirement already satisfied: scipy>=1.1.0 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from scikit-learn->TinyAutoML) (1.8.0)
     Requirement already satisfied: joblib>=0.11 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from scikit-learn->TinyAutoML) (1.1.0)
-    Requirement already satisfied: patsy>=0.5.2 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from statsmodels->TinyAutoML) (0.5.2)
+    Requirement already satisfied: scipy>=1.1.0 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from scikit-learn->TinyAutoML) (1.8.0)
     Requirement already satisfied: packaging>=21.3 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from statsmodels->TinyAutoML) (21.3)
+    Requirement already satisfied: patsy>=0.5.2 in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from statsmodels->TinyAutoML) (0.5.2)
     Requirement already satisfied: six in /opt/hostedtoolcache/Python/3.10.4/x64/lib/python3.10/site-packages (from patsy>=0.5.2->statsmodels->TinyAutoML) (1.16.0)
     Using legacy 'setup.py install' for TinyAutoML, since package 'wheel' is not installed.
     Installing collected packages: TinyAutoML
@@ -205,7 +205,7 @@ democratic_model.roc_curve(X_test,y_test)
 
 
     
-![png](../ressources/README_22_0.png)
+![png](README_files/README_22_0.png)
     
 
 
@@ -219,7 +219,7 @@ best_model.get_scores(X_test,y_test)
 
 
 
-    [('random forest classifier', 0.9824561403508771),
+    [('random forest classifier', 0.9649122807017544),
      ('Logistic Regression', 0.9473684210526315),
      ('Gaussian Naive Bayes', 0.956140350877193),
      ('LDA', 0.9473684210526315),
