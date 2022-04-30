@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run test_ and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Python application
+name: Update README.md
 
 on:
   push:
@@ -34,9 +34,10 @@ jobs:
     - name: Move readme file
       run: |
         mv notebooks/README.md README.md
-
-    - name: add, commit, push
-      run: | 
-        git add -A
-        git commit -m 'readme bot'
-        git push
+        
+    - name: commit updated notebook
+      uses: EndBug/add-and-commit@v7
+      with:
+        author_name:  readme update bot
+        message: "Update README.md"
+        add: "README.md, ressources"
