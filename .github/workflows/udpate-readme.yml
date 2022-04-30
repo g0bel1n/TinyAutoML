@@ -34,10 +34,9 @@ jobs:
     - name: Move readme file
       run: |
         mv notebooks/README.md README.md
-        
-    - name: commit updated notebook
-      uses: EndBug/add-and-commit@v7
-      with:
-        author_name:  readme update bot
-        message: "Update README.md"
-        add: "README.md, ressources"
+
+    - name: add, commit, push
+      run: | 
+        git add -A
+        git commit -m 'readme bot'
+        git push
