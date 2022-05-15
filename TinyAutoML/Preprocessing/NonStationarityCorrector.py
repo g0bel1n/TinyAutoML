@@ -28,8 +28,8 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
         """
         for col in X.columns:
             if col not in self.colsToKeepIntact:
-                test_results = adfuller(X[col].values)[0]
-                if test_results < 0:
+                p_val = adfuller(X[col].values)[1]
+                if p_val > 0.05: #Test à 5%
                     self.colsToCorrect.append(col)
                 else:
                     self.colsToKeepIntact.append(col)
