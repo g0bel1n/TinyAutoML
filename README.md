@@ -214,7 +214,7 @@ best_model.get_scores(X_test,y_test)
 
 
 
-    [('random forest classifier', 0.9912280701754386),
+    [('random forest classifier', 0.9736842105263158),
      ('Logistic Regression', 0.9473684210526315),
      ('Gaussian Naive Bayes', 0.956140350877193),
      ('LDA', 0.9473684210526315),
