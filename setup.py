@@ -1,15 +1,9 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="TinyAutoML",
     version="0.2.3.3",
-    packages=[
-        "TinyAutoML",
-        "TinyAutoML.Preprocessing",
-        "TinyAutoML.constants",
-        "TinyAutoML.Models",
-        "TinyAutoML.support",
-    ],
+    packages= find_packages(exclude=["test"]),
     url="https://github.com/g0bel1n/TinyAutoML",
     license="MIT",
     author="g0bel1n",
