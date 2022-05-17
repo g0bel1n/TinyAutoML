@@ -83,7 +83,7 @@ class EstimatorPoolCV:
             {
                 estimator_name[0]: pipe.predict(X, **kwargs)
                 for estimator_name, pipe in self.estimatorsPipeline
-            }
+            }, index=X.index
         )
 
     def predict_proba(self, X: Union[pd.DataFrame, np.ndarray]) -> ndarray:

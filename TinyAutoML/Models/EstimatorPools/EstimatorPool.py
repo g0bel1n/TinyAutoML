@@ -72,7 +72,7 @@ class EstimatorPool:
             {
                 estimator[0]: estimator[1].predict(X, **kwargs)
                 for estimator in self.estimatorsList
-            }
+            }, index=X.index
         )
 
     def predict_proba(self, X: Union[pd.DataFrame, np.ndarray], **kwargs) -> ndarray:

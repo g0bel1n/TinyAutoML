@@ -22,16 +22,16 @@ class OneRulerForAll(MetaModel):
         parameterTuning: bool = True,
         metrics: str = "accuracy",
         nSplits: int = 10,
-        ruler=RandomForestClassifier(),
+        ruler=None,
     ):
         super().__init__(comprehensiveSearch, parameterTuning, metrics, nSplits)
-        self.ruler = ruler
+        self.ruler = RandomForestClassifier() if ruler is None else ruler
 
     def fit(self, X: pd.DataFrame, y: pd.Series) -> MetaModel:
 
         super().fit(X, y)
 
-        estimatorsPoolOutputs = pd.DataFrame(self.estimatorPool.predict(X))
+        estimatorsPoolOutputs = self.estimatorPool.predict(X)
         X_ruler = pd.concat((X, estimatorsPoolOutputs), axis=1)
         self.ruler.fit(X_ruler, y)
 
