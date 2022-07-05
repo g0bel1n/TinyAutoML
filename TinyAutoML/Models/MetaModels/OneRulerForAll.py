@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List
 
 import pandas as pd
 from numpy import ndarray
@@ -38,7 +38,7 @@ class OneRulerForAll(MetaModel):
         return self
 
     # Overriding sklearn BaseEstimator methods
-    def predict(self, X: pd.DataFrame) -> Union[pd.Series, ndarray, list[ndarray]]:
+    def predict(self, X: pd.DataFrame) -> Union[pd.Series, ndarray, List[ndarray]]:
         assert (
             self.estimatorPool is not None and self.estimatorPool.is_fitted
         ), "Please fit the model before"
@@ -48,7 +48,7 @@ class OneRulerForAll(MetaModel):
 
     def predict_proba(
         self, X: pd.DataFrame
-    ) -> Union[pd.Series, ndarray, list[ndarray]]:
+    ) -> Union[pd.Series, ndarray, List[ndarray]]:
         assert (
             self.estimatorPool is not None and self.estimatorPool.is_fitted
         ), "Please fit the model before"

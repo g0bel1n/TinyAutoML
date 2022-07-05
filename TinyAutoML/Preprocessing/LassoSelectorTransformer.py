@@ -1,5 +1,5 @@
 import logging
-from typing import Union
+from typing import Union, List
 from numpy import ndarray
 import pandas as pd
 
@@ -18,7 +18,7 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
 
     def __init__(self, preSelectionSize=50):
 
-        self.selectedFeaturesNames = list[str]
+        self.selectedFeaturesNames = List[str]
         self.preSelectionSize = preSelectionSize
 
     def __preselect(

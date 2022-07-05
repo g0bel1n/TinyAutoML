@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List
 
 import numpy as np
 import pandas as pd
@@ -31,11 +31,11 @@ class EstimatorPoolCV:
         ]
 
         self.is_fitted = False
-        self.estimatorsPipeline: list[tuple[str, Pipeline]] = []
+        self.estimatorsPipeline: List[tuple[str, Pipeline]] = []
 
     def fit(
         self, X: pd.DataFrame, y: pd.Series, **kwargs
-    ) -> list[tuple[str, Pipeline]]:
+    ) -> List[tuple[str, Pipeline]]:
         self.estimatorsPipeline = [
             (estimator_name, buildMetaPipeline(X, estimator).fit(X, y, **kwargs))
             for estimator_name, estimator in self.estimatorsList
@@ -50,7 +50,7 @@ class EstimatorPoolCV:
         cv: Union[TimeSeriesSplit, StratifiedKFold],
         metric: str,
         **kwargs,
-    ) -> list[tuple[str, Pipeline]]:
+    ) -> List[tuple[str, Pipeline]]:
 
         for estimator in tqdm(self.estimatorsList):
             pipe = buildMetaPipeline(X, estimator=estimator[1])
@@ -107,7 +107,7 @@ class EstimatorPoolCV:
         X: Union[pd.DataFrame, np.ndarray],
         y: Union[pd.Series, np.ndarray],
         **kwargs,
-    ) -> list[tuple[str, float]]:
+    ) -> List[tuple[str, float]]:
         return [
             (estimator_name, accuracy_score(pipe.predict(X, **kwargs), y))
             for estimator_name, pipe in self.estimatorsPipeline

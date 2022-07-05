@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List
 
 import numpy as np
 import pandas as pd
@@ -98,7 +98,7 @@ class DemocraticModel(MetaModel):
     # Overriding sklearn BaseEstimator methods
     def predict(
         self, X: pd.DataFrame, **kwargs
-    ) -> Union[pd.Series, np.ndarray, list[np.ndarray]]:
+    ) -> Union[pd.Series, np.ndarray, List[np.ndarray]]:
         return (
             np.argmax(self.predict_proportion(X))
             if self.voting == "hard"
@@ -121,7 +121,7 @@ class DemocraticModel(MetaModel):
     @available_if(_check_soft_voting)
     def predict_proba(
         self, X: Union[pd.DataFrame, np.ndarray], **kwargs
-    ) -> Union[pd.Series, np.ndarray, list[np.ndarray]]:
+    ) -> Union[pd.Series, np.ndarray, List[np.ndarray]]:
         """
         Returns the average model probability per class
         """

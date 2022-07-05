@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Union
+from typing import Any, Union, List
 
 import numpy as np
 import pandas as pd
@@ -47,7 +47,7 @@ class BestModel(MetaModel):
     # Overloading sklearn BaseEstimator methods to use the best estimator
     def predict(
         self, X: Union[pd.DataFrame, np.ndarray], **kwargs
-    ) -> Union[pd.Series, np.ndarray, list[np.ndarray]]:
+    ) -> Union[pd.Series, np.ndarray, List[np.ndarray]]:
 
         try:
             pred = self.best_estimator.predict(X, **kwargs)
@@ -57,7 +57,7 @@ class BestModel(MetaModel):
 
     def predict_proba(
         self, X: Union[pd.DataFrame, np.ndarray], **kwargs
-    ) -> Union[pd.Series, np.ndarray, list[np.ndarray]]:
+    ) -> Union[pd.Series, np.ndarray, List[np.ndarray]]:
         return self.best_estimator.predict_proba(X, **kwargs)
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:

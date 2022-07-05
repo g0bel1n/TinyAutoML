@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
 
-print(os.listdir())
 from TinyAutoML import MetaPipeline
 from TinyAutoML.Models import DemocraticModel
 

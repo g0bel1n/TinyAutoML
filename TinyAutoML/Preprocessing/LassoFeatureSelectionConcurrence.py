@@ -1,6 +1,6 @@
 import threading
 
-from typing import Union
+from typing import Union, List
 import numpy as np
 import pandas as pd
 
@@ -67,5 +67,5 @@ class FeatureSelectionConcurrence:
             self.regressorsCoeffsValues[indexForObjNbOfFeatures] != 0
         ].values.tolist()
 
-    def getSelectedFeaturesNames(self) -> list[str]:
+    def getSelectedFeaturesNames(self) -> List[str]:
         return self.selectedFeaturesNames

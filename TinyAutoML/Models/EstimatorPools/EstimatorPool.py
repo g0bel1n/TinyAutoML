@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any, Union, List
 
 import numpy as np
 import pandas as pd
@@ -32,7 +32,7 @@ class EstimatorPool:
 
     def fit(
         self, X: pd.DataFrame, y: pd.Series, **kwargs
-    ) -> list[tuple[str, ClassifierMixin]]:
+    ) -> List[tuple[str, ClassifierMixin]]:
         for estimator in self.estimatorsList:
             estimator[1].fit(X, y, **kwargs)
         self.is_fitted = True
@@ -45,7 +45,7 @@ class EstimatorPool:
         cv: Union[TimeSeriesSplit, StratifiedKFold],
         metric,
         **kwargs,
-    ) -> list[tuple[str, ClassifierMixin]]:
+    ) -> List[tuple[str, ClassifierMixin]]:
 
         for estimator in self.estimatorsList:
             if estimator[0] in estimators_params:
@@ -98,7 +98,7 @@ class EstimatorPool:
         X: Union[pd.DataFrame, np.ndarray],
         y: Union[pd.Series, np.ndarray],
         **kwargs,
-    ) -> list[tuple[str, float]]:
+    ) -> List[tuple[str, float]]:
         return [
             (estimator_name, accuracy_score(estimator.predict(X, **kwargs), y))
             for estimator_name, estimator in self.estimatorsList
