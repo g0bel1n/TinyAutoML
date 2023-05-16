@@ -98,6 +98,9 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
 
         if X.shape[0] > WINDOW:
             for col in self.colsToCorrect:
+                # Depending on the window size, std can be null.
+                # In that situation the actual value can be replaced by the last non null value
+                # We also use loc[start+WINDOW:] in order to leave the WINDOW first rows intact. Otherwise, it would be nans
                 X[col].iloc[WINDOW:] = (
                     (X[col] - X[col].rolling(window=WINDOW).mean())
                     / X[col]
