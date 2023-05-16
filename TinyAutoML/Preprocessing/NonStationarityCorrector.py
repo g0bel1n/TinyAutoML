@@ -89,7 +89,6 @@ class NonStationarityCorrector(BaseEstimator, TransformerMixin):
         X : pd.DataFrame
             DataFrame with corrected columns.
         """
-        print(X)
         if not self.indexedByTime:
             return X
         

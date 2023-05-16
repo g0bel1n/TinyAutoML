@@ -58,21 +58,20 @@ def get_df_scaler(scaler):
         def __init__(self):
             self.scaler = scaler
             self.columns = None  # Array to store input DataFrame column names
-            self.index = None
 
         def fit(self, X, y=None):
             # Handle the case when X is a DataFrame
             if isinstance(X, pd.DataFrame):
                 self.columns = X.columns
-                self.index = X.index
             self.scaler.fit(X, y)
             return self
 
         def transform(self, X, y=None):
             check_is_fitted(self.scaler)
             X_scaled = self.scaler.transform(X)
+            index = X.index if isinstance(X, pd.DataFrame) else None
             if self.columns is not None and isinstance(X, pd.DataFrame):
-                X_scaled = pd.DataFrame(X_scaled, columns=self.columns, index=self.index)
+                X_scaled = pd.DataFrame(X_scaled, columns=self.columns, index=index)
             return X_scaled
     return DataFrameScaler
 

@@ -37,7 +37,7 @@ class EstimatorPoolCV:
         self, X: pd.DataFrame, y: pd.Series, **kwargs
     ) -> List[tuple[str, Pipeline]]:
         self.estimatorsPipeline = [
-            (estimator_name, buildMetaPipeline(X, estimator).fit(X, y, **kwargs))
+            (estimator_name, buildMetaPipeline(estimator).fit(X, y, **kwargs))
             for estimator_name, estimator in self.estimatorsList
         ]
         self.is_fitted = True
@@ -53,7 +53,7 @@ class EstimatorPoolCV:
     ) -> List[tuple[str, Pipeline]]:
 
         for estimator in tqdm(self.estimatorsList):
-            pipe = buildMetaPipeline(X, estimator=estimator[1])
+            pipe = buildMetaPipeline(estimator=estimator[1])
             if estimator[0] in estimators_params:
                 grid = {
                     f"{estimator[1].__repr__()}__{key}": value
