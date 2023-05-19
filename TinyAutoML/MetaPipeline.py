@@ -45,7 +45,7 @@ class MetaPipeline(BaseEstimator, ClassifierMixin, TransformerMixin):
         self.estimator = (
             self.model
             if self.model.comprehensiveSearch
-            else buildMetaPipeline(X, self.model)
+            else buildMetaPipeline(self.model)
         )
 
         if pool is not None and self.model.comprehensiveSearch:
@@ -58,7 +58,7 @@ class MetaPipeline(BaseEstimator, ClassifierMixin, TransformerMixin):
             X = pd.DataFrame(
                 pool.transform(X),  # type: ignore
                 columns=self.estimator.named_steps[  # type: ignore
-                    "Lasso Selector"
+                    "feature_selection"
                 ].selectedFeaturesNames,
             )
 

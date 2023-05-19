@@ -1,82 +1,75 @@
-from typing import Union
-
-import numpy as np
-import pandas as pd
 from sklearn.base import BaseEstimator
-from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import (
-    FunctionTransformer,
     MinMaxScaler,
-    OneHotEncoder,
     StandardScaler,
 )
-
 from .Preprocessing.LassoSelectorTransformer import LassoSelectorTransformer
 from .Preprocessing.NonStationarityCorrector import NonStationarityCorrector
-from .support.MyTools import isIndexedByTime
+from .Preprocessing.LabeledOneHotEncoder import LabeledOneHotEncoder
+from .support.MyTools import get_df_scaler
 
 
-def buildColumnTransformer(X: Union[pd.DataFrame, np.ndarray]) -> ColumnTransformer:
+def buildPreprocessingPipeline(scaling_method: str = 'standard') -> Pipeline:
+    """
+    Create a preprocessing pipeline that:
+    - One hot encodes categorical features
+    - Stationarizes continuous features
+    - Scales features
+    - Performs feature selection
 
-    if type(X) is np.ndarray:
-        X = pd.DataFrame(X)
+    Parameters:
+    ----------
+    scaling_method : str, default='standard'
+        The method to use for scaling. Options are 'standard' or 'minmax'.
 
-    # Select numerical and categorical feature to be able to apply different transformers
-    if type(X) is pd.DataFrame:
-        numerical_ix = X.select_dtypes(include=["int64", "float64"]).columns
-        categorical_ix = X.select_dtypes(include=["object", "bool"]).columns
+    Returns:
+    -------
+    pipeline : sklearn.pipeline.Pipeline
+        The preprocessing pipeline.
+    """
+    # Check that the scaling method is valid
+    if scaling_method not in ['standard', 'minmax']:
+        raise ValueError("scaling_method must be 'standard' or 'minmax'")
 
-    if type(X) is pd.DataFrame and isIndexedByTime(X):
-
-        numerical_process = Pipeline(
-            [
-                ("NonStationarityCorrector", NonStationarityCorrector()),
-                ("MinMaxScaler", MinMaxScaler(feature_range=[-1, 1])),
-            ]
-        )
+    # Use the specified scaling method
+    if scaling_method == 'standard':
+        scaler = StandardScaler()
     else:
-        numerical_process = Pipeline(
-            [
-                ("StandardScaler", StandardScaler()),
-                ("MinMaxScaler", MinMaxScaler(feature_range=[-1, 1])),
-            ]
-        )
+        scaler = MinMaxScaler()
 
-    transformer = [
-        ("Categorical", OneHotEncoder(), categorical_ix),  # type: ignore
-        ("Numerical", numerical_process, numerical_ix),  # type: ignore
-    ]
+    # Create the preprocessing pipeline
+    preprocessing_pipeline = Pipeline(steps=[
+        ('one_hot_encoder', LabeledOneHotEncoder()),
+        ('stationarizer', NonStationarityCorrector()),
+        ('scaler', get_df_scaler(scaler)()),
+        ('feature_selection', LassoSelectorTransformer(k=15)),
+    ])
 
-    return ColumnTransformer(transformers=transformer)
+    return preprocessing_pipeline
 
 
-def buildMetaPipeline(
-    X: Union[pd.DataFrame, np.ndarray], estimator: BaseEstimator
-) -> Pipeline:
+def buildMetaPipeline(estimator: BaseEstimator, scaling_method: str = 'standard') -> Pipeline:
+    """
+    Create a main pipeline that includes the preprocessing pipeline and the estimator.
 
-    cols = (
-        X.columns
-        if type(X) is pd.DataFrame
-        else [f"feature_{i}" for i in range(X.shape[1])]
-    )
+    Parameters:
+    ----------
+    scaling_method : str, default='standard'
+        The method to use for scaling. Options are 'standard' or 'minmax'.
 
-    columnTransformer = buildColumnTransformer(X)
+    Returns:
+    -------
+    pipeline : sklearn.pipeline.Pipeline
+        The main pipeline.
+    """
+    # Create the preprocessing pipeline
+    preprocessing_pipeline = buildPreprocessingPipeline(scaling_method)
 
-    if len(cols) > 15:
-        return Pipeline(
-            [
-                ("Preprocessing", columnTransformer),
-                ("fc_tf", FunctionTransformer(lambda x: pd.DataFrame(x, columns=cols))),
-                ("Lasso Selector", LassoSelectorTransformer()),
-                (estimator.__repr__(), estimator),
-            ]
-        )
-    else:
-        return Pipeline(
-            [
-                ("Preprocessing", columnTransformer),
-                ("fc_tf", FunctionTransformer(lambda x: pd.DataFrame(x, columns=cols))),
-                (estimator.__repr__(), estimator),
-            ]
-        )
+    # Create the main pipeline
+    meta_pipeline = Pipeline(steps=[
+        ('preprocessing', preprocessing_pipeline),
+        (estimator.__repr__(), estimator),
+    ])
+
+    return meta_pipeline
