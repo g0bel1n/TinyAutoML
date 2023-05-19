@@ -27,7 +27,7 @@ class EstimatorPoolCV:
             ("Logistic Regression", LogisticRegression(fit_intercept=True)),
             ("Gaussian Naive Bayes", GaussianNB()),
             ("LDA", LinearDiscriminantAnalysis()),
-            ("xgb", XGBClassifier(use_label_encoder=False, eval_metric="logloss")),
+            ("xgb", XGBClassifier(eval_metric="logloss")),
         ]
 
         self.is_fitted = False
