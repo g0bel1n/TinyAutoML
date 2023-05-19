@@ -29,7 +29,7 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, preSelectionSize=50, k=15):
         self.selectedFeaturesNames = []
         self.preSelectionSize = preSelectionSize
-        self.K = k
+        self.k = k
         self.skipPreSelection = False
         self.skipSelection = False
 
@@ -50,10 +50,10 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
             DataFrame with preselected features.
         """
         self.skipPreSelection = X.shape[1] < self.preSelectionSize
-        self.skipSelection = X.shape[1] < self.K
+        self.skipSelection = X.shape[1] < self.k
         
         if self.skipPreSelection:
-            logging.info("Number of features less than preSelectionSize, skipping pre-selection.")
+            #logging.info("Number of features less than preSelectionSize, skipping pre-selection.")
             return X
         
         preselector = SelectKBest(k=self.preSelectionSize)
@@ -80,13 +80,13 @@ class LassoSelectorTransformer(BaseEstimator, TransformerMixin):
         self : TransformerMixin
         """
         if self.skipSelection:
-            logging.info("Number of features less than K, skipping feature selection.")
+            #logging.info("Number of features less than K, skipping feature selection.")
             self.selectedFeaturesNames = X.columns.tolist()
             return self
 
         X_ = self.__preselect(X, y)
         
-        featureSelection = FeatureSelectionParallel(nbFeatureToSelect=self.K)
+        featureSelection = FeatureSelectionParallel(nbFeatureToSelect=self.k)
         featureSelection.fit(X_, y)
 
         self.selectedFeaturesNames = featureSelection.getSelectedFeaturesNames()
